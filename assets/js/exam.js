@@ -1,169 +1,185 @@
-/* ============ 博浩英语 CET-6 · 备考模块脚本 ============ */
-(function () {
-  "use strict";
+/* 博浩英语 CET-6 · 备考模块 */
+"use strict";
+BH.reg("exam", async function (view) {
+  var s = BH.esc;
+  var tips = await BH.api("/api/content?cat=examTips");
+  var DEFAULT_DATE = (BH.site && BH.site.examDate) || "2026-12-19";
+
+  view.innerHTML =
+    '<section class="section tight" style="padding-top:46px"><div class="container">' +
+      '<div class="sec-head left"><span class="badge">🗓️ 备考模块 · 文博浩 创立</span>' +
+      '<h2>科学备考中心</h2><p>先定目标、摸清题型分值，再生成专属计划，用番茄钟把每一天落到实处。锦囊 ' + tips.length + ' 则。</p></div>' +
+      '<div class="two-col">' +
+        '<div class="panel"><h3>⏳ 考试倒计时</h3>' +
+          '<div class="big-count" id="examDays">—</div>' +
+          '<div class="muted" style="font-size:14px;margin-bottom:10px">距目标考试还有（目标日：<b id="examDateLbl"></b>）</div>' +
+          '<div class="toolbar"><input type="date" id="myExamDate" style="max-width:190px"><button class="btn btn-soft btn-sm" id="saveMyDate">设为我的目标</button></div>' +
+          '<p class="muted" style="font-size:12px;margin:8px 0 0">六级笔试一般每年 6 月与 12 月各一次，以准考证为准。</p>' +
+        '</div>' +
+        '<div class="panel"><h3>🧮 稳过 500 分分配参考</h3>' +
+          '<div class="table-wrap"><table style="min-width:0"><thead><tr><th>板块</th><th>占比</th><th>建议目标</th></tr></thead><tbody>' +
+          '<tr><td>✍️ 写作</td><td>15% · 106.5</td><td>≥ 80</td></tr>' +
+          '<tr><td>🎧 听力</td><td>35% · 248.5</td><td>≥ 175</td></tr>' +
+          '<tr><td>📖 阅读</td><td>35% · 248.5</td><td>≥ 185</td></tr>' +
+          '<tr><td>🔄 翻译</td><td>15% · 106.5</td><td>≥ 75</td></tr>' +
+          '</tbody></table></div>' +
+          '<p class="muted" style="font-size:12px;margin:8px 0 0">过级线 425/710；阅读性价比最高，优先保证。</p>' +
+        '</div>' +
+      '</div>' +
+    '</div></section>' +
+
+    '<section class="section tight" style="background:var(--grad-soft)"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Paper</span><h2>笔试题型与时间速查</h2><p>总分 710 · 建议用时约 130 分钟（以官方最新说明为准）。</p></div>' +
+      '<div class="table-wrap"><table><thead><tr><th>部分</th><th>题型</th><th>题量</th><th>占比</th><th>建议用时</th></tr></thead><tbody>' +
+      '<tr><td rowspan="1"><b>写作</b></td><td>短文写作</td><td>1 篇</td><td>15%</td><td>30 分钟</td></tr>' +
+      '<tr><td rowspan="3"><b>听力理解</b></td><td>长对话</td><td>8 题</td><td>8%</td><td rowspan="3">约 30 分钟</td></tr>' +
+      '<tr><td>听力篇章</td><td>7 题</td><td>7%</td></tr>' +
+      '<tr><td>讲话 / 讲座</td><td>20 题</td><td>20%</td></tr>' +
+      '<tr><td rowspan="3"><b>阅读理解</b></td><td>选词填空</td><td>10 题</td><td>5%</td><td rowspan="3">40 分钟</td></tr>' +
+      '<tr><td>长篇阅读</td><td>10 题</td><td>10%</td></tr>' +
+      '<tr><td>仔细阅读</td><td>10 题</td><td>20%</td></tr>' +
+      '<tr><td><b>翻译</b></td><td>段落汉译英</td><td>1 段</td><td>15%</td><td>30 分钟</td></tr>' +
+      '</tbody></table></div>' +
+    '</div></section>' +
+
+    '<section class="section tight"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Planner</span><h2>个性化冲刺计划生成器</h2></div>' +
+      '<div class="panel"><div class="toolbar">' +
+        '<label class="tag">剩余时间</label><select id="weeksSel"><option value="2">2 周 · 极限冲刺</option><option value="4">4 周 · 快速突击</option><option value="6" selected>6 周 · 标准备考</option><option value="8">8 周 · 从容准备</option><option value="12">12 周 · 长期作战</option></select>' +
+        '<label class="tag">每日时长</label><select id="hoursSel"><option value="1">1 小时/天</option><option value="2" selected>2 小时/天</option><option value="3">3 小时/天</option><option value="4">4 小时/天</option><option value="5">5 小时/天</option></select>' +
+        '<button class="btn btn-primary" id="genPlan">✨ 生成我的计划</button>' +
+      '</div><div class="empty-hint plan-html" id="planOut" style="text-align:left;margin-top:14px">点击上方按钮，生成你的专属计划 📋</div></div>' +
+    '</div></section>' +
+
+    '<section class="section tight" style="background:var(--grad-soft)"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Pomodoro</span><h2>番茄钟 · 专注 25 分钟</h2></div>' +
+      '<div class="panel"><div class="dial-wrap">' +
+        '<div class="dial" id="dial" style="--p:0"><div style="text-align:center"><div class="time" id="timerTxt">25:00</div><div class="mode" id="timerMode">专注中</div></div></div>' +
+        '<div><div class="btn-row" style="margin-bottom:12px">' +
+          '<button class="btn btn-primary" id="tomStart">▶ 开始</button>' +
+          '<button class="btn btn-ghost" id="tomPause">⏸ 暂停</button>' +
+          '<button class="btn btn-ghost" id="tomReset">↺ 重置</button>' +
+          '<button class="btn btn-soft" id="tomSkip">⏭ 跳过</button>' +
+        '</div><ul class="tick">' +
+          '<li>当前阶段：<b id="tomPhase">专注 #1</b></li>' +
+          '<li>本轮完成：<b id="tomCount">0</b> 个番茄</li>' +
+          '<li>完成 4 个番茄自动进入 15 分钟长休息。</li>' +
+        '</ul></div>' +
+      '</div></div>' +
+    '</div></section>' +
+
+    '<section class="section tight"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Tips</span><h2>冲刺锦囊</h2></div>' +
+      '<div id="tipList"></div>' +
+    '</div></section>';
+
+  document.getElementById("tipList").innerHTML = tips.map(function (t) {
+    var d = t.data || {};
+    return "<details class='acc'><summary>💡 " + s(t.title) + " <span class='chev'>▾</span></summary><div class='acc-body'><ul class='tick'>" + (d.body || []).map(function (x) { return "<li>" + s(x) + "</li>"; }).join("") + "</ul></div></details>";
+  }).join("") || "<div class='empty-hint'>暂无锦囊</div>";
 
   /* ---------- 倒计时 ---------- */
-  var DATE_KEY = "bh-exam-date";
-  var examDateInput = document.getElementById("examDate");
-  var DEFAULT_DATE = "2026-12-19";
-  function fmtCN(dateStr) {
-    var d = new Date(dateStr + "T00:00:00");
-    if (isNaN(d)) return dateStr;
-    var wd = ["日", "一", "二", "三", "四", "五", "六"][d.getDay()];
-    return d.getFullYear() + " 年 " + (d.getMonth() + 1) + " 月 " + d.getDate() + " 日（周" + wd + "）";
+  var saved = null;
+  try { saved = localStorage.getItem("bh-my-exam-date"); } catch (e) {}
+  var myDate = saved || DEFAULT_DATE;
+  function refreshDays() {
+    document.getElementById("examDays").textContent = BH.daysUntil(myDate);
+    document.getElementById("examDateLbl").textContent = BH.fmtDateCN(myDate);
+    document.getElementById("myExamDate").value = myDate;
   }
-  function daysUntil(dateStr) {
-    var d = new Date(dateStr + "T00:00:00");
-    var t = new Date();
-    var today = new Date(t.getFullYear(), t.getMonth(), t.getDate());
-    return Math.max(0, Math.round((d - today) / 86400000));
-  }
-  function renderCountdown() {
-    var val = null;
-    try { val = localStorage.getItem(DATE_KEY); } catch (e) {}
-    if (!val) val = DEFAULT_DATE;
-    if (examDateInput) examDateInput.value = val;
-    var el = document.getElementById("examDays");
-    if (el) el.textContent = daysUntil(val);
-    var lab = document.getElementById("examDateLabel");
-    if (lab) lab.textContent = fmtCN(val);
-  }
-  var saveBtn = document.getElementById("saveExamDate");
-  if (saveBtn && examDateInput) saveBtn.addEventListener("click", function () {
-    if (!examDateInput.value) { showToast("请先选择日期 📅"); return; }
-    try { localStorage.setItem(DATE_KEY, examDateInput.value); } catch (e) {}
-    renderCountdown();
-    showToast("考试日期已更新 ✓");
-  });
+  document.getElementById("saveMyDate").onclick = function () {
+    var v = document.getElementById("myExamDate").value;
+    if (!v) { BH.toast("请先选择日期"); return; }
+    myDate = v;
+    try { localStorage.setItem("bh-my-exam-date", v); } catch (e) {}
+    refreshDays(); BH.toast("目标日期已更新 ✓");
+  };
+  refreshDays();
 
-  /* ---------- 计划生成器 ---------- */
-  var weeksSel = document.getElementById("weeksSel");
-  var hoursSel = document.getElementById("hoursSel");
-  var genBtn = document.getElementById("genPlan");
-  var planOut = document.getElementById("planOut");
-  if (genBtn) genBtn.addEventListener("click", generatePlan);
-  function generatePlan() {
-    var W = parseInt(weeksSel.value, 10);
-    var H = parseInt(hoursSel.value, 10);
-    var totalH = W * 7 * H;
-    var a, b;
-    if (W >= 8) { a = Math.ceil(W * 0.4); b = Math.ceil(W * 0.8); }
-    else if (W >= 5) { a = Math.ceil(W * 0.35); b = Math.ceil(W * 0.75); }
-    else if (W === 4) { a = 1; b = 3; }
-    else { a = 1; b = 2; }
-    var mVocab = Math.round(H * 60 * 0.3), mList = Math.round(H * 60 * 0.25), mRead = Math.round(H * 60 * 0.25), mWrTr = Math.max(10, H * 60 - mVocab - mList - mRead);
-    var html = "";
-    html += "<div style='display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px'>" +
-      "<span class='badge'>⏳ 剩余 " + W + " 周</span><span class='badge'>🕐 每日 " + H + " 小时</span><span class='badge green'>💪 预计总投入约 " + totalH + " 小时</span></div>";
-
-    html += "<div class='q-item' style='margin-top:0'><div class='q-title'>阶段一 · 基础奠基（第 1 – " + a + " 周）</div><ul class='tick'>" +
-      "<li>每天雷打不动背词 " + Math.round(mVocab / 10) + "–" + Math.round(mVocab / 5) + " 分钟：本平台核心词汇 + 高频短语，先混脸熟。</li>" +
-      "<li>每周精听 3 次听力语料（本平台听力模块），先泛听再精听。</li>" +
-      "<li>每天拆 2 个长难句，积累阅读语感（阅读模块）。</li>" +
-      "<li>周末：做 1 套真题的阅读部分（不限时），统计错因。</li></ul></div>";
-
-    html += "<div class='q-item'><div class='q-title'>阶段二 · 专项强化（第 " + (a + 1) + " – " + b + " 周）</div><ul class='tick'>" +
-      "<li>词汇进入二轮：用自测模式筛出生词，集中攻克。</li>" +
-      "<li>听力按题型练：讲座/讲话是 20% 的大头，每天 20 分钟精听不可断。</li>" +
-      "<li>阅读开始限时：仔细阅读每篇 ≤ 9 分钟，长篇阅读 ≤ 12 分钟。</li>" +
-      "<li>写作翻译各写 2 篇/周，套用本平台模板并找人批改或对照范文自查。</li></ul></div>";
-
-    html += "<div class='q-item'><div class='q-title'>阶段三 · 冲刺复盘（第 " + (b + 1) + " – " + W + " 周）</div><ul class='tick'>" +
-      "<li>每周至少 2 次整套模考（严格按 130 分钟计时），训练时间分配。</li>" +
-      "<li>建立错题本：只记“为什么错”，考前反复看。</li>" +
-      "<li>写作背熟 3–5 个自己的模板 + 20 个闪光句型，考场上直接调用。</li>" +
-      "<li>考前 3 天回归基础：复习错题与高频词，不再刷新题。</li></ul></div>";
-
-    html += "<div class='callout tip' style='margin-top:8px'><span class='co-t'>每日时间分配参考</span>词汇约 " + mVocab + " 分钟 · 听力约 " + mList + " 分钟 · 阅读约 " + mRead + " 分钟 · 写作翻译约 " + mWrTr + " 分钟。可根据薄弱项动态调整。</div>";
-
-    planOut.innerHTML = html;
-    planOut.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    showToast("计划已生成 ✨ 建议截图保存到手机");
-  }
+  /* ---------- 计划生成 ---------- */
+  document.getElementById("genPlan").onclick = function () {
+    var W = parseInt(document.getElementById("weeksSel").value, 10);
+    var H = parseInt(document.getElementById("hoursSel").value, 10);
+    var a = W >= 8 ? Math.ceil(W * .4) : W >= 5 ? Math.ceil(W * .35) : W === 4 ? 1 : 1;
+    var b = W >= 8 ? Math.ceil(W * .8) : W >= 5 ? Math.ceil(W * .75) : W === 4 ? 3 : 2;
+    var html = "<div class='toolbar' style='margin-bottom:12px'><span class='badge'>⏳ 剩余 " + W + " 周</span><span class='badge'>🕐 每日 " + H + " 小时</span><span class='badge green'>💪 预计总投入约 " + (W * 7 * H) + " 小时</span></div>";
+    function stage(t, weeks, items) {
+      return "<div class='q-item' style='margin-top:0;margin-bottom:10px'><div class='q-title'>" + t + "（" + weeks + "）</div><ul class='tick'>" + items.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>";
+    }
+    html += stage("阶段一 · 基础奠基", "第 1–" + a + " 周", [
+      "每天背词 " + Math.round(H * 18) + " 分钟：博浩词汇（4000+ 词库）+ 核心搭配，先混脸熟。",
+      "每周精听 3 次听力语料：先泛听抓大意，再逐句精听（听力模块）。",
+      "每天拆 2 个长难句，积累阅读语感（阅读模块）。",
+      "周末：做 1 套真题阅读部分（不限时），统计错因。"
+    ]);
+    html += stage("阶段二 · 专项强化", "第 " + (a + 1) + "–" + b + " 周", [
+      "词汇进入二轮：用自测模式筛出生词，错题自动进错题本，集中攻克。",
+      "听力按题型练：讲座/讲话是 20% 大头，每天 20 分钟精听不可断。",
+      "阅读开始限时：仔细阅读每篇 ≤ 9 分钟，长篇阅读 ≤ 12 分钟。",
+      "写作翻译每周各 2 篇，套用平台模板并对照范文自查。"
+    ]);
+    html += stage("阶段三 · 冲刺复盘", "第 " + (b + 1) + "–" + W + " 周", [
+      "每周至少 2 次整套模考，严格计时，训练时间分配。",
+      "建立错题本：只记为什么错，考前反复看（个人中心可复习错词）。",
+      "写作背熟 3–5 个自己的模板 + 20 个闪光句型。",
+      "考前 3 天回归基础：复习错题与高频词，不再刷新题。"
+    ]);
+    html += "<div class='callout tip'><span class='co-t'>每日分配</span>词汇 " + Math.round(H * 60 * .3) + " 分钟 · 听力 " + Math.round(H * 60 * .25) + " 分钟 · 阅读 " + Math.round(H * 60 * .25) + " 分钟 · 写译 " + Math.max(10, H * 60 - Math.round(H * 60 * .8)) + " 分钟，可按薄弱项动态调整。</div>";
+    document.getElementById("planOut").innerHTML = html;
+    BH.toast("计划已生成 ✨ 建议截图保存");
+  };
 
   /* ---------- 番茄钟 ---------- */
   var FOCUS = 25 * 60, SHORT = 5 * 60, LONG = 15 * 60;
-  var state = { phase: "focus", pomos: 0, left: FOCUS, running: false, timer: null };
-  var dial = document.getElementById("dial");
-  var timerTxt = document.getElementById("timerTxt");
-  var timerMode = document.getElementById("timerMode");
-  var tomPhase = document.getElementById("tomPhase");
-  var tomCount = document.getElementById("tomCount");
-
-  function phaseTotal() {
-    if (state.phase === "focus") return FOCUS;
-    if (state.phase === "long") return LONG;
-    return SHORT;
-  }
-  function pad(n) { return (n < 10 ? "0" : "") + n; }
-  function fmt(s) { return pad(Math.floor(s / 60)) + ":" + pad(s % 60); }
-  function refresh() {
+  var tom = { phase: "focus", pomos: 0, left: FOCUS, running: false, timer: null };
+  function phaseTotal() { return tom.phase === "focus" ? FOCUS : tom.phase === "long" ? LONG : SHORT; }
+  function refreshTom() {
     var total = phaseTotal();
-    timerTxt.textContent = fmt(state.left);
-    dial.style.setProperty("--p", ((total - state.left) / total * 100).toFixed(2));
-    if (state.phase === "focus") {
-      timerMode.textContent = "专注中";
-      tomPhase.textContent = "专注 #" + (Math.floor(state.pomos / 4) * 4 + (state.pomos % 4) + 1);
-    } else if (state.phase === "long") {
-      timerMode.textContent = "长休息";
-      tomPhase.textContent = "长休息（每 4 个番茄后）";
-    } else {
-      timerMode.textContent = "短休息";
-      tomPhase.textContent = "短休息";
-    }
-    tomCount.textContent = state.pomos;
+    document.getElementById("timerTxt").textContent = BH.fmtClock(tom.left);
+    document.getElementById("dial").style.setProperty("--p", ((total - tom.left) / total * 100).toFixed(2));
+    if (tom.phase === "focus") { document.getElementById("timerMode").textContent = "专注中"; document.getElementById("tomPhase").textContent = "专注 #" + (tom.pomos + 1); }
+    else if (tom.phase === "long") { document.getElementById("timerMode").textContent = "长休息"; document.getElementById("tomPhase").textContent = "长休息"; }
+    else { document.getElementById("timerMode").textContent = "短休息"; document.getElementById("tomPhase").textContent = "短休息"; }
+    document.getElementById("tomCount").textContent = tom.pomos;
   }
   function beep() {
     try {
       var ctx = new (window.AudioContext || window.webkitAudioContext)();
       var o = ctx.createOscillator(), g = ctx.createGain();
       o.connect(g); g.connect(ctx.destination);
-      o.frequency.value = 880; g.gain.value = 0.15;
-      o.start();
+      o.frequency.value = 880; g.gain.value = .12; o.start();
       setTimeout(function () { o.stop(); ctx.close(); }, 600);
     } catch (e) {}
   }
   function tick() {
-    state.left--;
-    if (state.left <= 0) {
-      state.left = 0; refresh();
-      if (state.phase === "focus") {
-        state.pomos++;
-        state.phase = (state.pomos % 4 === 0) ? "long" : "short";
-        showToast("🎉 专注完成！休息一下");
+    tom.left--;
+    if (tom.left <= 0) {
+      if (tom.phase === "focus") {
+        tom.pomos++;
+        tom.phase = (tom.pomos % 4 === 0) ? "long" : "short";
+        BH.toast("🎉 专注完成！休息一下");
+        BH.authed("/api/me/activity", { method: "POST", body: { type: "专注番茄", correct: 1, total: 1, seconds: FOCUS, meta: "番茄钟" } }).catch(function () {});
+        BH.authed("/api/me/checkin", { method: "POST", body: {} }).catch(function () {});
       } else {
-        state.phase = "focus";
-        showToast("☕ 休息结束，开始下一个番茄！");
+        tom.phase = "focus";
+        BH.toast("☕ 休息结束，开始下一个番茄！");
       }
-      state.left = phaseTotal();
-      beep();
+      tom.left = phaseTotal(); beep();
     }
-    refresh();
+    refreshTom();
   }
-  function stopTimer() { if (state.timer) { clearInterval(state.timer); state.timer = null; } }
-  function startTimer() {
-    if (state.running) return;
-    state.running = true;
-    stopTimer();
-    state.timer = setInterval(tick, 1000);
-    showToast("番茄钟已开始，加油 💪");
-  }
-  document.getElementById("tomStart").addEventListener("click", startTimer);
-  document.getElementById("tomPause").addEventListener("click", function () {
-    state.running = false; stopTimer(); showToast("已暂停 ⏸");
-  });
-  document.getElementById("tomReset").addEventListener("click", function () {
-    state.running = false; stopTimer();
-    state.left = phaseTotal(); refresh(); showToast("已重置 ↺");
-  });
-  document.getElementById("tomSkip").addEventListener("click", function () {
-    if (state.phase === "focus") { state.phase = "short"; state.left = SHORT; }
-    else { state.phase = "focus"; state.left = FOCUS; }
-    state.running = false; stopTimer();
-    refresh(); showToast("已切换到下一阶段 ⏭");
-  });
-
-  /* ---------- 初始化 ---------- */
-  renderCountdown();
-  refresh();
-})();
+  function stopTom() { if (tom.timer) { clearInterval(tom.timer); tom.timer = null; } }
+  document.getElementById("tomStart").onclick = function () {
+    if (tom.running) return;
+    tom.running = true; stopTom();
+    tom.timer = setInterval(tick, 1000);
+    BH.toast("番茄钟已开始，加油 💪");
+  };
+  document.getElementById("tomPause").onclick = function () { tom.running = false; stopTom(); BH.toast("已暂停 ⏸"); };
+  document.getElementById("tomReset").onclick = function () { tom.running = false; stopTom(); tom.left = phaseTotal(); refreshTom(); BH.toast("已重置 ↺"); };
+  document.getElementById("tomSkip").onclick = function () {
+    if (tom.phase === "focus") { tom.phase = "short"; tom.left = SHORT; } else { tom.phase = "focus"; tom.left = FOCUS; }
+    tom.running = false; stopTom(); refreshTom(); BH.toast("已切换到下一阶段 ⏭");
+  };
+  refreshTom();
+});

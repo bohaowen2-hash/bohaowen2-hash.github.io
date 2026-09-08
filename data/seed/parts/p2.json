@@ -1,0 +1,80 @@
+{
+  "longSentence": [
+    { "title": "同位语从句 + 后置定语", "data": { "en": "The theory that human memory is not a single system but a collection of systems, each with its own rules, has been supported by decades of experiments.", "zh": "人类记忆并非单一系统、而是一系列各自拥有规则的系统的集合——这一理论已得到数十年实验的支持。", "points": ["主干：The theory has been supported by decades of experiments。", "that 引导同位语从句解释 theory 的内容。", "each with its own rules 为独立主格作补充说明。"] } },
+    { "title": "定语从句中套状语从句", "data": { "en": "Employees who feel their opinions are ignored are far more likely to leave the company when the job market improves.", "zh": "当就业市场好转时，那些感到自己意见被忽视的员工离开公司的可能性要大得多。", "points": ["主干：Employees are far more likely to leave the company。", "who 引导定语从句修饰 employees。", "句末 when 引导时间状语从句，说明条件。"] } },
+    { "title": "插入语打断主谓", "data": { "en": "The proposal, though welcomed by many educators, has drawn sharp criticism from parents who worry about screen time.", "zh": "尽管这一提案受到许多教育工作者欢迎，却招致了担心屏幕时间的家长们的尖锐批评。", "points": ["主干：The proposal has drawn sharp criticism from parents。", "though welcomed by many educators 为插入的让步状语。", "who 从句修饰 parents。"] } },
+    { "title": "非谓语作状语", "data": { "en": "Faced with shrinking budgets, universities are cutting liberal-arts programs that once defined a well-rounded education.", "zh": "面对不断缩减的预算，高校正在削减那些曾定义通识教育的文科项目。", "points": ["主干：universities are cutting liberal-arts programs。", "Faced with… 为过去分词短语作原因状语，逻辑主语是 universities。", "that 从句修饰 programs。"] } },
+    { "title": "倒装：否定词置于句首", "data": { "en": "Not until the invention of the printing press did knowledge become widely available to ordinary people.", "zh": "直到印刷术发明，知识才广泛地为普通民众所获得。", "points": ["Not until… 置于句首引起部分倒装：did knowledge become。", "主句正常语序应为 knowledge did not become… until…。", "翻译时还原为直到…才…。"] } },
+    { "title": "强调句 It is … that …", "data": { "en": "It is the quality of sleep, rather than its quantity, that determines how well we remember what we have learned.", "zh": "决定我们对所学内容记忆好坏的是睡眠质量，而非睡眠时长。", "points": ["It is … that … 为强调句型，被强调部分是 the quality of sleep。", "rather than its quantity 为插入的对比成分。", "how well we remember… 为宾语从句。"] } },
+    { "title": "虚拟语气 + 目的状语", "data": { "en": "Had the company invested in renewable energy ten years ago, it would not have struggled so much to meet today's emission standards.", "zh": "如果这家公司十年前就投资可再生能源，如今就不至于为达到排放标准而如此挣扎。", "points": ["Had… done 为虚拟条件句倒装，等于 If the company had invested…。", "主句 would not have struggled 表示与过去事实相反。", "不定式 to meet… 表目的。"] } },
+    { "title": "多重并列 + 定语从句", "data": { "en": "Cities that invest in public transport, that design streets for pedestrians rather than cars, and that protect their green spaces tend to be healthier and more prosperous.", "zh": "那些投资公共交通、把街道设计给行人而非汽车、并保护绿地的城市，往往更健康、更繁荣。", "points": ["主干：Cities tend to be healthier and more prosperous。", "三个 that 引导的并列定语从句共同修饰 cities。", "rather than cars 表示对比取舍。"] } }
+  ],
+  "writingTemplate": [
+    {
+      "title": "议论文（观点 / 现象类）· 最高频",
+      "data": {
+        "genre": "议论文",
+        "structure": ["引入现象 / 亮明观点（1 段）", "正面论证，例证支撑（1–2 段）", "让步与反驳，体现思辨（1 段）", "总结建议，重申观点（1 段）"],
+        "skeleton": "Paragraph 1: 【现象/话题】has become a hot topic in recent years. From my perspective, 【观点】.\nParagraph 2: To begin with, 【论点一】. For example, 【例证】. Besides, 【进一步说明】.\nParagraph 3: Admittedly, 【对方合理之处】. However, 【反驳/强调自己观点】.\nParagraph 4: In conclusion, 【重申观点】. It is high time that we 【建议】.",
+        "tips": ["开头亮观点要快：前两句内让阅卷老师看到立场。", "每段首句 = 主题句，先结论后例证。", "让步段 Admittedly… However… 是加分项。", "结尾两句收束：重申观点 + 行动建议，不引入新论点。"]
+      }
+    },
+    {
+      "title": "图表 / 图画作文",
+      "data": {
+        "genre": "图表作文",
+        "structure": ["描述图表总体趋势（1 段）", "解读趋势并分析原因（2–3 段）", "总结或展望（1 段）"],
+        "skeleton": "Paragraph 1: As is clearly shown in the chart, 【总体趋势】. The figure for 【A】 rose sharply from 【数字】 to 【数字】, while 【B】 remained relatively stable.\nParagraph 2: Several factors may account for this phenomenon. To begin with, 【原因一】. Moreover, 【原因二】. Last but not least, 【原因三】.\nParagraph 3: Given the trend, it is reasonable to predict that 【展望】. Therefore, 【建议/措施】.",
+        "tips": ["描述只占 1/3，重点在分析，别罗列所有数据。", "抓最：最大、最小、上升最快、下降最明显。", "趋势词：rise / increase / surge / decline / drop / level off / fluctuate。", "原因至少两条，落到经济、科技、观念、政策等维度。"]
+      }
+    },
+    {
+      "title": "书信 / 应用文",
+      "data": {
+        "genre": "应用文",
+        "structure": ["称呼与寒暄", "说明写信目的与背景", "分条陈述具体内容", "期待回复与落款"],
+        "skeleton": "Dear 【称呼】,\nI am writing to 【目的：apply for / complain about / express my thanks for / invite】. 【背景 1–2 句】.\nTo be specific, 【要点一】. In addition, 【要点二】. Furthermore, 【要点三】.\nI would appreciate it if you could 【期待】. Should you have any questions, please do not hesitate to contact me.\nYours sincerely,\nLi Ming",
+        "tips": ["开头第一句直接说明写信目的。", "要点用 To be specific / In addition / Furthermore 串联。", "注意语气得体：投诉信礼貌、感谢信真诚。", "落款用 Li Ming 等中性名字，符合考试要求。"]
+      }
+    },
+    {
+      "title": "引言 / 谚语类作文",
+      "data": {
+        "genre": "引言类",
+        "structure": ["解释引言含义并表态", "两个例子或角度论证", "联系自身与时代", "升华结尾"],
+        "skeleton": "Paragraph 1: The saying 【引言】 highlights the importance of 【主题】. I strongly agree with it, because 【理由总述】.\nParagraph 2: History offers convincing examples. 【例一】. Likewise, 【例二】. These cases show that 【论证总结】.\nParagraph 3: As for us college students, 【联系自身】. Only by 【行动】 can we 【结果】.\nParagraph 4: In a word, 【引言】 reminds us that 【升华】.",
+        "tips": ["先翻译 + 解释引言，证明读懂了题。", "例子要具体并扣住引言核心词。", "结尾用 Only by… can we… 或强调句收尾。"]
+      }
+    }
+  ],
+  "sentenceBank": [
+    { "data": { "cat": "开头引入", "en": "With the rapid development of society, 【话题】 has become an increasingly hot topic among the public.", "zh": "随着社会的快速发展，……已成为公众日益关注的热点话题。" } },
+    { "data": { "cat": "开头引入", "en": "Recently, the issue of 【话题】 has aroused wide concern among the public.", "zh": "近来，……问题引起了公众的广泛关注。" } },
+    { "data": { "cat": "开头引入", "en": "There is a growing tendency that 【现象】, which has triggered heated debate.", "zh": "……的现象日益增长，引发了激烈讨论。" } },
+    { "data": { "cat": "开头引入", "en": "Nowadays, it is not uncommon to see that 【现象】.", "zh": "如今，看到……的现象并不少见。" } },
+    { "data": { "cat": "阐述观点", "en": "From my perspective / As far as I am concerned, 【观点】.", "zh": "在我看来，……。" } },
+    { "data": { "cat": "阐述观点", "en": "There is no denying that 【观点/事实】.", "zh": "不可否认，……。" } },
+    { "data": { "cat": "阐述观点", "en": "I am firmly convinced that 【观点】.", "zh": "我坚信……。" } },
+    { "data": { "cat": "阐述观点", "en": "It goes without saying that 【观点】.", "zh": "不言而喻，……。" } },
+    { "data": { "cat": "论证举例", "en": "A case in point is that 【例证】.", "zh": "一个恰当的例子是……。" } },
+    { "data": { "cat": "论证举例", "en": "Take 【例子】 as an example. It clearly shows that 【结论】.", "zh": "以……为例，它清楚地表明……。" } },
+    { "data": { "cat": "论证举例", "en": "Nothing is more important than 【主题】, which 【定语从句】.", "zh": "没有什么比……更重要。" } },
+    { "data": { "cat": "论证举例", "en": "The evidence is overwhelming that 【事实】.", "zh": "证据充分表明……。" } },
+    { "data": { "cat": "让步转折", "en": "Admittedly, 【对方观点】. However, 【反驳】.", "zh": "诚然……，然而……。" } },
+    { "data": { "cat": "让步转折", "en": "It is true that 【事实】, yet it does not follow that 【结论】.", "zh": "诚然……，但这并不意味着……。" } },
+    { "data": { "cat": "让步转折", "en": "While 【让步】, 【强调】 should not be overlooked.", "zh": "尽管……，但……不应被忽视。" } },
+    { "data": { "cat": "让步转折", "en": "Impressive as 【优点】 is, I believe 【观点】.", "zh": "尽管……令人印象深刻，但我认为……。" } },
+    { "data": { "cat": "结尾建议", "en": "In conclusion / To sum up, 【重申观点】.", "zh": "总而言之，……。" } },
+    { "data": { "cat": "结尾建议", "en": "It is high time that we took effective measures to 【解决】.", "zh": "是时候采取有效措施来……了。" } },
+    { "data": { "cat": "结尾建议", "en": "Only by 【行动】 can we 【结果】.", "zh": "只有通过……，我们才能……。" } },
+    { "data": { "cat": "结尾建议", "en": "Taking all these factors into consideration, we may reasonably conclude that 【结论】.", "zh": "综合考虑以上因素，我们可以合理得出结论……。" } },
+    { "data": { "cat": "结尾建议", "en": "It is our responsibility to 【行动】, for the benefit of both ourselves and future generations.", "zh": "为了我们自己和子孙后代的利益，……是我们的责任。" } },
+    { "data": { "cat": "图表描述", "en": "As is clearly shown in the chart, 【总体趋势】.", "zh": "如图所示，……。" } },
+    { "data": { "cat": "图表描述", "en": "The figure for 【A】 rose sharply from 【数字】 to 【数字】, while 【B】 remained stable.", "zh": "……的数据从……急剧上升到……，而……保持稳定。" } },
+    { "data": { "cat": "图表描述", "en": "A variety of factors may account for this phenomenon.", "zh": "多种因素可以解释这一现象。" } },
+    { "data": { "cat": "图表描述", "en": "Given the trend, it is reasonable to predict that 【展望】.", "zh": "鉴于这一趋势，可以合理预测……。" } },
+    { "data": { "cat": "书信应用", "en": "I am writing to express my sincere thanks for 【事由】.", "zh": "我写信是为了对……表达诚挚的感谢。" } },
+    { "data": { "cat": "书信应用", "en": "I would appreciate it if you could 【请求】.", "zh": "如果您能……，我将不胜感激。" } },
+    { "data": { "cat": "书信应用", "en": "Should you have any questions, please do not hesitate to contact me.", "zh": "如有任何问题，请随时与我联系。" } }
+  ]
+}

@@ -1,0 +1,106 @@
+{
+  "reading": [
+    {
+      "title": "注意力经济：我们为何难以专注",
+      "sub": "仔细阅读 Section C 实战 · 博浩原创真题风格篇章",
+      "data": {
+        "passage": "The modern economy has been described as an economy of attention: companies compete not for money alone, but for the limited time and mental energy of consumers. Nowhere is this competition fiercer than in the design of smartphones, where every notification is engineered to interrupt, and every interface is tested to keep users scrolling.\n\nPsychologists warn that this endless competition has a measurable cost. Studies show that people who constantly switch between tasks remember less, make more errors, and feel more stressed than those who focus on one thing at a time. What troubles researchers most is that many users no longer decide for themselves when to pay attention; the device decides for them. A notification arrives, attention shifts, and the original goal — writing an essay, reading a book, having a conversation — quietly disappears.\n\nYet experts insist that the solution is not to abandon technology altogether. Rather, they recommend what one researcher calls digital minimalism: a deliberate reduction in the number of apps and alerts we allow into our lives. Small changes, such as turning off non-essential notifications or keeping the phone out of the bedroom, can restore a sense of control. The goal is not to use technology less, but to use it with intention.",
+        "qs": [
+          { "q": "What does the author mean by calling the modern economy an economy of attention?", "opts": ["Companies mainly compete for consumers' limited time and mental focus.", "Attention is the only product that technology companies sell.", "Consumers are paying more money to protect their attention.", "Modern workers are more focused than those in the past."], "ans": 0, "ex": "首段指出公司不仅为金钱竞争，也为消费者有限的时间与注意力竞争，故选 A。" },
+          { "q": "What troubles researchers most according to Paragraph 2?", "opts": ["People remember less when they listen to music.", "Users have lost control over where they direct their attention.", "Notifications are too difficult to design.", "Employees make more errors at work than students."], "ans": 1, "ex": "第二段明确：最让研究者担忧的是用户不再自主决定何时专注，而是由设备决定。" },
+          { "q": "What is the author's suggestion about using technology?", "opts": ["People should stop using smartphones completely.", "Governments should ban unnecessary notifications.", "People should use technology deliberately and cut unnecessary alerts.", "Reading books is the only way to restore attention."], "ans": 2, "ex": "末段提出 digital minimalism 与 use it with intention，即有意减少应用与提醒。A 为绝对化干扰项。" }
+        ]
+      }
+    },
+    {
+      "title": "城市绿化：看不见的公共财富",
+      "sub": "仔细阅读 Section C 实战 · 博浩原创真题风格篇章",
+      "data": {
+        "passage": "City parks are usually regarded as pleasant but optional extras — nice to have when budgets allow. A growing body of research, however, suggests that urban green spaces deliver benefits far beyond recreation. Trees cool the air, absorb storm water, and filter pollutants, while parks encourage exercise and social contact.\n\nPerhaps the most striking evidence comes from studies of health. Researchers followed residents of a large city for five years and found that those living within easy walking distance of a park were significantly less likely to develop heart disease, even after controlling for income and lifestyle. The effect was strongest among older adults, for whom a nearby bench under a shade tree may be the difference between daily walks and staying indoors.\n\nGiven such findings, some economists argue that green space should be treated as infrastructure rather than decoration. They point out that a single mature tree can provide tens of thousands of dollars worth of benefits over its lifetime — in cooling, flood prevention, and improved air quality. The challenge, they admit, is that these returns are slow and invisible, making them easy for budget planners to overlook.",
+        "qs": [
+          { "q": "What is the popular view of city parks mentioned at the beginning?", "opts": ["They are essential public infrastructure.", "They are pleasant but not essential.", "They cost too much to maintain.", "They mainly benefit older adults."], "ans": 1, "ex": "首句说公园常被视为 pleasant but optional extras，即宜人但可有可无。" },
+          { "q": "What did the five-year study find?", "opts": ["People near parks do more outdoor sports.", "Older adults rarely visit city parks.", "Living near a park reduces the risk of heart disease.", "Park visitors have higher incomes."], "ans": 2, "ex": "研究显示，步行可达公园的居民患心脏病风险显著更低，且在控制收入与生活方式后依然成立。" },
+          { "q": "Why do budget planners tend to overlook green space according to economists?", "opts": ["Because parks occupy too much land.", "Because the benefits are slow and hard to see.", "Because trees damage city pipes.", "Because maintenance costs keep rising."], "ans": 1, "ex": "经济学家指出绿色空间的回报 slow and invisible，因此容易被预算规划者忽视。" }
+        ]
+      }
+    },
+    {
+      "title": "终身学习：技能更新的新常态",
+      "sub": "仔细阅读 Section C 实战 · 博浩原创真题风格篇章",
+      "data": {
+        "passage": "For most of the twentieth century, education followed a simple pattern: people learned in their youth and worked for the rest of their lives. That pattern is breaking down. With technology changing the nature of jobs at an accelerating pace, the skills that guarantee employment today may be obsolete within a decade.\n\nThis reality has given rise to what educators call lifelong learning. Unlike traditional schooling, which is organized around fixed curricula and credentials, lifelong learning is continuous, self-directed, and often informal. A software engineer may take online courses in data science; a nurse may attend workshops on new medical devices; a manager may study behavioral economics in the evenings. In each case, the learner, not the institution, defines the goal.\n\nEmployers are beginning to respond. Many now offer internal training budgets and encourage workers to spend part of their week on professional development. Yet experts caution that individuals cannot rely on companies alone. The most successful learners, they say, share two habits: they treat learning as a daily practice rather than a crisis response, and they are willing to learn publicly — asking questions, sharing progress, and admitting what they do not yet know.",
+        "qs": [
+          { "q": "What is the main reason that the traditional education pattern is breaking down?", "opts": ["People no longer value university degrees.", "Technology changes the skills required for jobs very quickly.", "Schools have become too expensive.", "Employers prefer informal learning."], "ans": 1, "ex": "第二句说明：技术加速改变工作性质，今天的技能可能十年内过时。" },
+          { "q": "What distinguishes lifelong learning from traditional schooling?", "opts": ["It is continuous, self-directed and often informal.", "It is organized around fixed curricula.", "It leads to formal credentials.", "It only happens in universities."], "ans": 0, "ex": "文中对比：终身学习 continuous, self-directed, informal，由学习者而非机构定义目标。" },
+          { "q": "What two habits do the most successful learners share?", "opts": ["They learn daily and are willing to learn publicly.", "They change careers frequently.", "They study only through formal courses.", "They rely mainly on employer training."], "ans": 0, "ex": "末段：成功学习者把学习当日常而非应急，并愿意公开学习（提问、分享、承认不足）。" }
+        ]
+      }
+    },
+    {
+      "title": "睡眠与记忆：大脑的夜间整理",
+      "sub": "仔细阅读 Section C 实战 · 博浩原创真题风格篇章",
+      "data": {
+        "passage": "For a long time, scientists believed that memory was formed mainly while we were awake. Recent research, however, shows that sleep plays an equally important role. During deep sleep, the brain reviews the information learned during the day and transfers it from short-term to long-term storage — a process researchers compare to a librarian filing books on shelves.\n\nIn one experiment, students who napped for forty minutes after studying remembered twenty percent more than those who stayed awake. The effect was especially clear for factual material, such as lists of words or historical dates. Interestingly, the quality of sleep matters more than its length: interrupted sleep, even when it totals eight hours, sharply reduces the ability to recall.\n\nThese findings have practical implications for students. Pulling an all-nighter before an exam, the researchers note, is almost always counterproductive, because the brain needs sleep to consolidate what has been learned. They advise a different strategy: study in the evening, sleep normally, and review briefly in the morning. In other words, sleep is not the enemy of study — it is part of study.",
+        "qs": [
+          { "q": "What did scientists used to believe about memory?", "opts": ["Memory is formed mainly during deep sleep.", "Memory is formed while people are awake.", "Sleep has little to do with memory formation.", "Napping improves long-term memory."], "ans": 1, "ex": "首句：过去科学家认为记忆主要在清醒时形成。" },
+          { "q": "What did the experiment with students show?", "opts": ["Sleeping longer always improves memory.", "Staying awake helped students remember more.", "A forty-minute nap helped students remember more.", "Naps only help with numbers."], "ans": 2, "ex": "实验：小睡 40 分钟的学生比清醒者多记住 20%，对事实类材料尤其明显。" },
+          { "q": "What strategy do the researchers advise for exams?", "opts": ["Stay up all night to review everything.", "Study in the evening, sleep normally, and review in the morning.", "Take a nap immediately before the exam.", "Avoid reviewing on the exam day."], "ans": 1, "ex": "末段建议：晚上学习、正常睡眠、早晨简要复习；熬夜几乎总是适得其反。" }
+        ]
+      }
+    }
+  ],
+  "listening": [
+    {
+      "title": "食物垃圾制成的新型可降解塑料",
+      "sub": "短篇新闻 News Report · 博浩原创语料",
+      "data": {
+        "type": "news",
+        "text": "Researchers at Greenfield University have developed a new type of biodegradable plastic made from food waste. The team says the material breaks down naturally within a few months, instead of hundreds of years like traditional plastics. In their experiments, the new plastic was used to make food packaging and disposable cups. The researchers hope the invention will help reduce plastic pollution in oceans, where millions of tons of waste accumulate every year. However, they admit that the material is still more expensive to produce than ordinary plastic, and mass production may not begin for another five years. Environmental groups have welcomed the news but urge governments to invest more in recycling systems as well.",
+        "qs": [
+          { "q": "What is the main advantage of the new plastic?", "opts": ["It is much cheaper than traditional plastic.", "It can break down naturally in a short time.", "It can be recycled into new food.", "It is stronger than ordinary plastic."], "ans": 1, "ex": "原文：材料可在几个月内自然降解，而传统塑料需数百年。" },
+          { "q": "What problem does the invention aim to solve?", "opts": ["The shortage of food in universities.", "The high cost of packaging.", "Plastic pollution in oceans.", "The decline of the plastic industry."], "ans": 2, "ex": "原文：希望帮助减少每年堆积在海洋中的塑料污染。" },
+          { "q": "What do the researchers admit about the new plastic?", "opts": ["It is difficult to produce.", "It is not safe for food.", "It is still expensive to make.", "It takes hundreds of years to degrade."], "ans": 2, "ex": "研究员承认其生产成本仍高于普通塑料，量产还需约五年。" }
+        ]
+      }
+    },
+    {
+      "title": "睡眠与记忆讲座",
+      "sub": "讲座 / 讲话 Lecture · 博浩原创语料",
+      "data": {
+        "type": "lecture",
+        "text": "Good morning, everyone. Today I would like to talk about the relationship between sleep and memory. For a long time, scientists believed that memory was formed while we were awake. Recent research, however, shows that sleep plays an equally important role. During deep sleep, the brain reviews the information we learned during the day and transfers it from short-term to long-term storage. In one experiment, students who napped for forty minutes after studying remembered twenty percent more than those who stayed awake. Interestingly, the quality of sleep matters more than its length. Researchers therefore suggest that students avoid staying up late before an exam, because a single night of poor sleep can reduce the ability to recall what they have learned. To sum up, if you want to remember more, do not sacrifice your sleep.",
+        "qs": [
+          { "q": "What did scientists used to believe about memory?", "opts": ["Memory is formed mainly during deep sleep.", "Memory is formed while people are awake.", "Sleep has little to do with memory.", "Napping improves long-term memory."], "ans": 1, "ex": "原文：过去认为记忆在清醒时形成。" },
+          { "q": "What did the experiment with students show?", "opts": ["Napping for 40 minutes helped students remember more.", "Staying awake improved memory by 20 percent.", "Students should sleep longer before exams.", "Short naps reduced learning efficiency."], "ans": 0, "ex": "小睡 40 分钟的学生比清醒者多记住 20%。" },
+          { "q": "What does the speaker suggest at the end?", "opts": ["Students should take naps during exams.", "Sleep quality matters more than sleep length.", "Students should not stay up late before an exam.", "Both B and C."], "ans": 3, "ex": "演讲者既说质量比时长重要，也建议考前不要熬夜，故 B、C 都对，选 D。" }
+        ]
+      }
+    },
+    {
+      "title": "校园广播：图书馆延长开放时间",
+      "sub": "短篇新闻 News Report · 博浩原创语料",
+      "data": {
+        "type": "news",
+        "text": "Students at City College will soon be able to study late into the night, as the university library extends its opening hours during the examination period. Starting next Monday, the main library will remain open until two in the morning on weekdays, and around the clock on weekends. The change follows a student survey in which nearly seventy percent of respondents said they lacked quiet study space in the evenings. To pay for the extra staffing, the library will close its coffee shop on the ground floor for the rest of the semester. The librarian, Ms. Green, said the extension was temporary but would be reviewed after the exams. She reminded students that the silent reading rooms on the third floor are the most popular, and advised them to reserve seats online in advance.",
+        "qs": [
+          { "q": "Why is the library extending its opening hours?", "opts": ["Because the coffee shop will be closed.", "Because students lack quiet evening study space.", "Because the library hired more staff.", "Because exams have been moved earlier."], "ans": 1, "ex": "调查显示约七成学生缺少晚间安静自习空间，图书馆因此延长开放。" },
+          { "q": "How will the library fund the extra staffing?", "opts": ["By raising student fees.", "By closing its coffee shop.", "By reducing book purchases.", "By charging for seat reservations."], "ans": 1, "ex": "为支付额外人力，图书馆将关闭一楼咖啡厅。" },
+          { "q": "What did Ms. Green advise students to do?", "opts": ["Reserve seats online in advance.", "Study only in the silent rooms.", "Buy coffee before 10 pm.", "Use the library only on weekends."], "ans": 0, "ex": "她建议学生提前在线预约三楼静音阅览室座位。" }
+        ]
+      }
+    },
+    {
+      "title": "讲座：为什么我们会忘记",
+      "sub": "讲座 / 讲话 Lecture · 博浩原创语料",
+      "data": {
+        "type": "lecture",
+        "text": "Today we turn to a question that troubles every student: why do we forget? Psychologists used to describe forgetting as a failure of memory, but most now agree that it is actually a design feature of the brain. If we remembered everything, they argue, we would be overwhelmed by useless information. Forgetting helps the brain keep what matters and discard the rest.\n\nSo why do important things still slip away? The main reason is that memory is strengthened by use. Information that is retrieved again and again forms stronger connections, while information that is never revisited gradually fades — a process known as decay. This is why cramming the night before an exam is so ineffective: the material is stored only in short-term memory and never practiced again.\n\nThe solution is simple but requires effort: space out your study. Reviewing material after one day, then three days, then a week, sends a signal to the brain that this information is worth keeping. Researchers call this the spacing effect, and it is one of the most reliable findings in all of psychology.",
+        "qs": [
+          { "q": "How do most psychologists now view forgetting?", "opts": ["It is a failure of memory.", "It is a useful feature of the brain.", "It can be completely avoided.", "It only affects old people."], "ans": 1, "ex": "多数心理学家认为遗忘是大脑的设计特性，可避免信息过载。" },
+          { "q": "Why is cramming before an exam ineffective?", "opts": ["Because exams are too difficult.", "Because material is stored only briefly and never practiced again.", "Because students do not sleep enough.", "Because review is unnecessary."], "ans": 1, "ex": "临时抱佛脚的内容只存在于短期记忆，未再提取便逐渐衰减。" },
+          { "q": "What is the spacing effect?", "opts": ["Studying harder before exams.", "Reviewing material at increasing intervals.", "Memorizing everything at once.", "Studying with music."], "ans": 1, "ex": "间隔复习（1 天、3 天、1 周…）会告诉大脑这些信息值得保留，即 spacing effect。" }
+        ]
+      }
+    }
+  ]
+}

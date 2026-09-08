@@ -1,0 +1,8 @@
+# 运行时数据（首次启动自动从 data/seed 重建，请勿提交）
+data/db.json
+data/db.json.tmp
+data/db.json.bak*
+data/admin.txt
+node_modules/
+*.log
+tools/patches/
