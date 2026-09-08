@@ -201,15 +201,16 @@ function readBody(req) {
 }
 function cors(res) { res.setHeader("Access-Control-Allow-Origin", "*"); res.setHeader("Access-Control-Allow-Headers", "Content-Type, Authorization"); res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS"); }
 function serveStatic(req, res, pathname) {
-  const allowed = pathname === "/" || pathname === "/index.html" || pathname.startsWith("/assets/");
+  const allowed = pathname === "/" || pathname === "/index.html" || pathname === "/manifest.webmanifest" || pathname === "/sw.js" || pathname.startsWith("/assets/");
   if (!allowed) return false;
   let file = pathname === "/" ? "index.html" : pathname.slice(1);
   const full = path.resolve(ROOT, file);
   if (!full.startsWith(ROOT + path.sep) && full !== path.join(ROOT, "index.html")) return false;
   if (!fs.existsSync(full) || fs.statSync(full).isDirectory()) return false;
   const ext = path.extname(full).toLowerCase();
-  const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff2": "font/woff2" };
-  res.writeHead(200, { "Content-Type": mime[ext] || "application/octet-stream", "Cache-Control": ext === ".html" ? "no-cache" : "public, max-age=3600" });
+  const mime = { ".html": "text/html; charset=utf-8", ".css": "text/css; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".json": "application/json", ".png": "image/png", ".jpg": "image/jpeg", ".svg": "image/svg+xml", ".ico": "image/x-icon", ".woff2": "font/woff2", ".webmanifest": "application/manifest+json; charset=utf-8" };
+  const noCache = ext === ".html" || pathname === "/sw.js" || pathname === "/manifest.webmanifest";
+  res.writeHead(200, { "Content-Type": mime[ext] || "application/octet-stream", "Cache-Control": noCache ? "no-cache" : "public, max-age=3600" });
   fs.createReadStream(full).pipe(res);
   return true;
 }

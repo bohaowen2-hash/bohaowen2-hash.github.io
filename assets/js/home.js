@@ -29,7 +29,7 @@ BH.reg("home", async function (view) {
         '<div class="hero-meta">' +
           '<span class="badge gold">⏳ 距最近六级笔试还有 <b style="font-size:16px;color:inherit">' + days + '</b> 天</span>' +
           '<span class="badge green">☁️ 学习记录云端同步</span>' +
-          '<span class="badge plain">🔧 后台内容管理</span>' +
+          '<span class="badge plain">🔧 后台内容管理</span><span class="badge plain">📲 可安装为 App</span>' +
         '</div>' +
       '</div>' +
       '<div class="hero-art">' +
