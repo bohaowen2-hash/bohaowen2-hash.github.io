@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="CET-6 六级核心词汇翻卡记忆与释义自测，文博浩创立的博浩英语学习平台。">
+<meta name="author" content="文博浩">
+<title>核心词汇 · 博浩英语 CET-6 | 文博浩 创立</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234f46e5'/%3E%3Cstop offset='1' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'%3E博%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">博</span>
+      <span>博浩英语<small>CET-6 · 学习平台</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="index.html">首页</a>
+      <a href="vocabulary.html">词汇</a>
+      <a href="listening.html">听力</a>
+      <a href="reading.html">阅读</a>
+      <a href="writing.html">写作</a>
+      <a href="translation.html">翻译</a>
+      <a href="exam.html">备考</a>
+    </nav>
+    <div class="nav-actions">
+      <button class="icon-btn" id="themeToggle" title="切换主题" aria-label="切换主题"><span id="themeSun">☀️</span><span id="themeMoon" style="display:none">🌙</span></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单" aria-label="菜单">☰</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="section tight" style="padding-top:56px">
+    <div class="container">
+      <div class="sec-head left reveal">
+        <span class="badge">📖 词汇模块 · 文博浩 创立</span>
+        <h2 style="font-size:clamp(28px,3.4vw,42px)">核心词汇 · 翻卡闯关</h2>
+        <p>精选六级阅读/听力高频核心词，分 10 个单元。先翻卡记忆，再自测巩固；浏览器会自动记住你的掌握进度。</p>
+      </div>
+
+      <!-- 模式切换 -->
+      <div class="toolbar reveal">
+        <a class="btn btn-ghost btn-sm" href="#cards">🎴 背词</a>
+        <a class="btn btn-ghost btn-sm" href="#quiz">📝 自测</a>
+        <a class="btn btn-ghost btn-sm" href="#list">📋 词表</a>
+        <span style="flex:1"></span>
+        <button class="btn btn-ghost btn-sm" id="resetKnown">↺ 重置学习进度</button>
+      </div>
+
+      <!-- 掌握进度 -->
+      <div class="flash-progress reveal" style="margin:0 0 8px">
+        <span id="knownSummary">加载中…</span>
+        <div class="fp-bar"><div class="fp-fill" id="knownBar"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 背词 ===== -->
+  <section class="section tight" id="cards" style="padding-top:8px">
+    <div class="container">
+      <div class="toolbar reveal">
+        <label class="tag" for="unitSel">选择单元</label>
+        <select id="unitSel"></select>
+        <button class="btn btn-ghost btn-sm" id="shuffleBtn">🔀 随机顺序</button>
+        <button class="btn btn-ghost btn-sm" id="speakWord" title="朗读单词">🔊 朗读</button>
+        <span style="flex:1"></span>
+        <span class="tag" id="cardPos">1 / 10</span>
+      </div>
+
+      <div class="flash-zone reveal">
+        <div class="flash-card" id="flashCard" title="点击翻面">
+          <div class="fc-inner">
+            <div class="fc-face fc-front">
+              <div class="fc-word" id="fcWord">—</div>
+              <div class="fc-ipa" id="fcIpa"></div>
+              <div class="fc-hint">👆 点击卡片查看释义</div>
+            </div>
+            <div class="fc-face fc-back">
+              <div class="fc-meaning" id="fcMeaning">—</div>
+              <div class="fc-pos" id="fcPos"></div>
+              <div class="fc-ex" id="fcEx"></div>
+              <div class="fc-cn" id="fcExCn"></div>
+            </div>
+          </div>
+        </div>
+        <div class="flash-controls">
+          <button class="btn btn-ghost" id="prevBtn">← 上一个</button>
+          <button class="btn btn-soft" id="unknownBtn">✗ 不认识</button>
+          <button class="btn btn-primary" id="knownBtn">✓ 已掌握</button>
+          <button class="btn btn-ghost" id="nextBtn">下一个 →</button>
+        </div>
+        <p class="muted" style="text-align:center;font-size:13.5px;margin-top:14px">提示：支持 <kbd>←</kbd> <kbd>→</kbd> 切换、<kbd>空格</kbd> 翻面；认识的单词会自动加入“已掌握”。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 自测 ===== -->
+  <section class="section tight" id="quiz" style="background:var(--grad-soft)">
+    <div class="container">
+      <div class="sec-head left reveal">
+        <span class="eyebrow">Self-test</span>
+        <h2>释义自测</h2>
+        <p>从当前单元随机抽 10 词，选出正确中文释义，检验真实掌握度。</p>
+      </div>
+      <div class="panel reveal" style="max-width:720px">
+        <div id="quizReady" style="text-align:center;padding:12px 0">
+          <p class="muted">题库已就绪，随时开始。</p>
+          <button class="btn btn-primary" id="startQuiz">🚀 开始 10 题自测</button>
+        </div>
+        <div id="quizBody" style="display:none" data-hotkey="1">
+          <div class="flash-progress" style="margin:0 0 18px">
+            <span id="quizProgressTxt">第 1 / 10 题</span>
+            <div class="fp-bar"><div class="fp-fill" id="quizBar" style="width:10%"></div></div>
+          </div>
+          <div style="text-align:center;margin-bottom:18px">
+            <div style="font-family:Georgia,serif;font-size:34px;font-weight:800" id="quizWord">—</div>
+            <div class="muted" id="quizIpa" style="font-size:15px"></div>
+          </div>
+          <div class="opts" style="display:grid;gap:10px" id="quizOpts"></div>
+          <div style="text-align:center;margin-top:20px">
+            <button class="btn btn-primary" id="quizNext" style="display:none">下一题 →</button>
+          </div>
+        </div>
+        <div id="quizDone" style="display:none;text-align:center;padding:16px 0">
+          <div style="font-size:52px" id="doneEmoji">🎉</div>
+          <h3 id="doneTitle">太棒了！</h3>
+          <p class="muted" id="doneMsg"></p>
+          <button class="btn btn-ghost" id="retryWrong">🔁 重做错题</button>
+          <button class="btn btn-primary" id="quizAgain">再测一轮</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== 词表 ===== -->
+  <section class="section tight" id="list" style="padding-top:8px">
+    <div class="container">
+      <div class="sec-head left reveal">
+        <span class="eyebrow">Word Bank</span>
+        <h2>全词表与高频短语</h2>
+        <p>点击单元展开查看单词与例句；绿色圆点 = 你已掌握。</p>
+      </div>
+      <div class="reveal" id="wordAccordion"></div>
+
+      <div class="sec-head left reveal" style="margin-top:60px">
+        <span class="eyebrow">Collocations</span>
+        <h2>高频固定搭配 Top 30</h2>
+        <p>阅读与写作中的“得分点”，建议配合例句记忆。</p>
+      </div>
+      <div class="table-wrap reveal">
+        <table>
+          <thead><tr><th style="width:60px">#</th><th>搭配 / 短语</th><th>含义</th></tr></thead>
+          <tbody id="phraseRows"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand"><span class="brand-mark">博</span>博浩英语</div>
+        <p class="foot-note">真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。</p>
+        <p style="margin-top:14px"><span class="founder-line">❤️ 由 <b>文博浩</b> 创立</span></p>
+      </div>
+      <div>
+        <h4>学习模块</h4>
+        <a href="vocabulary.html">核心词汇</a>
+        <a href="listening.html">听力精听</a>
+        <a href="reading.html">阅读技巧</a>
+        <a href="writing.html">写作模板</a>
+      </div>
+      <div>
+        <h4>更多内容</h4>
+        <a href="translation.html">翻译秘籍</a>
+        <a href="exam.html">备考计划</a>
+        <a href="index.html">首页</a>
+      </div>
+      <div>
+        <h4>倡议</h4>
+        <a href="javascript:void(0)" onclick="showToast('欢迎把建议发到 wbhao@example.com 📮')">建议与反馈</a>
+        <a href="javascript:void(0)" onclick="showToast('支持正版真题，拒绝盗版资料 ✅')">版权声明</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yearNow">2026</span> 博浩英语 BohaoEnglish · 创始人：<b style="color:#fff">文博浩</b></span>
+      <span>Made with <span class="heart">♥</span> for CET-6 fighters</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" title="回到顶部" aria-label="回到顶部">↑</button>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/cet6-words.js"></script>
+<script src="assets/js/vocab.js"></script>
+</body>
+</html>
