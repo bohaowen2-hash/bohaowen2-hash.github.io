@@ -262,8 +262,9 @@ BH.reg("exam", async function (view) {
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
     zone.querySelectorAll("[data-exc]").forEach(function (bx) { bx.onclick = function () { openExcerpt(decodeURIComponent(bx.getAttribute("data-exc"))); }; });
     zone.querySelectorAll("[data-ans]").forEach(function (ba) { ba.onclick = function () { openAnswers(decodeURIComponent(ba.getAttribute("data-ans"))); }; });
+    zone.querySelectorAll("[data-q]").forEach(function (bq) { bq.onclick = function () { openQuestions(decodeURIComponent(bq.getAttribute("data-q"))); }; });
     zone.innerHTML = slice.length ? slice.map(function (e) {
-      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button><button class='btn btn-ghost btn-sm' data-ans='" + encodeURIComponent(e.file) + "'>🔑 答案</button></div>";
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button><button class='btn btn-ghost btn-sm' data-ans='" + encodeURIComponent(e.file) + "'>🔑 答案</button><button class='btn btn-ghost btn-sm' data-q='" + encodeURIComponent(e.file) + "'>🧩 分题</button></div>";
     }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
   }
 
@@ -313,6 +314,28 @@ BH.reg("exam", async function (view) {
       var e = list.filter(function (x) { return x.file === file; })[0];
       if (!e || !e.answers) { BH.toast("该套原卷未附参考答案"); return; }
       BH.modal("<h3>🔑 " + String(file).replace(/\.pdf$/i, "") + " · 参考答案</h3><pre style='white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.8;max-height:62vh;overflow:auto;background:var(--bg-soft);padding:14px;border-radius:12px'>" + esc(e.answers) + "</pre><p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
+      document.querySelector(".modal").classList.add("wide");
+    }).catch(function (err) { BH.toast("加载失败：" + err.message); });
+  }
+
+
+  function openQuestions(file) {
+    fetch("data/papers-questions.json").then(function (r) { return r.json(); }).then(function (list) {
+      var e = list.filter(function (x) { return x.file === file; })[0];
+      var qs = (e && e.qs) || [];
+      if (!qs.length) { BH.toast("该套未能可靠分题（多为扫描版）；请用📄全文或PDF查看"); return; }
+      var group = { listening: [], reading: [] };
+      qs.forEach(function (q) { (q.part === "reading" ? group.reading : group.listening).push(q); });
+      function render(arr, label) {
+        if (!arr.length) return "";
+        return "<h3 style='margin:14px 0 6px'>" + label + "</h3>" + arr.map(function (q) {
+          return "<div class='q-item' style='margin-top:6px'><div class='q-title'>第 " + q.n + " 题</div><div class='opts'>" + "ABCD".split("").slice(0, q.opts.length).map(function (L, i) { return "<div class='opt' style='cursor:default'><span class='ltr'>" + L + ".</span><span>" + esc(q.opts[i]) + "</span></div>"; }).join("") + "</div></div>";
+        }).join("");
+      }
+      BH.modal("<h3>🧩 " + String(file).replace(/\.pdf$/i, "") + " · 分题浏览</h3>" +
+        "<p class='muted' style='font-size:12px'>自动解析自动排版，可能有个别错位，仅供复习参考，请以原卷为准。</p>" +
+        "<div style='max-height:62vh;overflow:auto;padding-right:4px'>" + render(group.listening, "🎧 听力题干") + render(group.reading, "📖 阅读题干") + "</div>" +
+        "<p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
       document.querySelector(".modal").classList.add("wide");
     }).catch(function (err) { BH.toast("加载失败：" + err.message); });
   }
