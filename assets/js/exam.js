@@ -293,7 +293,7 @@ BH.reg("exam", async function (view, params) {
         "</div>");
       var hd = document.getElementById("ppHead");
       if (hd) hd.querySelectorAll("button").forEach(function (b) { b.onclick = function () { var t = document.getElementById("seg" + b.getAttribute("data-g")); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); }; });
-    }).catch(function (e) { BH.toast("全文加载失败：" + e.message); });
+    }).catch(function (e) { BH.toast("全文加载失败：" + e.message); try { window.open(txtFile, "_blank"); } catch (e2) {} });
   }
 
 
@@ -306,7 +306,7 @@ BH.reg("exam", async function (view, params) {
         "<div class='panel'><h3>🔄 Translation</h3><pre style='white-space:pre-wrap;font-family:inherit;font-size:13.5px;margin:0;background:var(--bg-soft);padding:10px;border-radius:10px'>" + esc(e.translation || "（未提取到）") + "</pre></div>" +
         "<p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
       document.querySelector(".modal").classList.add("wide");
-    }).catch(function (err) { BH.toast("题干加载失败：" + err.message); });
+    }).catch(function (err) { BH.toast("题干加载失败：" + err.message + "；已尝试打开文件"); try { window.open("data/excerpts.json", "_blank"); } catch (e2) {} });
   }
 
 
@@ -316,7 +316,7 @@ BH.reg("exam", async function (view, params) {
       if (!e || !e.answers) { BH.toast("该套原卷未附参考答案"); return; }
       BH.modal("<h3>🔑 " + String(file).replace(/\.pdf$/i, "") + " · 参考答案</h3><pre style='white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:13px;line-height:1.8;max-height:62vh;overflow:auto;background:var(--bg-soft);padding:14px;border-radius:12px'>" + esc(e.answers) + "</pre><p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
       document.querySelector(".modal").classList.add("wide");
-    }).catch(function (err) { BH.toast("加载失败：" + err.message); });
+    }).catch(function (err) { BH.toast("分题加载失败：" + err.message + "；已尝试打开文件"); try { window.open("data/papers-questions.json", "_blank"); } catch (e2) {} });
   }
 
 
@@ -338,7 +338,7 @@ BH.reg("exam", async function (view, params) {
         "<div style='max-height:62vh;overflow:auto;padding-right:4px'>" + render(group.listening, "🎧 听力题干") + render(group.reading, "📖 阅读题干") + "</div>" +
         "<p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
       document.querySelector(".modal").classList.add("wide");
-    }).catch(function (err) { BH.toast("加载失败：" + err.message); });
+    }).catch(function (err) { BH.toast("加载失败：" + err.message + "（如持续，请用无痕窗口重试）"); });
   }
 
   refreshTom();
