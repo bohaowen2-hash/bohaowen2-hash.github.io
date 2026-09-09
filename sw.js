@@ -1,6 +1,6 @@
 /* 博浩英语 CET-6 · Service Worker（PWA 安装 / 离线壳 / 静态缓存） 创始人：wbh */
 "use strict";
-var CACHE = "bohao-cet6-v2.12";
+var CACHE = "bohao-cet6-v2.13";
 var BASE = self.registration ? self.registration.scope : "/";
 function baseUrl(f) { return BASE + f; }
 var CORE = [
