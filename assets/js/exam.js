@@ -261,7 +261,7 @@ BH.reg("exam", async function (view) {
     document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
     zone.innerHTML = slice.length ? slice.map(function (e) {
-      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a></div>";
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button></div>";
     }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
   }
 
