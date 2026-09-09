@@ -45,7 +45,8 @@ BH.reg("vocab", async function (view, params) {
   function savedPos() { try { var p = JSON.parse(localStorage.getItem("bh-vocab-pos") || "null"); return p; } catch (e) { return null; } }
   function rememberPos() { try { localStorage.setItem("bh-vocab-pos", JSON.stringify({ unit: state.unit, idx: state.idx })); } catch (e) {} }
   var spInit = savedPos();
-  if (spInit && unitsData.some(function (u) { return u.id === spInit.unit; })) state.unit = spInit.unit;
+  if (params && params.unit && unitsData.some(function (u) { return u.id === params.unit; })) state.unit = params.unit;
+  else if (spInit && unitsData.some(function (u) { return u.id === spInit.unit; })) state.unit = spInit.unit;
   await loadMyState();
 
   var unitSelHtml = "<select id='vUnit'>" + unitsData.map(function (u) { return "<option value='" + u.id + "'>" + s(u.name) + "</option>"; }).join("") + "</select>";
@@ -70,6 +71,7 @@ BH.reg("vocab", async function (view, params) {
           '<button data-mode="phrase">🔗 短语库</button>' +
         '</div>' +
         '<span class="grow"></span>' +
+        '<button class="btn btn-ghost btn-sm" id="vTest">🎯 入学定位</button>' +
         '<button class="btn btn-ghost btn-sm" id="vReset">↺ 清空掌握记录</button>' +
       '</div>' +
       '<div class="progress-line"><span>我已掌握</span><div class="fp-bar"><div class="fp-fill" id="vBar" style="width:0%"></div></div><b id="vBarTxt">0</b></div>' +
@@ -97,6 +99,8 @@ BH.reg("vocab", async function (view, params) {
     };
   });
   var unitSel = document.getElementById("vUnit");
+  var vTest = document.getElementById("vTest");
+  if (vTest) vTest.onclick = openPlace;
   document.getElementById("vReset").onclick = function () {
     if (!confirm("确定清空该浏览器账号的全部“已掌握”记录吗？（本地记录将一并清除）")) return;
     var list = Object.keys(state.known);
@@ -617,6 +621,56 @@ BH.reg("vocab", async function (view, params) {
     draw();
   }
 
+
+  /* ============ 入学定位（词汇量估算） ============ */
+  var placeQ = [], placeI = 0, placeRight = 0;
+  function openPlace() {
+    BH.modal('<h3>🎯 入学定位 · 词汇量小测</h3><p class="muted" style="font-size:13px">随机 10 个词，选出最接近的中文释义（约 3 分钟），结束后给你推荐起点。</p>' +
+      '<div id="placeBody"></div>');
+    (async function () {
+      var batch = (await BH.api("/api/words/random", { method: "POST", body: { size: 40 } })).rows || [];
+      if (batch.length < 10) { BH.toast("词库加载失败"); BH.closeModal(); return; }
+      placeQ = batch.slice(0, 10).map(function (w, i) {
+        var dist = batch.slice(10).filter(function (x) { return x.m !== w.m; });
+        var opts = [w.m];
+        for (var j = 0; j < 3 && dist.length; j++) { opts.push(dist.splice(Math.floor(Math.random() * dist.length), 1)[0].m); }
+        return { w: w, opts: opts.sort(function () { return Math.random() - .5; }), ans: w.m };
+      });
+      placeI = 0; placeRight = 0; placeDraw();
+    })();
+  }
+  function placeDraw() {
+    var body = document.getElementById("placeBody"); if (!body) return;
+    var q = placeQ[placeI];
+    body.innerHTML = '<div style="text-align:center;padding:6px 0"><div class="tag">第 ' + (placeI + 1) + ' / 10 题</div>' +
+      '<div class="big-word" style="margin-top:8px">' + s(q.w.w) + '</div><div class="muted">' + s(q.w.f || "") + ' · ' + s(q.w.p || "") + '</div></div>' +
+      '<div style="display:grid;gap:8px;margin-top:10px">' + q.opts.map(function (o, i) {
+        return "<button class='quiz-opt' data-i='" + i + "'><span class='key'>" + "ABCD"[i] + "</span><span>" + s(o) + "</span></button>";
+      }).join("") + '</div>';
+    body.querySelectorAll(".quiz-opt").forEach(function (b) {
+      b.onclick = function () {
+        var chosen = parseInt(b.getAttribute("data-i"), 10);
+        if (q.opts[chosen] === q.ans) placeRight++;
+        body.querySelectorAll(".quiz-opt").forEach(function (x) { x.disabled = true; });
+        if (q.opts[chosen] === q.ans) b.classList.add("correct"); else { b.classList.add("wrong"); body.querySelectorAll(".quiz-opt").forEach(function (x, i) { if (q.opts[i] === q.ans) x.classList.add("correct"); }); }
+        placeI++;
+        setTimeout(function () { if (placeI < placeQ.length) placeDraw(); else placeDone(); }, 700);
+      };
+    });
+  }
+  function placeDone() {
+    var body = document.getElementById("placeBody"); if (!body) return;
+    var total = placeQ.length, right = placeRight, pct = Math.round(right / total * 100);
+    var lvl = pct >= 80 ? "中" : pct >= 50 ? "高" : "低"; // 高表示从高频补基础
+    var startUnit = lvl === "低" ? unitsData[0] : unitsData[0];
+    if (lvl === "中") { startUnit = unitsData[28] || unitsData[0]; }
+    var emoji = pct >= 80 ? "🏆" : pct >= 50 ? "🌟" : "📚";
+    try { localStorage.setItem("bh-place", JSON.stringify({ pct: pct, at: Date.now() })); } catch (e) {}
+    body.innerHTML = '<div style="text-align:center;padding:14px 0"><div style="font-size:46px">' + emoji + '</div>' +
+      '<h3>答对 ' + right + ' / ' + total + '（' + pct + '%）</h3>' +
+      '<p class="muted">' + (pct >= 80 ? "基础很扎实，建议从中频词开始，重点刷真题扩展词。" : pct >= 50 ? "有一定基础，建议从高频词 Unit 1 系统过一遍，稳扎稳打。" : "别灰心，从高频词 Unit 1 开始，跟着记忆曲线很快就能上来。") + '</p>' +
+      '<div class="btn-row" style="justify-content:center"><a class="btn btn-primary" href="#/vocab?unit=' + startUnit.id + '">从「' + s(startUnit.name) + '」开始 →</a><button class="btn btn-ghost" data-close>关闭</button></div></div>';
+  }
   /* ---------- 清理 & 首屏 ---------- */
   await renderBody();
   refreshProgress();

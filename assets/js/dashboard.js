@@ -29,6 +29,7 @@ BH.reg("me", async function (view) {
         '<div class="dash-card"><span class="dc-ico">🔥</span><div class="dc-num">' + stats.streak + '<span style="font-size:.5em"> 天</span></div><div class="dc-lbl">连续打卡 · 累计 ' + stats.checkinCount + ' 天</div></div>' +
         '<div class="dash-card"><span class="dc-ico">🎯</span><div class="dc-num">' + stats.accuracy + '<span style="font-size:.5em">%</span></div><div class="dc-lbl">自测正确率 · ' + stats.activityCount + ' 次练习</div></div>' +
       '</div>' +
+      '<div id="dueWrap" style="margin-top:14px"></div>' +
     '</div></section>' +
 
     '<section class="section tight" style="padding-top:26px"><div class="container">' +
@@ -38,6 +39,7 @@ BH.reg("me", async function (view) {
         '<div class="panel"><h3>📅 未来两周复习量</h3><div class="mini-bars" id="memBars" style="margin-top:14px"></div><p class="muted" style="font-size:12px;margin:10px 0 0">柱越高 = 那天要复习的词越多，建议当天清完。</p></div>' +
         '<div class="panel mem-curve-panel"><h3>📉 遗忘曲线与复习点</h3><div id="memCurve" style="margin-top:6px"></div></div>' +
       '</div>' +
+      '<div id="dueWrap" style="margin-top:14px"></div>' +
     '</div></section>' +
 
     '<section class="section tight" style="padding-top:26px"><div class="container">' +
@@ -47,6 +49,7 @@ BH.reg("me", async function (view) {
         '<div><div class="panel"><h3>🕒 最近动态</h3><div id="actList"></div></div>' +
         '<div class="panel"><h3>📖 模块练习分布</h3><div id="typeBars"></div></div></div>' +
       '</div>' +
+      '<div id="dueWrap" style="margin-top:14px"></div>' +
     '</div></section>' +
 
     '<section class="section tight" style="padding-top:26px"><div class="container">' +
@@ -54,6 +57,12 @@ BH.reg("me", async function (view) {
       '<div class="panel"><div id="wrongBox"></div></div>' +
     '</div></section>';
 
+  /* 今日待复习提醒 */
+  var dueWrap = document.getElementById("dueWrap");
+  if (dueWrap && stats.memory) {
+    var dn = stats.memory.due || 0;
+    dueWrap.innerHTML = dn > 0 ? "<div class='callout warn' style='margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap'><span style='flex:1'>⏰ 今日待复习 <b>" + dn + "</b> 个单词（记忆曲线已帮你排好）</span><a class='btn btn-primary btn-sm' href='#/vocab?mode=review'>去复习 →</a></div>" : "<div class='callout good' style='margin:0'>🎉 今日待复习 0 词，全部完成，继续保持！</div>";
+  }
   /* 打卡 */
   document.getElementById("checkinBtn").onclick = async function () {
     try {
