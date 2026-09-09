@@ -48,7 +48,9 @@ BH.reg("exam", async function (view) {
         '<label class="tag">剩余时间</label><select id="weeksSel"><option value="2">2 周 · 极限冲刺</option><option value="4">4 周 · 快速突击</option><option value="6" selected>6 周 · 标准备考</option><option value="8">8 周 · 从容准备</option><option value="12">12 周 · 长期作战</option></select>' +
         '<label class="tag">每日时长</label><select id="hoursSel"><option value="1">1 小时/天</option><option value="2" selected>2 小时/天</option><option value="3">3 小时/天</option><option value="4">4 小时/天</option><option value="5">5 小时/天</option></select>' +
         '<button class="btn btn-primary" id="genPlan">✨ 生成我的计划</button>' +
-      '</div><div class="empty-hint plan-html" id="planOut" style="text-align:left;margin-top:14px">点击上方按钮，生成你的专属计划 📋</div></div>' +
+      '</div><div class="empty-hint plan-html" id="planOut" style="text-align:left;margin-top:14px">点击上方按钮，生成你的专属计划 📋</div>' +
+      '<div id="planRun" style="margin-top:16px"></div>' +
+    '</div>' +
     '</div></section>' +
 
     '<section class="section tight" style="background:var(--grad-soft)"><div class="container">' +
@@ -126,6 +128,8 @@ BH.reg("exam", async function (view) {
     ]);
     html += "<div class='callout tip'><span class='co-t'>每日分配</span>词汇 " + Math.round(H * 60 * .3) + " 分钟 · 听力 " + Math.round(H * 60 * .25) + " 分钟 · 阅读 " + Math.round(H * 60 * .25) + " 分钟 · 写译 " + Math.max(10, H * 60 - Math.round(H * 60 * .8)) + " 分钟，可按薄弱项动态调整。</div>";
     document.getElementById("planOut").innerHTML = html;
+    try { localStorage.setItem("bh-plan-run", JSON.stringify({ start: BH.today(), examDate: myDate, weeks: W, hours: H, done: {} })); } catch (e) {}
+    renderPlanRun();
     BH.toast("计划已生成 ✨ 建议截图保存");
   };
 
@@ -181,5 +185,43 @@ BH.reg("exam", async function (view) {
     if (tom.phase === "focus") { tom.phase = "short"; tom.left = SHORT; } else { tom.phase = "focus"; tom.left = FOCUS; }
     tom.running = false; stopTom(); refreshTom(); BH.toast("已切换到下一阶段 ⏭");
   };
+  /* ---------- 计划动态执行 + 落后提醒 ---------- */
+  function planRunData() { try { return JSON.parse(localStorage.getItem("bh-plan-run") || "null"); } catch (e) { return null; } }
+  function renderPlanRun() {
+    var zone = document.getElementById("planRun"); if (!zone) return;
+    var run = planRunData();
+    if (!run) { zone.innerHTML = ""; return; }
+    var start = new Date(run.start + "T00:00:00");
+    var nowD = new Date(); var today = new Date(nowD.getFullYear(), nowD.getMonth(), nowD.getDate());
+    var totalDays = Math.max(1, run.weeks * 7);
+    var elapsed = Math.max(1, Math.round((today - start) / 86400000) + 1);
+    if (elapsed > totalDays) elapsed = totalDays;
+    var progress = Math.min(1, elapsed / totalDays);
+    var doneMap = run.done || {};
+    var missed = 0;
+    for (var i = 0; i < elapsed - 1; i++) { var d = new Date(start); d.setDate(start.getDate() + i); var key = d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); if (!doneMap[key]) missed++; }
+    var todayDone = !!doneMap[BH.today()];
+    var stageIdx = progress <= .4 ? 0 : progress <= .75 ? 1 : 2;
+    var stageNames = ["阶段一 · 基础奠基", "阶段二 · 专项强化", "阶段三 · 冲刺复盘"];
+    var stageTasks = [
+      ["背词 " + Math.round(run.hours * 18) + " 分钟（当前单元 50 词）", "精听 1 段听力 / 拆 2 个长难句", "词汇自测或错题复习"],
+      ["限时阅读 1 篇（≤9 分钟）+ 精听 20 分钟", "自测 1 组 + 错题清空", "写作/翻译练习 1 项"],
+      ["整套模考计时 + 错题归因", "背熟模板句型 / 主题词块", "只做复习，不刷新题"]
+    ];
+    var html = "<div class='panel' style='margin-top:6px'><h3>📅 计划执行</h3>" +
+      "<div class='progress-line'><span>第 " + elapsed + " / " + totalDays + " 天</span><div class='fp-bar'><div class='fp-fill' style='width:" + (progress * 100).toFixed(0) + "%'></div></div><b>" + Math.round(progress * 100) + "%</b></div>" +
+      "<div class='tag'>当前阶段：" + stageNames[stageIdx] + "</div>" +
+      "<ul class='tick' style='margin-top:8px'>" + stageTasks[stageIdx].map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>" +
+      (missed > 0 ? "<div class='callout warn'><span class='co-t'>落后提醒</span>你有 <b>" + missed + "</b> 天未完成学习，建议今天补上，别让计划落空。</div>" : "") +
+      "<div class='btn-row'><button class='btn " + (todayDone ? "btn-soft" : "btn-primary") + "' id='planDone'>" + (todayDone ? "✅ 今天已完成" : "完成今日任务") + "</button>" +
+      "<button class='btn btn-ghost' id='planResetRun'>↺ 重置进度</button></div></div>";
+    zone.innerHTML = html;
+    var db = document.getElementById("planDone");
+    if (db) db.onclick = async function () { run.done = run.done || {}; run.done[BH.today()] = 1; try { localStorage.setItem("bh-plan-run", JSON.stringify(run)); } catch (e) {} try { await BH.authed("/api/me/checkin", { method: "POST", body: {} }); } catch (e) {} renderPlanRun(); BH.toast("今日任务完成，继续加油！"); };
+    var rb = document.getElementById("planResetRun");
+    if (rb) rb.onclick = function () { run.done = {}; try { localStorage.setItem("bh-plan-run", JSON.stringify(run)); } catch (e) {} renderPlanRun(); BH.toast("计划进度已重置"); };
+  }
+
   refreshTom();
+  renderPlanRun();
 });

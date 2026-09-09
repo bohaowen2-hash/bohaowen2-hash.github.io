@@ -44,11 +44,14 @@ BH.reg("listening", async function (view) {
           '<button class="btn btn-soft" id="playSent">🗣️ 逐句精听</button>' +
           '<button class="btn btn-ghost" id="stopPlay">⏹ 停止</button>' +
           '<button class="btn btn-ghost" id="toggleScript">📄 原文</button>' +
-          '<button class="btn btn-ghost" id="gotoQuiz">📝 开始答题</button></div>' +
+          '<button class="btn btn-ghost" id="gotoQuiz">📝 开始答题</button>' +
+          '<button class="btn btn-soft" id="dictBtn">✍️ 听写</button>' +
+          '<button class="btn btn-ghost" id="repeatBtn">🐢 慢速跟读</button></div>' +
         '<div id="nowPlaying" class="callout tip" style="display:none;margin:4px 0 0"><span class="co-t">🎙️ <span class="audio-eq"><i></i><i></i><i></i></span> <span class="sentence-now" id="nowTxt"></span></span></div>' +
         '<div id="scriptBox" class="reader" style="display:none;margin-top:14px;max-height:340px;overflow:auto"></div>' +
       '</div>' +
-      '<div class="panel" id="quizPanel" style="display:none;margin-top:16px"><h3><span class="n">?</span> 理解自测</h3><div id="quizZone"></div></div>' +
+      '<div class="panel" id="quizPanel" style="display:none;margin-top:16px"><h3><span class="n">?</span> 理解自测</h3><div id="quizZone"></div></div>'
+      '<div class="panel" id="dictPanel" style="display:none;margin-top:16px"><h3><span class="n">✍️</span> 听写练习</h3><div id="dictZone"></div></div>' +
     '</div></section>' +
     '<section class="section tight" style="background:var(--grad-soft)"><div class="container">' +
       '<div class="sec-head left"><span class="eyebrow">Strategy</span><h2>听力策略与精听五步法</h2></div>' +
@@ -197,6 +200,68 @@ BH.reg("listening", async function (view) {
     if (pct >= 80) BH.celebrate();
   }
   function closeQuiz() { var qp = document.getElementById("quizPanel"); if (qp) qp.style.display = "none"; }
+
+  /* ---------- 听写 + 慢速跟读 ---------- */
+  var dict = { on: false, sents: [], i: 0, right: 0 };
+  function normL(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim(); }
+  function stop() {
+    if ("speechSynthesis" in window) speechSynthesis.cancel();
+    clearTimeout(window._sentTimer);
+    var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none";
+  }
+  document.getElementById("dictBtn").onclick = function () {
+    var sents = String((cur().data || {}).text || "").split(/(?<=[.!?])\s+/).filter(Boolean);
+    if (!sents.length) { BH.toast("本条暂无可听写内容"); return; }
+    dict = { on: true, sents: sents, i: 0, right: 0 };
+    document.getElementById("dictPanel").style.display = "block";
+    dictDraw();
+    dictSpeak();
+  };
+  document.getElementById("repeatBtn").onclick = function () {
+    if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
+    stop();
+    var txt = String((cur().data || {}).text || "");
+    var old = state.rate; state.rate = 0.55;
+    setNow("慢速跟读 1/2（请轻声跟读）…");
+    speechSynthesis.speak(ut(txt, function () { setNow("慢速跟读 2/2…"); speechSynthesis.speak(ut(txt, function () { state.rate = old; document.getElementById("nowPlaying").style.display = "none"; })); }));
+  };
+  function dictSpeak() { if (!("speechSynthesis" in window)) return; var q = dict.sents[dict.i]; if (!q) return; setNow("请听写第 " + (dict.i + 1) + " 句（最多再听 2 遍）…"); speechSynthesis.speak(ut(q, function () { speechSynthesis.speak(ut(q)); })); }
+  function dictDraw() {
+    var zone = document.getElementById("dictZone");
+    if (!zone) return;
+    if (dict.i >= dict.sents.length) { dictDone(); return; }
+    zone.innerHTML = '<div class="progress-line"><span>进度</span><div class="fp-bar"><div class="fp-fill" style="width:' + ((dict.i + 1) / dict.sents.length * 100).toFixed(0) + '%"></div></div><b>' + (dict.i + 1) + '/' + dict.sents.length + '</b></div>' +
+      '<p class="muted" style="font-size:13px">先点“🔊 播放本句”，再写下你听到的内容（忽略大小写与标点）。</p>' +
+      '<textarea id="dictInput" rows="2" placeholder="把你听到的句子写在这里…"></textarea>' +
+      '<div class="btn-row" style="margin-top:10px"><button class="btn btn-ghost btn-sm" id="dictReplay">🔊 播放本句</button><button class="btn btn-primary btn-sm" id="dictCheck">✓ 检查</button></div>' +
+      '<div class="muted" id="dictFeed" style="margin-top:10px;font-size:13px"></div>';
+    document.getElementById("dictReplay").onclick = dictSpeak;
+    document.getElementById("dictCheck").onclick = dictCheck;
+    var inp = document.getElementById("dictInput"); inp.focus();
+    inp.onkeydown = function (e) { if (e.key === "Enter") dictCheck(); };
+  }
+  function dictCheck() {
+    var zone = document.getElementById("dictZone"); if (!zone) return;
+    var feed = document.getElementById("dictFeed");
+    var val = document.getElementById("dictInput").value.trim();
+    if (!val) { BH.toast("请先写下你听到的内容"); return; }
+    var ans = dict.sents[dict.i];
+    var ok = normL(val) === normL(ans);
+    if (ok) dict.right++;
+    feed.innerHTML = ok ? "✅ 听写正确！" : "❌ 正确写法：<b>" + ans + "</b>";
+    feed.style.color = ok ? "var(--green)" : "var(--red)";
+    document.getElementById("dictInput").disabled = true;
+    document.getElementById("dictCheck").disabled = true;
+    setTimeout(function () { dict.i++; dictDraw(); }, ok ? 600 : 1600);
+  }
+  function dictDone() {
+    var total = dict.sents.length, pct = total ? Math.round(dict.right / total * 100) : 0;
+    document.getElementById("dictZone").innerHTML = '<div style="text-align:center;padding:14px 0"><div style="font-size:46px">' + (pct === 100 ? "🏆" : pct >= 60 ? "🎉" : "💪") + '</div><h3>听写完成：正确 ' + dict.right + ' / ' + total + '（' + pct + '%）</h3>' +
+      '<div class="btn-row" style="justify-content:center"><button class="btn btn-primary" id="dictAgain">🔁 再听写一遍</button><button class="btn btn-ghost" id="dictClose">收起</button></div>';
+    document.getElementById("dictAgain").onclick = function () { dict.i = 0; dict.right = 0; dictDraw(); dictSpeak(); };
+    document.getElementById("dictClose").onclick = function () { document.getElementById("dictPanel").style.display = "none"; };
+    try { BH.authed("/api/me/activity", { method: "POST", body: { type: "听力听写", correct: dict.right, total: total, seconds: 300, meta: "听写练习" } }); } catch (e) {}
+  }
 
   renderList();
   show();
