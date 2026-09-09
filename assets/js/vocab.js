@@ -132,7 +132,7 @@ BH.reg("vocab", async function (view, params) {
         '<div class="flash-card" id="flashCard"><div class="fc-inner">' +
           '<div class="fc-face fc-front"><span class="fc-tag tag" id="cState">未学</span><div class="fc-word" id="fcWord">…</div><div class="fc-ipa" id="fcIpa"></div><div class="freq-pill" id="cFreq">—</div><div class="fc-hint">👆 点击卡片查看释义</div></div>' +
           '<div class="fc-face fc-back"><span class="fc-tag tag" id="cFreqBack">—</span><div class="fc-meaning" id="fcMeaning"></div><div class="fc-pos" id="fcPos2"></div><div class="fc-ex" id="fcEx"></div><div class="fc-cn" id="fcCn"></div>' +
-          '<div class="fc-note fc-example" id="fcExNote" style="display:none">💡 暂无例句，可在后台补充</div>' +
+          
           '<div class="fc-note" id="fcAf" style="display:none"></div>' +
           '<div class="fc-note" id="fcSim" style="display:none"></div>' +
           '<div class="fc-note" id="fcMem" style="display:none"></div></div>' +
@@ -208,7 +208,7 @@ BH.reg("vocab", async function (view, params) {
     }
     var fb = document.getElementById("cFreqBack");
     if (fb) { fb.textContent = f === "高" ? "🔥 高频" : f === "中" ? "⭐ 中频" : f === "低" ? "🌱 低频" : ""; fb.className = "fc-tag tag freq-pill freq-" + (f ? f.toLowerCase() : "none"); }
-    var en = document.getElementById("fcExNote"); if (en) en.style.display = w.ex ? "none" : "block";
+
     var af = document.getElementById("fcAf"); if (af) { if (w.af) { af.textContent = "🧩 " + w.af; af.style.display = "block"; } else af.style.display = "none"; }
     var sm = document.getElementById("fcSim"); if (sm) { if (w.sim && w.sim.length) { sm.innerHTML = "👯 形近词：" + w.sim.map(function (x) { return "<span class='sim-w'>" + s(x) + "</span>"; }).join(""); sm.style.display = "block"; } else sm.style.display = "none"; }
     var mm = document.getElementById("fcMem"); if (mm) { if (w.mem) { mm.textContent = "💭 " + w.mem; mm.style.display = "block"; } else mm.style.display = "none"; }
