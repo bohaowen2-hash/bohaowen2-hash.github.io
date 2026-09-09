@@ -63,7 +63,7 @@ BH.reg("admin", async function (view) {
         if (d.user.role !== "admin") { BH.toast("该账号不是管理员"); return; }
         BH.setSession(d.token, d.user);
         BH.toast("管理员登录成功");
-        location.reload();
+        BH.refresh();
       } catch (e) { BH.toast(e.message); }
     };
     return;
@@ -114,7 +114,7 @@ BH.reg("admin", async function (view) {
       try {
         await BH.api("/api/admin/settings", { method: "PUT", body: patch });
         BH.toast("文案已保存 ✓");
-        location.hash = "#/"; location.reload();
+        BH.reloadSite().then(function () { BH.navTo("#/"); });
       } catch (e) { BH.toast(e.message); }
     };
   }

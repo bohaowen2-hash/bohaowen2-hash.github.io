@@ -236,4 +236,7 @@ var BH = window.BH = {
   BH.updateNavUser = updateNavUser;
   BH.reg = function (name, fn) { BH.routes[name] = fn; };
   BH.render = function (id, html) { document.getElementById(id).innerHTML = html; };
+  BH.refresh = route;            // 无刷新重绘当前路由（SPA）
+  BH.reloadSite = loadSite;       // 重新拉取站点文案（无需整页刷新）
+  BH.navTo = function (h) { if ((location.hash || "#/") === h) BH.refresh(); else location.hash = h; };
 })();

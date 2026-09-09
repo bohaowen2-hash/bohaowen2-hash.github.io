@@ -112,7 +112,9 @@
         var size = Math.min(80, Math.max(1, parseInt(body.size || "20", 10)));
         var exclude = {}; (body.exclude || []).forEach(function (x) { exclude[String(x).toLowerCase()] = true; });
         var wrongSet = {}; (body.wrong || []).forEach(function (x) { wrongSet[String(x).toLowerCase()] = true; });
-        var pool = all.filter(function (w) {
+        var ordered = all.filter(function (w) { return !body.unit || w.unit === body.unit; }).sort(function (x, y) { return x.seq - y.seq; });
+        var pool = ordered.slice(parseInt(body.start || "0", 10) >= 1 ? parseInt(body.start, 10) - 1 : 0, (parseInt(body.end || "0", 10) >= parseInt(body.start || "0", 10) && parseInt(body.end, 10) >= 1) ? parseInt(body.end, 10) : ordered.length);
+        pool = pool.filter(function (w) {
           if (body.unit && w.unit !== body.unit) return false;
           if (body.onlyWrong && !wrongSet[w.w.toLowerCase()]) return false;
           if (!body.onlyWrong && exclude[w.w.toLowerCase()]) return false;

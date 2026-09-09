@@ -32,6 +32,15 @@ BH.reg("me", async function (view) {
     '</div></section>' +
 
     '<section class="section tight" style="padding-top:26px"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Memory Curve</span><h2>🧠 艾宾浩斯记忆曲线</h2><p>按 1 · 2 · 4 · 7 · 15 · 30 天间隔科学安排复习，把“刚记住”变成“忘不掉”。</p></div>' +
+      '<div class="mem-grid">' +
+        '<div class="panel"><h3>⏰ 今日待复习</h3><div id="memToday" style="margin-top:6px"></div></div>' +
+        '<div class="panel"><h3>📅 未来两周复习量</h3><div class="mini-bars" id="memBars" style="margin-top:14px"></div><p class="muted" style="font-size:12px;margin:10px 0 0">柱越高 = 那天要复习的词越多，建议当天清完。</p></div>' +
+        '<div class="panel mem-curve-panel"><h3>📉 遗忘曲线与复习点</h3><div id="memCurve" style="margin-top:6px"></div></div>' +
+      '</div>' +
+    '</div></section>' +
+
+    '<section class="section tight" style="padding-top:26px"><div class="container">' +
       '<div class="two-col">' +
         '<div><div class="panel"><h3>🗓️ 学习热力图（近 84 天）</h3><div id="heatBox" style="margin-top:8px"></div><p class="muted" style="font-size:12px;margin-top:10px">深色 = 已打卡。坚持每天点亮一格，火苗就不会断。</p></div>' +
         '<div class="panel"><h3>📈 近 14 天学习时长（分钟）</h3><div class="mini-bars" id="dayBars" style="margin-top:12px"></div></div></div>' +
@@ -54,15 +63,14 @@ BH.reg("me", async function (view) {
       b.classList.add("btn-soft"); b.classList.remove("btn-primary");
       BH.celebrate();
       BH.toast("打卡成功，继续保持 🔥");
-      setTimeout(function(){ location.hash = "#/me"; location.reload(); }, 1200);
+      setTimeout(function(){ BH.refresh(); }, 1000);
     } catch (e) { BH.toast(e.message); }
   };
   document.getElementById("logoutBtn").onclick = function () {
     if (!confirm("确定退出当前账号吗？")) return;
     BH.clearSession();
-    BH.toast("已退出");
-    location.hash = "#/";
-    location.reload();
+    BH.toast("已退出，期待你回来 👋");
+    BH.navTo("#/");
   };
   if (isGuest) {
     document.getElementById("openAuth").onclick = openAuth;
@@ -112,6 +120,45 @@ BH.reg("me", async function (view) {
     return "<div class='bar-row'><span>" + (typeMap[k] || k) + "</span><div class='bar'><i style='width:" + Math.round(byType[k] / maxT * 100) + "%'></i></div><b>" + byType[k] + " 次</b></div>";
   }).join("") : "<div class='empty-note'>还没有练习记录，去词汇/听力/阅读里测一测吧</div>";
 
+  /* 艾宾浩斯记忆曲线 */
+  var mem = stats.memory || { due: 0, plan: [] };
+  var memToday = document.getElementById("memToday");
+  if (memToday) {
+    memToday.innerHTML =
+      "<div style='display:flex;align-items:center;gap:18px;flex-wrap:wrap'>" +
+        "<div style='text-align:center;padding:4px 10px 4px 0'><div style='font-size:36px;font-weight:900;color:var(--brand);line-height:1'>" + (mem.due || 0) + "</div><div class='muted' style='font-size:12.5px;margin-top:6px'>词待复习</div></div>" +
+        "<div style='flex:1;min-width:190px'><a class='btn btn-primary btn-sm' href='#/vocab?mode=review'>🧠 开始今日复习</a>" +
+        "<p class='muted' style='font-size:12.5px;margin-top:9px'>背词时点“认识/忘记”即自动排期；答对的词按 1·2·4·7·15·30 天进入下一轮。</p></div>" +
+      "</div>";
+  }
+  var memPlan = (mem.plan || []).slice(0, 14);
+  var memMx = 1; memPlan.forEach(function (p) { if (p.count > memMx) memMx = p.count; });
+  var mb = document.getElementById("memBars");
+  if (mb) mb.innerHTML = memPlan.length ? memPlan.map(function (p) {
+    var h = Math.max(3, Math.round(p.count / memMx * 100));
+    var d = new Date(p.date + "T00:00:00");
+    var lbl = (d.getMonth() + 1) + "/" + d.getDate();
+    return "<i style='height:" + h + "%' title='" + BH.fmtDateCN(p.date) + "：" + p.count + " 词'><b>" + (p.count || "") + "</b><em>" + lbl + "</em></i>";
+  }).join("") : "<div class='empty-note'>还没有复习排期——去词汇页背词并标记“认识”，系统就会自动生成记忆曲线复习计划。</div>";
+  var mc = document.getElementById("memCurve");
+  if (mc) {
+    var W = 360, H = 168, padL = 36, padB = 26, padT = 12, padR = 10;
+    var X = function (t) { return padL + t / 30 * (W - padL - padR); };
+    var Y = function (r) { return padT + (1 - r) * (H - padT - padB); };
+    var pts = [];
+    for (var t = 0; t <= 30; t += 0.5) { var r = Math.exp(-t / 6.2); pts.push(X(t).toFixed(1) + "," + Y(r).toFixed(1)); }
+    var svg = "<svg viewBox='0 0 " + W + " " + H + "' style='width:100%;height:auto;display:block' role='img' aria-label='艾宾浩斯遗忘曲线'>";
+    [1, .75, .5, .25, 0].forEach(function (gr) { svg += "<line x1='" + padL + "' y1='" + Y(gr).toFixed(1) + "' x2='" + (W - padR) + "' y2='" + Y(gr).toFixed(1) + "' style='stroke:var(--line)' stroke-width='1'/>"; });
+    [0, 1, 2, 4, 7, 15, 30].forEach(function (t) { svg += "<text x='" + X(t).toFixed(1) + "' y='" + (H - 8) + "' font-size='8.5' style='fill:var(--muted)' text-anchor='middle'>" + (t || 0) + "</text>"; });
+    svg += "<text x='8' y='14' font-size='8.5' style='fill:var(--muted)'>100%</text>";
+    svg += "<text x='18' y='" + (H - 8) + "' font-size='8.5' style='fill:var(--muted)'>学习后天数 →</text>";
+    svg += "<path d='M" + pts.join(" L") + "' fill='none' style='stroke:var(--brand)' stroke-width='2' stroke-linecap='round' opacity='.8'/>";
+    [1, 2, 4, 7, 15, 30].forEach(function (t) { var rr = Math.exp(-t / 6.2); svg += "<circle cx='" + X(t).toFixed(1) + "' cy='" + Y(rr).toFixed(1) + "' r='4' fill='#fff' style='stroke:#f59e0b' stroke-width='2'/>"; });
+    svg += "<text x='" + (W - padR) + "' y='14' font-size='8.5' style='fill:var(--muted)' text-anchor='end'>橙点 = 复习日</text></svg>";
+    svg += "<p class='muted' style='font-size:12px;margin:8px 0 0'>不复习的话，记忆 5 天后约剩 45%；在橙点按时复习，遗忘会明显变慢。</p>";
+    mc.innerHTML = svg;
+  }
+
   /* 最近动态 */
   var acts = stats.recent || [];
   document.getElementById("actList").innerHTML = acts.length ? acts.map(function (a) {
@@ -138,7 +185,7 @@ BH.reg("me", async function (view) {
         try {
           await BH.authed("/api/me/wrong/" + encodeURIComponent(w), { method: "DELETE" });
           BH.toast("已从错题本移除：" + w);
-          location.reload();
+          BH.refresh();
         } catch (e) { BH.toast(e.message); }
       };
     });
@@ -166,7 +213,7 @@ BH.reg("me", async function (view) {
         BH.setSession(d.token, d.user);
         BH.closeModal();
         BH.toast("欢迎，" + (d.user.name || d.user.username) + "！");
-        location.reload();
+        BH.refresh();
       } catch (e) { BH.toast(e.message); }
     }
   }
