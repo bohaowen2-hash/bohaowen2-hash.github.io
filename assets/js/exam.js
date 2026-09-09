@@ -107,7 +107,7 @@ BH.reg("exam", async function (view) {
       return "<div class='q-item' style='margin-top:0;margin-bottom:10px'><div class='q-title'>" + t + "（" + weeks + "）</div><ul class='tick'>" + items.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul></div>";
     }
     html += stage("阶段一 · 基础奠基", "第 1–" + a + " 周", [
-      "每天背词 " + Math.round(H * 18) + " 分钟：博浩词汇（4000+ 词库）+ 核心搭配，先混脸熟。",
+      "每天背词 " + Math.round(H * 18) + " 分钟：博浩词汇（7000 词条）+ 核心搭配，先混脸熟。",
       "每周精听 3 次听力语料：先泛听抓大意，再逐句精听（听力模块）。",
       "每天拆 2 个长难句，积累阅读语感（阅读模块）。",
       "周末：做 1 套真题阅读部分（不限时），统计错因。"

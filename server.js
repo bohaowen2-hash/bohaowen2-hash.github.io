@@ -30,8 +30,8 @@ function defaultSettings() {
       bio: "做六级备考内容的人很多，但博浩英语是一份真诚、免费、体系化的礼物——没有噱头，不讲玄学，只有经过验证的方法和陪你坚持的每一天。愿每一个努力的你，都能一次上岸。",
       sign: "wbh"
     },
-    hero: { title: "六级上岸，从博浩英语开始", sub: "一套体系化的 CET-6 备考方案：4000+ 核心词汇闯关、听力精听训练、阅读长难句拆解、写作高分模板与科学冲刺计划。跟着博浩，每天进步一点点。" },
-    announcement: "🎉 博浩英语 2.0 动态版上线：词库扩至 4000+、学习记录云端同步、后台随心管理。",
+    hero: { title: "六级上岸，从博浩英语开始", sub: "一套体系化的 CET-6 备考方案：7000 词条（含大纲与扩展词）、听力精听、英文长阅读、写作模板、翻译题库与 AI 批改。" },
+    announcement: "🎉 词库 7000 词条 · 500 篇英文阅读 · 300 条听力 · 真账号云端同步" ,
     examDate: "2026-12-19",
     contact: "wbh@bohaoenglish.cn",
     footerNote: "真诚、免费、体系化的 CET-6 学习平台，由wbh创立并持续维护。"
@@ -125,6 +125,7 @@ function seedIfNeeded(isNew) {
   console.log("✔ 管理员账号 admin，初始密码：" + adminPass + "（已写入 data/admin.txt，请尽快修改）");
 }
 function scryptHash(pw, salt) { return crypto.scryptSync(String(pw), salt, 64).toString("hex"); }
+function mergeUniq(a, b) { const s = {}; [].concat(a || []).forEach(x => s[x] = 1); [].concat(b || []).forEach(x => s[x] = 1); return Object.keys(s); }
 
 /* ---------------- 认证 ---------------- */
 function tokenOf(req) {
@@ -313,7 +314,17 @@ const server = http.createServer(async (req, res) => {
       if (password.length < 6) return apiError(res, 400, "密码至少 6 位");
       if (db.users.some(u => u.username === username)) return apiError(res, 409, "用户名已被注册");
       const salt = crypto.randomBytes(16).toString("hex");
+      const curG = userByToken(tokenOf(req));
+      const g = curG && curG.guest ? curG : null;
       const user = { id: nextId(), username, name, role: "user", guest: false, salt, pass: scryptHash(password, salt), token: crypto.randomBytes(24).toString("hex"), known: [], wrong: [], checkins: [], activities: [], reviews: [], createdAt: new Date().toISOString() };
+      if (g) {
+        user.known = mergeUniq(user.known, g.known);
+        user.wrong = mergeUniq(user.wrong, g.wrong);
+        user.checkins = mergeUniq(user.checkins, g.checkins);
+        user.reviews = (g.reviews || []).concat(user.reviews || []).slice(0, 20000);
+        user.activities = (g.activities || []).concat(user.activities || []).slice(-5000);
+        db.users = db.users.filter(x => x !== g);
+      }
       db.users.push(user); scheduleSave();
       return json(res, 200, { token: user.token, user: publicUser(user) });
     }

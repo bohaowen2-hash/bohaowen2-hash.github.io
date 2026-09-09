@@ -8,6 +8,8 @@ BH.reg("home", async function (view) {
   var hero = site.hero || {};
   var days = BH.daysUntil(site.examDate || "2026-12-19");
   var counts = site.counts || {};
+  var syncTitle = BH.STATIC ? "💾 本机保存" : "☁️ 云端同步";
+  var syncNote = BH.STATIC ? "记录保存在本机浏览器，请勿清理浏览器数据" : "注册账号后，换设备也能接着学";
 
   var randomRows = [];
   try { randomRows = (await BH.api("/api/words/random", { method: "POST", body: { size: 1 } })).rows || []; } catch (e) {}
@@ -28,7 +30,7 @@ BH.reg("home", async function (view) {
         '</div>' +
         '<div class="hero-meta">' +
           '<span class="badge gold">⏳ 距最近六级笔试还有 <b style="font-size:16px;color:inherit">' + days + '</b> 天</span>' +
-          '<span class="badge green">☁️ 学习记录云端同步</span>' +
+          '<span class="badge green">💾 学习进度自动记录</span>' +
           '<span class="badge plain">🔧 后台内容管理</span><span class="badge plain">📲 可安装为 App</span>' +
         '</div>' +
       '</div>' +
@@ -69,12 +71,12 @@ BH.reg("home", async function (view) {
 
   '<section class="section" style="background:var(--grad-soft)">' +
     '<div class="container">' +
-      '<div class="sec-head"><span class="eyebrow">Dashboard</span><h2>学得明白，进步看得见</h2><p>每一次打卡、每一场自测、每一个错词都自动同步到云端，生成属于你的学习数据面板。</p></div>' +
+      '<div class="sec-head"><span class="eyebrow">Dashboard</span><h2>学得明白，进步看得见</h2><p>每一次打卡、每一场自测、每一个错词都会被记录下来，生成属于你的学习数据面板。</p></div>' +
       '<div class="grid g-4">' +
         '<div class="mini-card"><div style="font-size:28px">✅</div><h4>每日打卡</h4><p class="muted" style="font-size:13px">坚持即胜利，连续打卡自动记录，火苗不断。</p></div>' +
         '<div class="mini-card"><div style="font-size:28px">📊</div><h4>数据看板</h4><p class="muted" style="font-size:13px">掌握词数、自测正确率、学习时长一目了然。</p></div>' +
         '<div class="mini-card"><div style="font-size:28px">❌</div><h4>错题本</h4><p class="muted" style="font-size:13px">答错的词自动收进错题本，一键复习。</p></div>' +
-        '<div class="mini-card"><div style="font-size:28px">☁️</div><h4>云端同步</h4><p class="muted" style="font-size:13px">注册账号后，换设备也能接着学。</p></div>' +
+        '<div class="mini-card"><div style="font-size:28px">💾</div><h4>进度记录</h4><p class="muted" style="font-size:13px">答对的词、错题与打卡都会被记录，随时回顾；请勿清理浏览器数据。</p></div>' +
       '</div>' +
     '</div>' +
 

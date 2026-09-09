@@ -146,6 +146,8 @@ var BH = window.BH = {
 
   /* ---------- 导航 ---------- */
   function updateNavUser() {
+    var fa = document.getElementById("footAdmin");
+    if (fa) fa.style.display = (BH.user && BH.user.role === "admin") ? "block" : "none";
     var btn = document.getElementById("navMeBtn");
     if (!btn) return;
     if (BH.user) {

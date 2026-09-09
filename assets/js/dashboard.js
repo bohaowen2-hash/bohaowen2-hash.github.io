@@ -16,7 +16,7 @@ BH.reg("me", async function (view) {
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
       '<div class="sec-head left"><span class="badge">📊 个人数据中心</span>' +
       '<h2>' + s(user ? (user.name || user.username) : "我的") + '，继续加油！</h2>' +
-      '<p>' + (isGuest ? "当前为游客模式，学习记录已云端保存。注册账号后可跨设备同步、长期保留。" : "学习记录已云端同步，换设备登录同一账号即可继续。") + '</p>' +
+      '<p>' + (BH.STATIC ? (isGuest ? "当前为游客模式，学习记录保存在本机浏览器。注册后会**自动**把游客记录迁移到新账号；请勿清理浏览器数据。" : "学习记录保存在本机浏览器；请勿清理浏览器数据。") : (isGuest ? "当前为游客模式，学习记录已云端保存。注册后游客数据将自动迁移到新账号。" : "学习记录已云端同步，换设备登录同一账号即可继续。")) + '</p>' +
       '<div class="toolbar" style="margin-top:6px">' +
         '<button class="btn btn-primary" id="checkinBtn">✅ ' + (stats.checkedToday ? "今日已打卡" : "今日打卡") + '</button>' +
         (isGuest ? '<button class="btn btn-soft" id="openAuth">🔐 注册 / 登录账号</button>' : '<button class="btn btn-ghost" id="changePw">🔑 修改密码</button>') +
@@ -194,12 +194,12 @@ BH.reg("me", async function (view) {
   /* 账号弹窗 */
   function openAuth() {
     BH.modal(
-      '<h3>🔐 注册 / 登录博浩账号</h3><p class="muted" style="font-size:13px">注册后学习记录可跨设备同步，绑定你的专属档案。</p>' +
+      '<h3>🔐 注册 / 登录博浩账号</h3><p class="muted" style="font-size:13px">' + (BH.STATIC ? "本机模拟账号仅保存于当前浏览器；注册会自动迁移游客记录。" : "注册后学习记录可跨设备同步，游客数据将自动迁移到新账号。") + '</p>' +
       '<div class="field"><label class="f-label">用户名（3-20 位字母/数字/下划线）</label><input type="text" id="auUser" placeholder="如 wbh"></div>' +
       '<div class="field"><label class="f-label">昵称（可选）</label><input type="text" id="auName" placeholder="你的名字"></div>' +
       '<div class="field"><label class="f-label">密码（至少 6 位）</label><input type="password" id="auPass" placeholder="••••••"></div>' +
       '<div class="btn-row"><button class="btn btn-primary" id="auReg">注册新账号</button><button class="btn btn-ghost" id="auLogin">登录已有账号</button></div>' +
-      '<p class="muted" style="font-size:12px;margin:10px 0 0">提示：游客期间的数据保留在游客账号中；注册后在新账号重新开始记录（已掌握词数等可从词汇页手动重测）。</p>'
+      '<p class="muted" style="font-size:12px;margin:10px 0 0">注册后将自动迁移你的游客记录 ✅</p>'
     );
     document.getElementById("auReg").onclick = function () { doAuth("/api/auth/register"); };
     document.getElementById("auLogin").onclick = function () { doAuth("/api/auth/login"); };
