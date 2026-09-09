@@ -124,7 +124,7 @@ BH.reg("vocab", async function (view) {
       '<span class="grow"></span><span class="tag" id="cPos"></span></div>' +
       '<div class="flash-zone">' +
         '<div class="flash-card" id="flashCard"><div class="fc-inner">' +
-          '<div class="fc-face fc-front"><span class="fc-tag tag" id="cState">未学</span><div class="fc-word" id="fcWord">…</div><div class="fc-ipa" id="fcIpa"></div><div class="fc-hint">👆 点击卡片查看释义</div></div>' +
+          '<div class="fc-face fc-front"><span class="fc-tag tag" id="cState">未学</span><div class="fc-word" id="fcWord">…</div><div class="fc-ipa" id="fcIpa"></div><div class="freq-pill" id="cFreq">—</div><div class="fc-hint">👆 点击卡片查看释义</div></div>' +
           '<div class="fc-face fc-back"><div class="fc-meaning" id="fcMeaning"></div><div class="fc-pos" id="fcPos2"></div><div class="fc-ex" id="fcEx"></div><div class="fc-cn" id="fcCn"></div></div>' +
         '</div></div>' +
         '<div class="btn-row" style="justify-content:center;margin-top:18px">' +
@@ -137,7 +137,16 @@ BH.reg("vocab", async function (view) {
       '</div>';
     var sel = document.getElementById("vUnit");
     sel.value = state.unit;
-    sel.onchange = function () { state.unit = sel.value; startDeck(false); };
+    sel.onchange = async function () {
+      state.unit = sel.value;
+      document.getElementById("cPos").textContent = "加载中…";
+      deckWords = await loadDeck();
+      state.deck = deckWords.slice();
+      state.idx = 0; state.shuffled = false;
+      showCard();
+      var un = unitsData.find(function (u) { return u.id === state.unit; });
+      BH.toast("已切换到 " + (un ? un.name : state.unit) + " 🎈");
+    };
     deckWords = await loadDeck();
     state.deck = deckWords; state.idx = 0; state.shuffled = false;
     document.getElementById("cShuffle").onclick = function () { state.shuffled = !state.shuffled; if (state.shuffled) { state.deck = deckWords.slice().sort(function(){ return Math.random() - .5; }); } else { state.deck = deckWords.slice(); } state.idx = 0; showCard(); BH.toast(state.shuffled ? "已开启乱序 🔀" : "已恢复顺序 ↩️"); };
@@ -175,7 +184,13 @@ BH.reg("vocab", async function (view) {
     if (localKnown(w.w)) { st.textContent = "已掌握 ✓"; st.className = "fc-tag tag"; st.style.cssText = "background:rgba(22,163,74,.12);color:var(--green);border-color:rgba(22,163,74,.3)"; }
     else if (localWrong(w.w)) { st.textContent = "错题 ✗"; st.style.cssText = "background:rgba(225,29,72,.1);color:var(--red);border-color:rgba(225,29,72,.28)"; st.className = "fc-tag tag"; }
     else { st.textContent = "未学"; st.className = "fc-tag tag plain"; }
-    document.getElementById("cPos").textContent = (state.idx + 1) + " / " + state.deck.length + " 词";
+    document.getElementById("cPos").textContent = (state.idx + 1) + " / " + state.deck.length + " 词（每单元 50 词）";
+    var fr = document.getElementById("cFreq");
+    if (fr) {
+      var f = w.freq || "";
+      fr.textContent = f === "高" ? "🔥 高频" : f === "中" ? "⭐ 中频" : f === "低" ? "🌱 低频" : "—";
+      fr.className = "freq-pill freq-" + (f ? f.toLowerCase() : "none");
+    }
     document.getElementById("cOrder").textContent = state.shuffled ? "🔀 乱序中" : "↩️ 按单元顺序";
   }
   async function decide(known) {
@@ -250,7 +265,7 @@ BH.reg("vocab", async function (view) {
   function renderQ() {
     var q = state.q[state.qi];
     document.getElementById("qWord").textContent = q.w.w;
-    document.getElementById("qIpa").textContent = (q.w.f || "") + "  ·  " + (q.w.p || "");
+    document.getElementById("qIpa").textContent = (q.w.f || "") + "  ·  " + (q.w.p || "") + "   ·  " + (q.w.freq === "高" ? "🔥高频" : q.w.freq === "中" ? "⭐中频" : q.w.freq === "低" ? "🌱低频" : "");
     document.getElementById("qProg").textContent = (state.qi + 1) + "/" + state.q.length;
     document.getElementById("qBar").style.width = ((state.qi + 1) / state.q.length * 100) + "%";
     var box = document.getElementById("qOpts");

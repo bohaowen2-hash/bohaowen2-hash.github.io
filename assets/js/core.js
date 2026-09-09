@@ -74,7 +74,7 @@ var BH = window.BH = {
   function daysUntil(dateStr) { var d = new Date(dateStr + "T00:00:00"); var t = new Date(); var today = new Date(t.getFullYear(), t.getMonth(), t.getDate()); return Math.max(0, Math.round((d - t) / 86400000)); }
 
   /* ---------- API ---------- */
-  async function api(path, opts) {
+  async function netApi(path, opts) {
     opts = opts || {};
     var headers = Object.assign({ "Content-Type": "application/json" }, opts.headers || {});
     if (BH.token) headers["Authorization"] = "Bearer " + BH.token;
@@ -85,6 +85,10 @@ var BH = window.BH = {
     try { data = await res.json(); } catch (e) { data = {}; }
     if (!res.ok) { var err = new Error((data && data.error) || ("请求失败 " + res.status)); err.status = res.status; err.data = data; throw err; }
     return data;
+  }
+  function api(path, opts) {
+    if (BH._staticApi) return BH._staticApi(path, opts);
+    return netApi(path, opts);
   }
   async function ensureGuest() {
     if (BH.token) return;
@@ -135,7 +139,7 @@ var BH = window.BH = {
       byId("announceClose").onclick = function () { ab.style.display = "none"; };
       return s;
     } catch (e) {
-      byId("footNote").textContent = "真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。";
+      var fN = document.getElementById("footNote"); if (fN) fN.textContent = "真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。";
       return null;
     }
   }

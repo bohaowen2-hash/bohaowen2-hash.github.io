@@ -91,7 +91,7 @@ function seedIfNeeded(isNew) {
   const phrases = readSeed("phrases.json");
   const content = readSeed("content.json");
   db.units = units.map(u => ({ id: u.id, name: u.name, kind: u.kind || "core", seq: u.seq || 0 }));
-  db.words = words.map(w => ({ id: nextId(), unit: w.unit, w: w.w, f: w.f || "", p: w.p || "", m: w.m || "", ex: w.ex || "", c: w.c || "", src: w.src || "open", seq: w.seq || 0 }));
+  db.words = words.map(w => ({ id: nextId(), unit: w.unit, w: w.w, f: w.f || "", p: w.p || "", m: w.m || "", ex: w.ex || "", c: w.c || "", freq: w.freq || "", src: w.src || "open", seq: w.seq || 0 }));
   db.phrases = phrases.map(p => ({ id: nextId(), en: p.en, zh: p.zh || "", core: !!p.core, src: p.src || "open", seq: p.seq || 0 }));
   for (const cat of Object.keys(content || {})) {
     (content[cat] || []).forEach((it, i) => {
