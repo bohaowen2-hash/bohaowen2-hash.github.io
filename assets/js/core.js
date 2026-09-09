@@ -188,7 +188,7 @@ var BH = window.BH = {
     try {
       await fn(view, r.params);
     } catch (e) {
-      console.error(e);
+      console.error("ROUTE_ERR", e && (e.stack || e.message));
       view.innerHTML = "<div class='container section' style='text-align:center'><h2>😢 加载失败</h2><p class='muted'>" + esc(e.message) + "</p><button class='btn btn-primary' onclick='location.reload()'>刷新重试</button></div>";
     }
   }

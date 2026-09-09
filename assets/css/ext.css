@@ -176,3 +176,13 @@ code.json-pre{display:block;background:var(--bg-soft);border:1px solid var(--lin
 .fc-note{margin-top:10px;background:rgba(255,255,255,.16);border:1px solid rgba(255,255,255,.18);border-radius:12px;padding:8px 12px;font-size:12.8px;width:100%;text-align:left;line-height:1.8}
 .fc-note.fc-example{opacity:.9;font-style:italic}
 .sim-w{display:inline-block;background:rgba(255,255,255,.24);border-radius:8px;padding:0 8px;margin:2px 4px 2px 0;font-weight:700;font-size:12px}
+
+/* 语料库列表 */
+.lib-list{display:flex;flex-direction:column;gap:8px;max-height:440px;overflow:auto;padding-right:4px}
+.lib-row{display:flex;align-items:center;gap:10px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:9px 12px;cursor:pointer;font:inherit;color:var(--ink);transition:.15s;flex-wrap:wrap}
+.lib-row:hover{border-color:var(--brand);transform:translateX(2px)}
+.lib-row.on{border-color:var(--brand);background:var(--grad-soft)}
+.lib-title{font-weight:700;flex:1;min-width:150px;font-size:14px}
+.lib-sub{font-size:12px}
+.lib-tag{flex:none}
+
