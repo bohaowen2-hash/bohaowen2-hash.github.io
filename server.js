@@ -79,6 +79,18 @@ function loadDb() {
         scheduleSave();
       } catch (e2) {}
     }
+    if (db.meta && db.meta.version < 5) {
+      try {
+        const seedW = readSeed("words.json");
+        const sm = new Map(seedW.map(function (x) { return [x.w, x]; }));
+        db.words.forEach(function (w) {
+          const s = sm.get(w.w);
+          if (s && s.ex && !w.ex) { w.ex = s.ex; w.c = s.c || ""; }
+        });
+        db.meta.version = 5;
+        scheduleSave();
+      } catch (e3) {}
+    }
     return false;
   }
   db = emptyDb();
