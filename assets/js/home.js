@@ -39,6 +39,7 @@ BH.reg("home", async function (view) {
         '</div>' +
         '<div class="hero-mini m1"><span class="mini-ico" style="background:linear-gradient(135deg,#f59e0b,#f97316)">🔥</span> ' + counts.words + '+ 核心词汇</div>' +
         '<div class="hero-mini m2"><span class="mini-ico" style="background:linear-gradient(135deg,#0ea5e9,#6366f1)">🎧</span> ' + counts.phrases + '+ 高频搭配</div>' +
+        '<div class="mascot-bubble">🦉 小博喊你：今天也要元气满满地学英语鸭！</div>' +
       '</div>' +
     '</div>' +
   '</section>' +

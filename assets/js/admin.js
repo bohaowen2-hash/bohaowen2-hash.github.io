@@ -373,15 +373,3 @@ BH.reg("admin", async function (view) {
       "</tbody></table></div></div>";
   }
 });
-/* 静态公开版守卫 */
-if (window.BH && BH.STATIC) {
-  BH.routes.admin = async function (view) {
-    view.innerHTML =
-      '<section class="section"><div class="container" style="max-width:660px"><div class="panel">' +
-      '<h3>📌 这是 GitHub Pages 静态公开版</h3>' +
-      '<p class="muted" style="font-size:14px">静态版为了能被 GitHub 免费托管，移除了服务器后台与云端账号。学习记录保存在每位访客自己的浏览器里。</p>' +
-      '<ul class="tick"><li>创始人：文博浩 的内容管理请在本机运行 <code>node server.js</code> 的完整动态版（含 /admin 后台）。</li>' +
-      '<li>修改内容后，重新打包静态版并推送更新到本仓库即可公开更新。</li></ul>' +
-      '<div class="btn-row"><a class="btn btn-primary" href="#/">返回首页</a><a class="btn btn-ghost" href="#/me">去个人中心</a></div></div></div></section>';
-  };
-}
