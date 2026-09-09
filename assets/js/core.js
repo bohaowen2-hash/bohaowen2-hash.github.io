@@ -254,6 +254,7 @@ var BH = window.BH = {
       mw.addEventListener("click", function () { ci = (ci + 1) % chars.length; if (img) img.src = chars[ci].src; if (tip) tip.textContent = chars[ci].tip; });
     }
     window.addEventListener("hashchange", route);
+    document.addEventListener("click", function (e) { var t = e.target && e.target.closest ? e.target.closest("[data-close]") : null; if (t) closeModal(); });
     loadSite().then(function () { route(); });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);
