@@ -7,7 +7,7 @@
   --grad:linear-gradient(120deg,#f472b6,#a855f7 40%,#6366f1 70%,#22d3ee);
   --grad-soft:linear-gradient(120deg,rgba(244,114,182,.12),rgba(168,85,247,.12),rgba(99,102,241,.12));
   --bg:#fff7f9; --bg-soft:#fff0f5; --surface:#ffffff; --surface-2:#fff4f7;
-  --ink:#46253b; --ink-soft:#6b4a5f; --muted:#a0718a;
+  --ink:#46253b; --ink-soft:#5c3f52; --muted:#8a6076;
   --line:#ffe1ec; --line-strong:#ffc9dc;
   --shadow-sm:0 4px 14px rgba(236,72,153,.10);
   --shadow:0 16px 40px -14px rgba(236,72,153,.28);
@@ -81,3 +81,9 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;ba
 @keyframes mascotBob{0%,100%{transform:translateY(0) rotate(-3deg)}50%{transform:translateY(-10px) rotate(3deg)}}
 .mascot-bubble-2{background:#fff;border:2px solid #f9a8d4;color:#9d174d;border-radius:16px 16px 6px 16px;padding:7px 12px;font-size:12.5px;font-weight:700;margin-bottom:6px;max-width:190px;text-align:center;box-shadow:0 8px 20px -8px rgba(236,72,153,.5);animation:mascotBob 3s .3s ease-in-out infinite}
 [data-theme="dark"] .mascot-bubble-2{background:#3a2547;border-color:#be185d;color:#fbcfe8}
+
+/* 无障碍：焦点可见 + 跳过链接 */
+:focus-visible{outline:3px solid #6366f1;outline-offset:2px;border-radius:6px}
+.skip-link{position:absolute;left:12px;top:-60px;z-index:999;background:#4f46e5;color:#fff;padding:10px 16px;border-radius:0 0 12px 12px;font-weight:700;transition:top .2s}
+.skip-link:focus{top:0}
+[data-theme="dark"] :focus-visible{outline-color:#a78bfa}
