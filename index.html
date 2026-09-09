@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="博浩英语 CET-6 六级学习平台 2.0：4000+ 核心词汇、听力精听、阅读实战、写作模板、翻译秘籍、学习记录云同步与后台管理。由文博浩创立。">
+<meta name="author" content="文博浩">
+<title>博浩英语 CET-6 · 六级学习平台 | 文博浩 创立</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0' stop-color='%234f46e5'/%3E%3Cstop offset='1' stop-color='%237c3aed'/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect width='100' height='100' rx='24' fill='url(%23g)'/%3E%3Ctext x='50' y='68' font-size='52' text-anchor='middle' fill='white' font-family='sans-serif' font-weight='900'%3E博%3C/text%3E%3C/svg%3E">
+<link rel="stylesheet" href="assets/css/style.css">
+<link rel="stylesheet" href="assets/css/ext.css">
+<link rel="manifest" href="/manifest.webmanifest">
+<meta name="theme-color" content="#4f46e5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="博浩六级">
+<link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
+</head>
+<body>
+
+<div class="announce-bar" id="announceBar" style="display:none">
+  <div class="container announce-inner"><span id="announceText"></span><button class="announce-close" id="announceClose" aria-label="关闭">✕</button></div>
+</div>
+
+<header class="site-nav">
+  <div class="container nav-inner">
+    <a class="brand" href="#/">
+      <span class="brand-mark">博</span>
+      <span id="brandName">博浩英语<small>CET-6 · 学习平台</small></span>
+    </a>
+    <nav class="nav-links" id="navLinks">
+      <a href="#/">首页</a>
+      <a href="#/vocab">词汇</a>
+      <a href="#/listening">听力</a>
+      <a href="#/reading">阅读</a>
+      <a href="#/writing">写作</a>
+      <a href="#/translation">翻译</a>
+      <a href="#/exam">备考</a>
+    </nav>
+    <div class="nav-actions">
+      <a class="btn btn-soft btn-sm nav-me" href="#/me" id="navMeBtn">📊 我的</a>
+      <button class="icon-btn" id="themeToggle" title="切换主题" aria-label="切换主题"><span id="themeSun">☀️</span><span id="themeMoon" style="display:none">🌙</span></button>
+      <button class="icon-btn nav-toggle" id="navToggle" title="菜单" aria-label="菜单">☰</button>
+    </div>
+  </div>
+</header>
+
+<main id="view" class="view-main">
+  <div class="boot-screen"><div class="boot-logo">博</div><p>博浩英语 · 加载中…</p></div>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="foot-grid">
+      <div>
+        <div class="foot-brand"><span class="brand-mark">博</span><span id="footBrand">博浩英语</span></div>
+        <p class="foot-note" id="footNote"></p>
+        <p style="margin-top:14px"><span class="founder-line">❤️ 由 <b id="footFounder">文博浩</b> 创立</span></p>
+      </div>
+      <div>
+        <h4>学习模块</h4>
+        <a href="#/vocab">核心词汇</a>
+        <a href="#/listening">听力精听</a>
+        <a href="#/reading">阅读实战</a>
+        <a href="#/writing">写作模板</a>
+      </div>
+      <div>
+        <h4>更多内容</h4>
+        <a href="#/translation">翻译秘籍</a>
+        <a href="#/exam">备考中心</a>
+        <a href="#/me">个人数据</a>
+        <a href="#/">首页</a>
+      </div>
+      <div>
+        <h4>关于</h4>
+        <a href="#/me">学习记录云端同步</a>
+        <a href="#/admin">后台管理（管理员）</a>
+        <a href="javascript:void(0)" id="footContact">建议与反馈</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© <span id="yearNow">2026</span> <span id="footBrand2">博浩英语</span> · 创始人：<b style="color:#fff" id="footFounder2">文博浩</b> · 保留所有权利</span>
+      <span>Made with <span class="heart">♥</span> for CET-6 fighters</span>
+    </div>
+  </div>
+</footer>
+
+<button class="back-top" id="backTop" title="回到顶部" aria-label="回到顶部">↑</button>
+
+<div class="modal-mask" id="modalMask" style="display:none">
+  <div class="modal" id="modalBox"></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="assets/js/core.js"></script>
+<script src="assets/js/static.js"></script>
+<script src="assets/js/home.js"></script>
+<script src="assets/js/vocab.js"></script>
+<script src="assets/js/listening.js"></script>
+<script src="assets/js/reading.js"></script>
+<script src="assets/js/writing.js"></script>
+<script src="assets/js/translation.js"></script>
+<script src="assets/js/exam.js"></script>
+<script src="assets/js/dashboard.js"></script>
+<script src="assets/js/admin.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", function () {
+    navigator.serviceWorker.register("sw.js").catch(function (err) { console.warn("SW register failed", err); });
+  });
+}
+</script>
+</body>
+</html>
