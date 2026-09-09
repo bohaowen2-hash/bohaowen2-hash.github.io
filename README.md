@@ -85,3 +85,29 @@ archive/static-v1/     v1 纯静态版归档（GitHub Pages 可用，含原「�
 - **电脑 Chrome/Edge**：地址栏右侧出现安装图标 → 点击“安装”。
 
 如需发布到应用商店（App Store / 应用市场）或直接分发安装包，可用 Capacitor 把本前端打包成 Android/iOS 原生壳（仓库已保持纯静态前端结构，便于包装）；发布商店需要你本人注册开发者账号（Apple Developer / Google Play），我可以帮你搭建 Capacitor 工程与打包脚本。
+
+## 🌍 如何在 GitHub 公开（分步指引）
+
+> 你的网站是动态版（Node + 数据库），GitHub 只能托管“代码/静态页”。正确组合：**代码公开到 GitHub + Render 在线运行**（免费额度），或**让博浩把 v2 打包成纯静态版后托管在 GitHub Pages**。
+
+### 第 1 步：注册 GitHub（需你本人，约 2 分钟）
+1. 打开 https://github.com/signup → 点 “Sign up with Google” 或邮箱注册；
+2. 按提示完成邮箱/验证码验证（这一步我无法代办，也不应代办）。
+
+### 第 2 步：新建公开仓库（1 分钟）
+1. 登录后点右上角 **+ → New repository**；
+2. Repository name 填 `bohao-cet6`（可改）；
+3. 可见性选 **Public**；
+4. ⚠️ 不要勾选 “Add a README file”（仓库里已有）；
+5. 点 **Create repository**，然后复制页面显示的 `https://github.com/你的用户名/bohao-cet6.git` 地址。
+
+### 第 3 步：一键推送（把仓库地址发我也行）
+在本目录运行（PowerShell）：
+```powershell
+.\推送到GitHub.ps1 -Url https://github.com/你的用户名/bohao-cet6.git
+```
+首次推送会弹出浏览器让 **你本人登录授权**；完成后代码即公开。
+
+### 第 4 步：让网站真正在线（二选一，把选择告诉博浩）
+- **A（推荐）在线动态版**：用 GitHub 账号登录 https://render.com → New → Web Service → 连接 `bohao-cet6` 仓库 → Start Command 填 `node server.js` → 部署后得到固定网址 `https://xxx.onrender.com`（此链接可长期转发，不依赖你的电脑）。
+- **B 免费静态版**：让博浩把 v2 词库/素材打包成纯静态数据包，发布到 GitHub Pages（固定网址、完全免费；代价：个人学习记录只在各自浏览器本地保存、无后台管理）。
