@@ -19,6 +19,7 @@ BH.reg("me", async function (view) {
       '<p>' + (BH.STATIC ? (isGuest ? "当前为游客模式，学习记录保存在本机浏览器。注册后会**自动**把游客记录迁移到新账号；请勿清理浏览器数据。" : "学习记录保存在本机浏览器；请勿清理浏览器数据。") : (isGuest ? "当前为游客模式，学习记录已云端保存。注册后游客数据将自动迁移到新账号。" : "学习记录已云端同步，换设备登录同一账号即可继续。")) + '</p>' +
       '<div class="toolbar" style="margin-top:6px">' +
         '<button class="btn btn-primary" id="checkinBtn">✅ ' + (stats.checkedToday ? "今日已打卡" : "今日打卡") + '</button>' +
+        '<button class="btn btn-soft" id="posterBtn">🖼️ 打卡海报</button>' +
         (isGuest ? '<button class="btn btn-soft" id="openAuth">🔐 注册 / 登录账号</button>' : '<button class="btn btn-ghost" id="changePw">🔑 修改密码</button>') +
         '<button class="btn btn-ghost" id="logoutBtn">🚪 退出登录</button>' +
       '</div></div>' +
@@ -30,6 +31,7 @@ BH.reg("me", async function (view) {
         '<div class="dash-card"><span class="dc-ico">🎯</span><div class="dc-num">' + stats.accuracy + '<span style="font-size:.5em">%</span></div><div class="dc-lbl">自测正确率 · ' + stats.activityCount + ' 次练习</div></div>' +
       '</div>' +
       '<div id="dueWrap" style="margin-top:14px"></div>' +
+      '<div id="clsWrap" style="margin-top:14px"></div>' +
     '</div></section>' +
 
     '<section class="section tight" style="padding-top:26px"><div class="container">' +
@@ -63,7 +65,14 @@ BH.reg("me", async function (view) {
     var dn = stats.memory.due || 0;
     dueWrap.innerHTML = dn > 0 ? "<div class='callout warn' style='margin:0;display:flex;align-items:center;gap:12px;flex-wrap:wrap'><span style='flex:1'>⏰ 今日待复习 <b>" + dn + "</b> 个单词（记忆曲线已帮你排好）</span><a class='btn btn-primary btn-sm' href='#/vocab?mode=review'>去复习 →</a></div>" : "<div class='callout good' style='margin:0'>🎉 今日待复习 0 词，全部完成，继续保持！</div>";
   }
-  /* 打卡 */
+  /* 打卡海报 */
+  var posterBtn = document.getElementById("posterBtn");
+  if (posterBtn) posterBtn.onclick = async function () {
+    BH.toast("正在生成海报…");
+    var url = await BH.buildShare({ title: [{ text: "连续打卡 " + stats.streak + " 天", color: "#db2777" }], lines: [ { text: "已掌握 " + stats.knownCount + " 词", font: "800 32px sans-serif" }, { text: "累计打卡 " + stats.checkinCount + " 天 · 正确率 " + stats.accuracy + "%", color: "#6d28d9", font: "600 26px sans-serif" }, { text: "一起学六级，每天进步一点点 ✨", color: "#7c3aed", font: "600 24px sans-serif" } ], footer: "wbh · 博浩英语 CET-6" });
+    BH.modal("<h3>🖼️ 我的打卡海报</h3><div style='text-align:center'><img src='" + url + "' style='max-width:100%;max-height:70vh;border-radius:16px'></div><div class='btn-row' style='justify-content:center;margin-top:12px'><a class='btn btn-primary' download='bohao-checkin.png' href='" + url + "'>⬇️ 下载图片</a><button class='btn btn-ghost' data-close>关闭</button></div><p class='muted' style='text-align:center;font-size:12px'>手机可长按图片保存，直接发朋友圈/小红书</p>");
+  };
+    /* 打卡 */
   document.getElementById("checkinBtn").onclick = async function () {
     try {
       await BH.authed("/api/me/checkin", { method: "POST", body: {} });
@@ -240,4 +249,28 @@ BH.reg("me", async function (view) {
       } catch (e) { BH.toast(e.message); }
     };
   }
+  renderClass();
+  async function renderClass() {
+    var wrap = document.getElementById("clsWrap"); if (!wrap) return;
+    if (BH.STATIC) { wrap.innerHTML = "<div class='panel'><h3>🏫 班级 / 组队</h3><p class='muted' style='margin:0'>班级组队需要“真账号”（动态版）功能：请打开动态版注册后使用，可让老师建班、学生加入、查看学情。</p></div>"; return; }
+    try {
+      var info = await BH.authed("/api/me/class");
+      if (!info.joined) {
+        wrap.innerHTML = "<div class='panel'><h3>🏫 班级 / 组队</h3><p class='muted' style='margin:0 0 10px'>老师可创建班级生成“班级码”，学生输入班级码加入，老师可查看成员学习概况。</p>" +
+          "<div class='toolbar'><input type='text' id='clsCode' placeholder='输入班级码，如 BHXXXX' maxlength='8' style='max-width:210px'><button class='btn btn-primary btn-sm' id='clsJoin'>加入班级</button></div>" +
+          "<div class='hr-grad' style='margin:14px 0'></div>" +
+          "<div class='toolbar'><input type='text' id='clsName' placeholder='新班级名称（可选）' style='max-width:210px'><button class='btn btn-soft btn-sm' id='clsCreate'>✚ 创建班级</button></div>" +
+          "<p class='muted' style='font-size:12px;margin:8px 0 0'>创建后你就是班级老师，可查看成员概览。</p></div>";
+        document.getElementById("clsJoin").onclick = async function () { var code = document.getElementById("clsCode").value.trim(); if (!code) { BH.toast("请输入班级码"); return; } try { await BH.authed("/api/me/class/join", { method: "POST", body: { code: code } }); BH.toast("已加入班级 ✅"); renderClass(); } catch (e) { BH.toast(e.message); } };
+        document.getElementById("clsCreate").onclick = async function () { var name = document.getElementById("clsName").value.trim(); try { var r = await BH.authed("/api/me/class/create", { method: "POST", body: { name: name } }); BH.toast("班级已创建，班级码：" + r.code); renderClass(); } catch (e) { BH.toast(e.message); } };
+      } else {
+        var j = info.joined;
+        wrap.innerHTML = "<div class='panel'><h3>🏫 我的班级</h3><p style='margin:0 0 6px'><b>" + s(j.name) + "</b> <span class='tag'>班级码：" + s(j.code) + "</span> " + (j.isTeacher ? "<span class='badge green'>我是老师</span>" : "<span class='tag'>我是学生</span>") + "</p>" +
+          (j.isTeacher ? "<div class='btn-row'><button class='btn btn-soft btn-sm' id='clsMembers'>👥 查看成员学情</button></div><div id='clsMemberList'></div>" : "<p class='muted' style='font-size:12px;margin:0'>努力打卡、认真学习，让老师看到你的进步吧！</p>") + "</div>";
+        var mb = document.getElementById("clsMembers");
+        if (mb) mb.onclick = async function () { try { var m = await BH.authed("/api/me/class/members"); var box = document.getElementById("clsMemberList"); box.innerHTML = "<div class='table-wrap' style='margin-top:10px'><table><thead><tr><th>成员</th><th>打卡</th><th>掌握词</th></tr></thead><tbody>" + m.rows.map(function (r) { return "<tr><td>" + s(r.name) + "</td><td>" + r.checkins + "</td><td>" + r.known + "</td></tr>"; }).join("") + "</tbody></table></div>"; } catch (e) { BH.toast(e.message); } };
+      }
+    } catch (e) { wrap.innerHTML = "<div class='panel'><h3>🏫 班级 / 组队</h3><p class='muted' style='margin:0'>加载失败：" + s(e.message) + "</p></div>"; }
+  }
+
 });

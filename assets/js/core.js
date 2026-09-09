@@ -265,7 +265,27 @@ var BH = window.BH = {
   BH.api = api; BH.authed = authed; BH.ensureGuest = ensureGuest;
   BH.setSession = setSession; BH.clearSession = clearSession;
   BH.updateNavUser = updateNavUser;
+  async function buildShare(o) {
+    var W=640,H=860,cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+    var x=cv.getContext('2d');
+    var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#fdf2f8'); g.addColorStop(1,'#ede9fe');
+    x.fillStyle=g; x.fillRect(0,0,W,H);
+    x.strokeStyle='rgba(244,114,182,.5)'; x.lineWidth=6; x.strokeRect(18,18,W-36,H-36);
+    x.fillStyle='#9d174d'; x.font='700 26px sans-serif'; x.fillText('📚 博浩英语 CET-6', 44, 78);
+    var im=new Image(); im.src=o.img||'assets/icons/icon-192.png'; await new Promise(function(r){ im.onload=r; im.onerror=r; });
+    var cr=64; x.save(); x.beginPath(); x.arc(W-140,90,cr,0,Math.PI*2); x.clip(); x.fillStyle='#fff'; x.fillRect(W-140-cr,90-cr,cr*2,cr*2);
+    var s=Math.min(im.width,im.height); x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,W-140-cr,90-cr,cr*2,cr*2); x.restore();
+    x.textAlign='center';
+    var ty=230;
+    (o.title||[]).forEach(function(t){ x.fillStyle=t.color||'#1e1b4b'; x.font=(t.font||'900 46px sans-serif'); x.fillText(t.text, W/2, ty); ty+=60; });
+    ty+=16; x.fillStyle='#7c3aed'; x.beginPath(); x.moveTo(W/2-70,ty); x.lineTo(W/2+70,ty); x.lineWidth=4; x.stroke();
+    ty+=46;
+    (o.lines||[]).forEach(function(t){ x.fillStyle=t.color||'#3f3f6d'; x.font=(t.font||'600 30px sans-serif'); x.fillText(t.text, W/2, ty); ty+=48; });
+    x.fillStyle='#a0718a'; x.font='600 22px sans-serif'; x.fillText(o.footer||'wbh · 六级学习平台', W/2, H-60);
+    return cv.toDataURL('image/png');
+  }
   BH.reg = function (name, fn) { BH.routes[name] = fn; };
+  BH.buildShare = buildShare;
   BH.render = function (id, html) { document.getElementById(id).innerHTML = html; };
   BH.refresh = route;            // 无刷新重绘当前路由（SPA）
   BH.reloadSite = loadSite;       // 重新拉取站点文案（无需整页刷新）
