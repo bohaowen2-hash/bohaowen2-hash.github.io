@@ -221,7 +221,9 @@ var BH = window.BH = {
     window.addEventListener("scroll", function () { bt.classList.toggle("show", window.scrollY > 500); });
     bt.onclick = function () { window.scrollTo({ top: 0, behavior: "smooth" }); };
     var y = document.getElementById("yearNow"); if (y) y.textContent = new Date().getFullYear();
-    document.getElementById("footContact").onclick = function () { modal("<h3>📮 建议与反馈</h3><p class='muted'>感谢你对博浩英语的支持！你的每一条建议都会帮助我们把平台做得更好。</p><p>联系创始人wbh：<br><b>" + esc((BH.site && BH.site.contact) || "wbh@bohaoenglish.cn") + "</b></p><p style='text-align:right'><button class='btn btn-primary' data-close>知道了</button></p>"); };
+      document.getElementById("footContact").onclick = function () { var mail = (BH.site && BH.site.contact) || "wbh@bohaoenglish.cn"; modal("<h3>📮 建议与反馈</h3><p class='muted'>你的每一条建议都会让平台变得更好：功能问题、错词纠错、新功能想法都可以告诉我们。</p><p>反馈邮箱：<b>" + esc(mail) + "</b></p><div class='btn-row' style='justify-content:flex-end'><a class='btn btn-primary' href='mailto:" + mail + "?subject=%E5%8D%9A%E6%B5%A9%E8%8B%B1%E8%AF%AD%E5%BB%BA%E8%AE%AE%E5%8F%8D%E9%A6%88'>✉️ 发送邮件</a><button class='btn btn-ghost' data-close>关闭</button></div>"); };
+  var fl = document.getElementById("footLog");
+  if (fl) fl.onclick = function () { var logs = ["v2.7 · 角色画廊 + 自定义角色 + 新 App 图标", "v2.6 · 拼写检验（看中文拼英文）", "v2.5 · 隐私保护：署名 wbh", "v2.4 · 记忆曲线/续背/五步法示例/二次元轻背景/本机账号", "v2.3 · 7000 词·高中低频·词根形近·AI 作文批改·翻译 300 题库", "v2.2 · 卡通可爱 UI", "v2.0 · 动态版：后台/云端记录/个人中心"]; modal("<h3>📦 更新日志</h3><ul class='tick'>" + logs.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul><p style='text-align:right'><button class='btn btn-primary' data-close>知道了</button></p>"); };
     document.addEventListener("click", function (e) { var b = e.target && e.target.closest ? e.target.closest("[data-copy]") : null; if (b) copyText(b.getAttribute("data-copy")); });
     var mw = document.getElementById("mascotWrap");
     if (mw) {
