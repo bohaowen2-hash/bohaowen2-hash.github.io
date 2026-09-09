@@ -40,6 +40,7 @@ C) Digital life could replace human civilization.
 D) There could be jobs nobody wants to do.
 8. A) It will be smarter than 1human beings. C) It will take away humans' jobs altogether.
 B) Chips will be inserted in human brains. D) Life will become like a science fiction film.
+
 Section B
 Directions: In this section, you will hear two passages. At the end of each passage, you will hear three or
 four questions. Both the passage and the questions will be spoken only once . After you hear a question , you
@@ -58,13 +59,13 @@ Questions 12 to 1S are based on the �ge you have just heard.
 B) She was uninterested in advertising. D) She was unhappy with fashion trends.
 13. A) To save the expenses on clothing.
 B) To keep up with the current trends.
-C) To meet the expectations of fashion-consci01: JS clients.
+C) To meet the expectations of fashion-consci01:JS clients.
 D) To save the trouble of choosing a unique outfit every day.
 14. A) It boosts one's confidence when looking for employment.
 B) It matters a lot in jobs involving interaction with others.
 C) It helps people succeed in whatever they are doing.
 D) It enhances people's ability to work independently.
-15. A) Design their own uniform to appear unique. C) Do whatever is possible to look . smart.
+15. A) Design their own uniform to appear unique. C) Do whatever is possible to look .smart.
 •
 B) Fight the ever-changing trends in fashion. D) Wear classic pieces to impress their clients.
 Section C
@@ -88,6 +89,7 @@ D) Over 10% of the respondents lied about the distance they drove.
 B) They wanted to protect their reputation. D) They responded to colleagues' suspicion.
 21. A) They seem positive. C) They seem intuitive.
 B) They are illustrative. D) They are conclusive.
+
 Questions 22 to 25 are based on the recording you have just heard.
 22. Older people's aversion to new music. C) Insights into the features of good music.
 A)
@@ -116,7 +118,7 @@ words in the bank more than once.
 The idea of taxing things that are bad for society has a powerful allure. It offers the possibility of a
 double benefit-�- harmful activities, while also providing the government with revenue.
 Take sin taxes. Taxes on alcohol make it more expensive to get drunk, which reduces excessive
-drinking and ___'! J_ driving. At the same time, they provide state and local governments with billions
+drinking and ___'!J_ driving. At the same time, they provide state and local governments with billions
 _
 of dollars of revenue. Tobacco taxes, which generate more than twice as much, have proven _28_ in
 the decline of smoking, which has saved millions of lives.
@@ -133,7 +135,7 @@ Similarly, a wealth tax has been put forward as a way to reduce inequality while
 revenue from this tax, which some experts 33 will be over $ 4 trillion per decade, would be
 designated for housing, child care, health care and other government benefits. If you believe, as many
 do, that wealth inequality is 34 bad, then these taxes improve society while also _35_
-government coffers ( ½ . 4).
+government coffers ( ½ .4).
 A) discouraging imprisoned merging
 F) K)
 B) dividend G) incentives L) predict
@@ -141,13 +143,14 @@ C) emotional H) inherently M) probably
 D) fragments I) initially N) pump
 E) impaired instrumental 0) swelling
 J)
+
 Section B
-Directions: In this section, you are going to read a passage with ten statements attached to it. F. ach
+Directions: In this section, you are going to read a passage with ten statements attached to it. F.ach
 statement contains information given in one of the paragraphs. Identify the paragraph from which the
-information is derived. You may choose a paragraph more than once. F. ach paragraph is marked with a
+information is derived. You may choose a paragraph more than once. F.ach paragraph is marked with a
 letter. Answer the questions by marking the corresponding letter on Answer Sheet 2.
 The Challenges for Artificial Intelligence in Agriculture
-A) A group of corn farmers stands huddled around an agronomist <*! lfr �) and his computer on the side
+A) A group of corn farmers stands huddled around an agronomist <*!lfr �) and his computer on the side
 of an irrigation machine in central South Africa. The agronomist has just flown over the field with a
 hybrid unmanned aerial vehicle (UAV) that takes off and lands using propellers yet maintains distance
 and speed for scanning vast hectares of land through the use of its fixed wings.
@@ -190,6 +193,7 @@ them in making real-time decisions in the field.
 Interviews with some of the IBM project team members at the time revealed that the team believed it
 J)
 was entirely possible to "algorithm" agriculture, meaning that algorithms could solve any problem in
+
 the world. Earlier that year, IBM's cognitive learning system, Watson, competed in the game
 Jeopardy against former winners Brad Rutter and Ken Jennings with astonishing results. Several years
 later, Watson went on to produce ground-breaking achievements in the field of medicine.
@@ -205,7 +209,7 @@ ecosystem environment. But these ecosystems are not contained. They are subject 
 occurrences such as weather systems, which impact upon hemispheres as a whole, and from continent
 to continent. Therefore, understanding how to manage an agricultural environment means taking
 literally many hundreds if not thousands of factors into account.
-M)What may occur with the same seed and fertilizer program in the United States' Midwest region is
+M) What may occur with the same seed and fertilizer program in the United States' Midwest region is
 almost certainly unrelated to what may occur with the same seed and fertilizer program in Australia or
 South Africa. A few factors that could impact on variation would typically include the measurement of
 rain per unit of a crop planted, soil type, patterns of soil degradation, daylight hours, temperature and
@@ -238,6 +242,7 @@ difference to the grower, where it really counts.
 chemicals to their fields.
 37. Agriculture differs from the medical science of the human body in that its environment is not a
 contained one.
+
 38. The agronomist is sure that he will obtain a near accurate count of plant population with his software.
 39. The application of artificial intelligence to agriculture is much more challenging than to most other
 industries.
@@ -252,7 +257,7 @@ fields.
 Section C
 Directions: There are 2 passages in' this section. &eh passage is followed by some questions or unfinished
 statements. For each of them there are four choices marked A) , B) , C) and D) . You should decide on the
-best choice and mark the corresponding. letter on Answer Sheet 2 with a single line through the centre.
+best choice and mark the corresponding.letter on Answer Sheet 2 with a single line through the centre.
 Passage One
 Questions 46 to SO are based on the following p�ge.
 What is the place of art in a culture of inattention? Recent visitors to the Louvre report that tourists
@@ -278,7 +283,7 @@ Olafur Eliasson's current Tate Modem show, for instance, might seem nothing more
 entertainment, overrun as it is with kids romping. ( 1'i: lifi] ��4@-) in fog rooms and spray mist installations.
 But it's more than that: where Eliasson is at his most entertaining, he is at his most serious too, and his
 disorienting installations bring home· the reality of the destructive effects we are having on the planet-not
-•least what we are doing to the glaciers of Eliasson's beloved Iceland.
+• least what we are doing to the glaciers of Eliasson's beloved Iceland.
 Marcel Proust, another lover of the Louvre, wrote: "It is only through art that we can escape from
 ourselves and know how another person sees the universe, whose landscapes would otherwise have
 remained as unknown as any on the moon." If any art remains worth seeing,· it must lead us to such
@@ -286,6 +291,7 @@ escapes. But a minute in front of a painting in a hurried crowd won't do that.
 46. What does the scene at the Louvre demonstrate according to the author?
 A) The enormous appeal of a great piece of artistic work to tourists.
 B) The near impossibility of appreciating art in an age of mass tourism.
+
 C) The ever-growing commercial value of long-cherished artistic works.
 D) The real difficulty in getting a glimpse at a masterpiece. amid a crowd.
 4 7. Why did the late philosopher Richard Wollheim spend four hours before a picture?
@@ -333,6 +339,7 @@ report, released last February. Miriam Nelson chaired the subcommittee in charge
 report, and is disappointed that eating less meat and buying local food aren't in the final product.
 "Especially if you consider that eating less meat, especially red and processed, has health benefits," she
 says.
+
 So what happened? The official response is that sustainability falls too far outside the guidelines'
 official scope, which is to provide "nutritional and dietary information."
 Possibly the agencies in charge of drafting the decisions are too close to the industries they are
@@ -342,7 +349,7 @@ The line about keeping the guidelines' scope to nutrition and diet doesn't ring 
 researchers. David Wallinga, for example, says, "In previous guidelines, they've always been concerned
 with things like food security-which is presumably the mission of the USDA. You absolutely need to be
 worried about climate impacts and future sustainability if you want secure food in the future."
-51. Why are some researchers irritated at the USDA's 2016 -2020 Dietary Guidelines?
+51. Why are some researchers irritated at the USDA's 2016 - 2020 Dietary Guidelines?
 A) It ignores the harmful effect of red meat and processed food on health.
 B) Too much emphasis is given to-eating less meat and buying local food.
 C) The dietary recommendations are not based on medical science.
@@ -366,7 +373,7 @@ C) Its close ties with the agriculture companies.
 D) Its alleged failure to regulate the industries.
 55. What should the USDA do to achieve food security according to David Wallinga?
 A) Give top priority to things like nutrition and food security.
-B). Endeavor to ensure the sustainable development of agriculture.
+B) .Endeavor to ensure the sustainable development of agriculture.
 C) Fulfill its mission by closely cooperating with the industries.
 D) Study the long-term impact of climate change on food production.
 Part N Translation ( 30 minutes)
