@@ -77,7 +77,19 @@ BH.reg("home", async function (view) {
         '<div class="mini-card"><div style="font-size:28px">☁️</div><h4>云端同步</h4><p class="muted" style="font-size:13px">注册账号后，换设备也能接着学。</p></div>' +
       '</div>' +
     '</div>' +
-  '</section>' ;
+
+  '</section>' +
+  '<section class="section" style="background:var(--grad-soft)">' +
+    '<div class="container">' +
+      '<div class="sec-head"><span class="eyebrow">Gallery</span><h2>🎨 角色画廊</h2><p>我的作品墙：点开看大图，右下角的小家伙也会依次变身成它们～</p></div>' +
+      '<div class="grid g-auto">' +
+        ['t1','t2','t3','t4','t5'].map(function(t,i){ return "<div class='art-card' style='cursor:pointer;border-radius:16px;overflow:hidden;border:2px solid var(--line);box-shadow:var(--shadow-sm);background:var(--surface)' data-src='assets/img/mascots/mascot"+(i+1)+".jpg'><img src='assets/img/gallery/"+t+".jpg' alt='角色' style='width:100%;display:block;aspect-ratio:3/4;object-fit:cover'><div style='padding:7px 12px;font-weight:800;font-size:13px'>角色 "+(i+1)+"</div></div>"; }).join('') +
+      '</div>' +
+    '</div>' +
+  '</section>';
+
+  document.querySelectorAll(".art-card").forEach(function(card){ card.onclick=function(){ var s=card.getAttribute('data-src'); BH.modal("<div style='text-align:center'><img src='"+s+"' style='max-width:100%;border-radius:14px' alt='作品'><p class='muted' style='margin-top:10px'>点空白处关闭</p></div>"); }; });
+
 
   function mod(href, ico, title, desc, go) {
     return '<a class="card clickable" href="' + href + '"><div class="ico">' + ico + '</div><h3>' + title + '</h3><p>' + s(desc) + '</p><span class="go">' + go + ' →</span></a>';
