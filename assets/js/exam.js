@@ -260,8 +260,9 @@ BH.reg("exam", async function (view) {
     var slice = rows.slice(page * per, (page + 1) * per);
     document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
+    zone.querySelectorAll("[data-exc]").forEach(function (bx) { bx.onclick = function () { openExcerpt(decodeURIComponent(bx.getAttribute("data-exc"))); }; });
     zone.innerHTML = slice.length ? slice.map(function (e) {
-      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button></div>";
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button></div>";
     }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
   }
 
@@ -272,6 +273,19 @@ BH.reg("exam", async function (view) {
     fetch(txtFile).then(function (r) { if (!r.ok) throw new Error("未找到文本"); return r.text(); }).then(function (txt) {
       BH.modal("<h3>📄 " + (String(file).replace(/\.pdf$/i, "")) + " · 原文文本</h3><div style='text-align:right'><a class='btn btn-soft btn-sm' download='" + encodeURIComponent(String(file).replace(/\.pdf$/i, "")) + ".txt' href='" + txtFile + "'>⬇️ 下载文本</a><button class='btn btn-ghost btn-sm' data-close>关闭</button></div><pre style='max-height:60vh;overflow:auto;background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:14px;white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7'>" + esc(txt) + "</pre>");
     }).catch(function (e) { BH.toast("全文加载失败：" + e.message); });
+  }
+
+
+  function openExcerpt(file) {
+    fetch("data/excerpts.json").then(function (r) { return r.json(); }).then(function (list) {
+      var e = list.filter(function (x) { return x.file === file; })[0];
+      if (!e) { BH.toast("未找到该套题干"); return; }
+      BH.modal("<h3>✍️ " + String(file).replace(/\.pdf$/i, "") + " · 写作 / 翻译题干</h3>" +
+        "<div class='panel' style='margin-bottom:10px'><h3>📝 Writing</h3><pre style='white-space:pre-wrap;font-family:inherit;font-size:13.5px;margin:0;background:var(--bg-soft);padding:10px;border-radius:10px'>" + esc(e.writing || "（未提取到）") + "</pre></div>" +
+        "<div class='panel'><h3>🔄 Translation</h3><pre style='white-space:pre-wrap;font-family:inherit;font-size:13.5px;margin:0;background:var(--bg-soft);padding:10px;border-radius:10px'>" + esc(e.translation || "（未提取到）") + "</pre></div>" +
+        "<p style='text-align:right'><button class='btn btn-primary' data-close>关闭</button></p>", true);
+      document.querySelector(".modal").classList.add("wide");
+    }).catch(function (err) { BH.toast("题干加载失败：" + err.message); });
   }
 
   refreshTom();
