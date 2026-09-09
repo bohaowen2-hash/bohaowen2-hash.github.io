@@ -203,6 +203,7 @@ var BH = window.BH = {
     window.scrollTo({ top: 0 });
     try {
       await fn(view, r.params);
+      try { var tUrl = BH.STATIC ? "https://bohaowen2-hash-github-io.onrender.com/api/track" : "/api/track"; BH.api(tUrl, { method: "POST", body: { type: "view", module: r.name || "home" } }); } catch (e) {}
     } catch (e) {
       console.error("ROUTE_ERR", e && (e.stack || e.message));
       view.innerHTML = "<div class='container section' style='text-align:center'><h2>😢 加载失败</h2><p class='muted'>" + esc(e.message) + "</p><button class='btn btn-primary' onclick='location.reload()'>刷新重试</button></div>";

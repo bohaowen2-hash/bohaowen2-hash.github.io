@@ -77,9 +77,13 @@ BH.reg("admin", async function (view) {
     var html = "<div class='ov-grid'>" +
       ov(d.counts.words, "词库单词", "📖") + ov(d.counts.phrases, "词组搭配", "🔗") + ov(d.counts.content, "备考素材", "🧩") +
       ov(d.counts.units, "学习单元", "🗂️") + ov(d.counts.users, "注册用户", "👥") + ov(d.activityTotal, "累计练习", "🏃") + ov(d.knownTotal, "云端掌握标记", "🧠") +
+      ov((d.analytics && d.analytics.views) || 0, "累计访问", "📈") +
+      ov((d.analytics && d.analytics.todayViews) || 0, "今日访问", "🔥") +
       "</div><div class='panel' style='margin-top:18px'><h3>素材分布</h3><div class='chip-group'>" +
       Object.keys(d.byCat || {}).map(function (c) { return "<span class='tag'>" + s(CAT_CN[c] || c) + "：" + d.byCat[c] + "</span>"; }).join("") +
-      "</div><p class='muted' style='font-size:12.5px;margin-top:10px'>提示：服务器首次启动时自动从 data/seed 播种；所有改动保存在 data/db.json，请定期备份该文件。</p></div>";
+      "</div>" +
+      (d.analytics && Object.keys(d.analytics.modules || {}).length ? "<div class='chip-group' style='margin-top:8px'>模块访问：" + Object.keys(d.analytics.modules).sort(function (x, y) { return d.analytics.modules[y] - d.analytics.modules[x]; }).slice(0, 6).map(function (k) { return "<span class='tag'>" + k + "：" + d.analytics.modules[k] + "</span>"; }).join("") + "</div>" : "") +
+      "<p class='muted' style='font-size:12.5px;margin-top:10px'>提示：统计为匿名页级数据（无 Cookie、不含个人信息）。服务器首次启动自动播种；改动保存在 data/db.json，请定期备份。</p></div>";
     m.innerHTML = html;
     function ov(n, t, ic) { return "<div class='ov-card'><span style='font-size:20px'>" + ic + "</span><span class='n'>" + n + "</span><span class='t'>" + t + "</span></div>"; }
   }

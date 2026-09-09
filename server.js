@@ -42,7 +42,7 @@ function emptyDb() {
     meta: { version: 2, created: new Date().toISOString() },
     settings: defaultSettings(),
     users: [],
-    units: [], words: [], phrases: [], content: [], classes: [],
+    units: [], words: [], phrases: [], content: [], classes: [], track: { views: 0, days: {} },
     counters: { id: 1, cid: 1 }
   };
 }
@@ -56,6 +56,7 @@ function loadDb() {
     if (!db.phrases) db.phrases = [];
     if (!db.content) db.content = [];
     if (!db.classes) db.classes = [];
+    if (!db.track || typeof db.track !== "object") db.track = { views: 0, days: {} };
     if (!db.counters) db.counters = { id: 1, cid: 1 };
     (db.users || []).forEach(u => { if (!Array.isArray(u.reviews)) u.reviews = []; });
     if (db.meta && db.meta.version < 2) db.settings = Object.assign(defaultSettings(), db.settings || {});
@@ -169,6 +170,15 @@ function reviewSummary(u) {
   plan.forEach(p => { p.count = counts[p.date] || 0; });
   return { due: rs.filter(r => !r.due || r.due <= today).length, plan };
 }
+function trackSummary() {
+  const t = db.track || { views: 0, days: {} };
+  const days = t.days || {};
+  const totalDays = Object.keys(days).length;
+  const mods = {};
+  Object.keys(days).forEach(k => { const dm = days[k].modules || {}; Object.keys(dm).forEach(m => { mods[m] = (mods[m] || 0) + dm[m]; }); });
+  const today = days[dateStr(new Date())] || { views: 0 };
+  return { views: (t.views || 0), todayViews: today.views || 0, totalDays, modules: mods };
+}
 function calcStats(u) {
   const checkins = [...new Set(u.checkins || [])].sort();
   const days = new Set(checkins);
@@ -265,6 +275,21 @@ const server = http.createServer(async (req, res) => {
         examDate: s.examDate, contact: s.contact, footerNote: s.footerNote,
         counts: { units: db.units.length, words: db.words.length, phrases: db.phrases.length, content: db.content.length, users: db.users.length }
       });
+    }
+    if (p === "/api/track" && req.method === "POST") {
+      const b = await readBody(req);
+      db.track.views = (db.track.views || 0) + 1;
+      const today = dateStr(new Date());
+      db.track.days = db.track.days || {};
+      const d = db.track.days[today] || { views: 0, modules: {} };
+      d.views++;
+      const m = String(b.module || "other").slice(0, 24);
+      if (m) d.modules[m] = (d.modules[m] || 0) + 1;
+      db.track.days[today] = d;
+      const keys = Object.keys(db.track.days);
+      if (keys.length > 60) { keys.slice(0, keys.length - 60).forEach(k => delete db.track.days[k]); }
+      scheduleSave();
+      return json(res, 200, { ok: true });
     }
     if (p === "/api/units" && req.method === "GET") return json(res, 200, db.units.slice().sort((a, b) => a.seq - b.seq));
     if (p === "/api/words" && req.method === "GET") {
@@ -481,6 +506,7 @@ const server = http.createServer(async (req, res) => {
         const cats = {};
         db.content.forEach(c => { cats[c.cat] = (cats[c.cat] || 0) + 1; });
         return json(res, 200, {
+          analytics: trackSummary(),
           counts: { users: db.users.length, units: db.units.length, words: db.words.length, phrases: db.phrases.length, content: db.content.length },
           byCat: cats,
           activityTotal: db.users.reduce((s, u) => s + (u.activities || []).length, 0),

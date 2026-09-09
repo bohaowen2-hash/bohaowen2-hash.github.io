@@ -1,8 +1,8 @@
-// 本地 HTTPS CONNECT 代理：github.com 固定走可达 IP 140.82.114.3
+// 本地 HTTPS CONNECT 代理：github.com 固定走可达 IP 140.82.113.3
 "use strict";
 const http = require("http"), net = require("net");
-const PORT = 8899;
-const MAP = { "github.com": "140.82.114.3", "api.github.com": "140.82.114.3", "objects.githubusercontent.com": "140.82.114.3", "raw.githubusercontent.com": "140.82.114.3", "codeload.github.com": "140.82.114.3" };
+const PORT = 8898;
+const MAP = { "github.com": "140.82.113.3", "api.github.com": "140.82.113.3", "objects.githubusercontent.com": "140.82.113.3", "raw.githubusercontent.com": "140.82.113.3", "codeload.github.com": "140.82.113.3" };
 const server = http.createServer((req, res) => { res.writeHead(502); res.end(); });
 server.on("connect", (req, client, head) => {
   const [host, port] = req.url.split(":");
