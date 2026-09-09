@@ -56,6 +56,7 @@ function loadDb() {
     if (!db.phrases) db.phrases = [];
     if (!db.content) db.content = [];
     if (!db.counters) db.counters = { id: 1, cid: 1 };
+    (db.users || []).forEach(u => { if (!Array.isArray(u.reviews)) u.reviews = []; });
     if (db.meta && db.meta.version < 2) db.settings = Object.assign(defaultSettings(), db.settings || {});
     return false;
   }
@@ -105,7 +106,7 @@ function seedIfNeeded(isNew) {
   db.users.push({
     id: nextId(), username: adminName, name: "站长", role: "admin", guest: false,
     salt, pass: scryptHash(adminPass, salt),
-    known: [], wrong: [], checkins: [], activities: [],
+    known: [], wrong: [], checkins: [], activities: [], reviews: [],
     createdAt: new Date().toISOString()
   });
   db.meta.seeded = true;
@@ -135,6 +136,18 @@ function publicUser(u) {
 
 /* ---------------- 学习统计 ---------------- */
 function dateStr(d) { return d.toISOString().slice(0, 10); }
+const REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30];
+function addDaysDate(s, n) { const d = new Date(s + "T00:00:00Z"); d.setUTCDate(d.getUTCDate() + n); return d.toISOString().slice(0, 10); }
+function ensureReviews(u) { if (!Array.isArray(u.reviews)) u.reviews = []; return u.reviews; }
+function reviewSummary(u) {
+  const rs = ensureReviews(u); const today = dateStr(new Date());
+  const plan = [];
+  for (let i = 1; i <= 30; i++) plan.push({ date: addDaysDate(today, i), count: 0 });
+  const counts = {};
+  rs.forEach(r => { const d = (r.due && r.due >= today) ? r.due : today; counts[d] = (counts[d] || 0) + 1; });
+  plan.forEach(p => { p.count = counts[p.date] || 0; });
+  return { due: rs.filter(r => !r.due || r.due <= today).length, plan };
+}
 function calcStats(u) {
   const checkins = [...new Set(u.checkins || [])].sort();
   const days = new Set(checkins);
@@ -184,7 +197,8 @@ function calcStats(u) {
     byType,
     last14,
     heat,
-    recent: acts.slice(-8).reverse()
+    recent: acts.slice(-8).reverse(),
+    memory: reviewSummary(u)
   };
 }
 
@@ -243,12 +257,21 @@ const server = http.createServer(async (req, res) => {
       rows = rows.slice().sort((a, b) => a.seq - b.seq);
       return json(res, 200, { total: rows.length, offset: off, rows: rows.slice(off, off + lim) });
     }
+    if (p === "/api/words/lookup" && req.method === "GET") {
+      const words = (q.get("w") || "").split(",").map(x => x.trim().toLowerCase()).filter(Boolean);
+      if (!words.length) return json(res, 200, { rows: [] });
+      const map = {};
+      db.words.forEach(w => { const k = w.w.toLowerCase(); if (words.indexOf(k) > -1 && !map[k]) map[k] = w; });
+      return json(res, 200, { rows: words.map(k => map[k]).filter(Boolean) });
+    }
     if (p === "/api/words/random" && req.method === "POST") {
       const body = await readBody(req);
       const size = Math.min(80, Math.max(1, parseInt(body.size || "20", 10)));
       const exclude = new Set((body.exclude || []).map(x => String(x).toLowerCase()));
       const unit = body.unit || "";
-      let pool = unit ? db.words.filter(w => w.unit === unit) : db.words;
+      let pool = unit ? db.words.filter(w => w.unit === unit).slice().sort((a, b) => a.seq - b.seq) : db.words;
+      const stt = parseInt(body.start || "0", 10), enn = parseInt(body.end || "0", 10);
+      if (stt >= 1 && enn >= stt) pool = pool.slice(stt - 1, enn);
       pool = pool.filter(w => !exclude.has(w.w.toLowerCase()));
       if (body.onlyWrong) { const wrong = new Set((body.wrong || []).map(x => String(x).toLowerCase())); pool = pool.filter(w => wrong.has(w.w.toLowerCase())); }
       if (!pool.length) return json(res, 200, { rows: [] });
@@ -283,7 +306,7 @@ const server = http.createServer(async (req, res) => {
       if (password.length < 6) return apiError(res, 400, "密码至少 6 位");
       if (db.users.some(u => u.username === username)) return apiError(res, 409, "用户名已被注册");
       const salt = crypto.randomBytes(16).toString("hex");
-      const user = { id: nextId(), username, name, role: "user", guest: false, salt, pass: scryptHash(password, salt), token: crypto.randomBytes(24).toString("hex"), known: [], wrong: [], checkins: [], activities: [], createdAt: new Date().toISOString() };
+      const user = { id: nextId(), username, name, role: "user", guest: false, salt, pass: scryptHash(password, salt), token: crypto.randomBytes(24).toString("hex"), known: [], wrong: [], checkins: [], activities: [], reviews: [], createdAt: new Date().toISOString() };
       db.users.push(user); scheduleSave();
       return json(res, 200, { token: user.token, user: publicUser(user) });
     }
@@ -297,7 +320,7 @@ const server = http.createServer(async (req, res) => {
     }
     if (p === "/api/auth/guest" && req.method === "POST") {
       const username = "guest_" + Date.now().toString(36) + Math.floor(Math.random() * 999).toString(36);
-      const user = { id: nextId(), username, name: "游客", role: "user", guest: true, salt: "", pass: "", token: crypto.randomBytes(24).toString("hex"), known: [], wrong: [], checkins: [], activities: [], createdAt: new Date().toISOString() };
+      const user = { id: nextId(), username, name: "游客", role: "user", guest: true, salt: "", pass: "", token: crypto.randomBytes(24).toString("hex"), known: [], wrong: [], checkins: [], activities: [], reviews: [], createdAt: new Date().toISOString() };
       db.users.push(user); scheduleSave();
       return json(res, 200, { token: user.token, user: publicUser(user) });
     }
@@ -355,6 +378,39 @@ const server = http.createServer(async (req, res) => {
       if (me.activities.length > 5000) me.activities = me.activities.slice(-5000);
       scheduleSave();
       return json(res, 200, { ok: true });
+    }
+    if (p === "/api/me/reviews" && req.method === "GET") {
+      const rs = ensureReviews(me).slice().sort((a, b) => String(a.due || "").localeCompare(String(b.due || "")));
+      const today = dateStr(new Date());
+      return json(res, 200, { dueWords: rs.filter(r => !r.due || r.due <= today), total: rs.length, schedule: reviewSummary(me) });
+    }
+    if (p === "/api/me/reviews/learn" && req.method === "POST") {
+      const b = await readBody(req);
+      const word = String(b.word || "").trim().toLowerCase();
+      if (!word) return apiError(res, 400, "缺少单词");
+      const rs = ensureReviews(me);
+      let e = rs.find(r => r.w === word);
+      if (!e) {
+        e = { w: word, stage: 0, due: addDaysDate(dateStr(new Date()), REVIEW_INTERVALS[0]) };
+        rs.push(e); scheduleSave();
+        return json(res, 200, { ok: true, entry: e });
+      }
+      e.stage = Math.min(e.stage + 1, REVIEW_INTERVALS.length - 1);
+      e.due = addDaysDate(dateStr(new Date()), REVIEW_INTERVALS[e.stage]);
+      scheduleSave();
+      return json(res, 200, { ok: true, entry: e });
+    }
+    if (p === "/api/me/reviews/answer" && req.method === "POST") {
+      const b = await readBody(req);
+      const word = String(b.word || "").trim().toLowerCase();
+      if (!word) return apiError(res, 400, "缺少单词");
+      const rs = ensureReviews(me);
+      let e = rs.find(r => r.w === word);
+      if (!e) { e = { w: word, stage: 0, due: addDaysDate(dateStr(new Date()), 1) }; rs.push(e); }
+      if (b.good === false) { e.stage = 0; e.due = addDaysDate(dateStr(new Date()), 1); }
+      else { e.stage = Math.min(e.stage + 1, REVIEW_INTERVALS.length - 1); e.due = addDaysDate(dateStr(new Date()), REVIEW_INTERVALS[e.stage]); }
+      scheduleSave();
+      return json(res, 200, { ok: true, entry: e });
     }
     if (p === "/api/me/stats" && req.method === "GET") return json(res, 200, calcStats(me));
 

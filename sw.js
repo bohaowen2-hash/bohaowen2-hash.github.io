@@ -1,6 +1,6 @@
 /* 博浩英语 CET-6 · Service Worker（PWA 安装 / 离线壳 / 静态缓存） 创始人：文博浩 */
 "use strict";
-var CACHE = "bohao-cet6-v2.0";
+var CACHE = "bohao-cet6-v3.0";
 var CORE = [
   "/",
   "/index.html",

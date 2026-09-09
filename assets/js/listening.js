@@ -1,4 +1,4 @@
-/* 博浩英语 CET-6 · 听力模块（语料库 / 变速 / 逐句精听 / 理解自测） */
+/* 博浩英语 CET-6 · 听力模块（语料库 300+ / 变速 / 逐句精听 / 理解自测） */
 "use strict";
 BH.reg("listening", async function (view) {
   var s = BH.esc;
@@ -6,15 +6,54 @@ BH.reg("listening", async function (view) {
   if (!items.length) items = [];
   var idx = 0, rate = 0.85;
   var quiz = { qs: [], qi: 0, right: 0 };
+  var lib = { type: "all", q: "", page: 0, per: 12 };
+  var TYPE = {
+    news: { ico: "📰", cn: "短篇新闻" },
+    conversation: { ico: "💬", cn: "长对话" },
+    lecture: { ico: "🎓", cn: "讲座/讲话" }
+  };
+  function typeOf(it) { var t = (it.data || {}).type || "lecture"; return TYPE[t] ? t : "lecture"; }
+  function typeCN(it) { return (TYPE[typeOf(it)] || TYPE.lecture).cn; }
+  function typeIco(it) { return (TYPE[typeOf(it)] || TYPE.lecture).ico; }
+  function filtered() {
+    return items.filter(function (it) {
+      if (lib.type !== "all" && typeOf(it) !== lib.type) return false;
+      if (lib.q) {
+        var hay = (it.title || "") + " " + String((it.data || {}).text || "");
+        if (hay.toLowerCase().indexOf(lib.q.toLowerCase()) < 0) return false;
+      }
+      return true;
+    });
+  }
+
+  var c = { news: 0, conversation: 0, lecture: 0 };
+  items.forEach(function (it) { c[typeOf(it)]++; });
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
       '<div class="sec-head left"><span class="badge">🎧 听力模块 · 文博浩 创立</span>' +
-      '<h2>听力精听训练</h2><p>真题风格新闻与讲座语料 ' + items.length + ' 篇（后台可继续扩充）。支持变速与逐句精听，先听再做，练出耳朵的肌肉记忆。</p></div>' +
-      '<div class="panel player-card">' +
-        '<div class="toolbar"><label class="tag">选择语料</label><select id="psgSel"></select>' +
-        '<label class="tag">语速</label><select id="rateSel"><option value="0.7">🐢 0.7×</option><option value="0.85" selected>🌿 0.85× 推荐</option><option value="1">⚡ 1.0×</option></select>' +
-        '<span class="grow"></span><span class="tag" id="psgType"></span></div>' +
+      '<h2>听力精听训练</h2><p>真题风格语料共 <b>' + items.length + '</b> 篇：短篇新闻 ' + c.news + ' · 长对话 ' + c.conversation + ' · 讲座讲话 ' + c.lecture + '。支持变速与逐句精听，先听再做，练出耳朵的肌肉记忆。</p></div>' +
+
+      '<div class="panel" style="margin-bottom:16px">' +
+        '<div class="toolbar" style="margin-bottom:12px">' +
+          '<span class="tag">按类型筛选</span>' +
+          '<div class="seg" id="typeFilter">' +
+            '<button data-t="all" class="on">全部</button>' +
+            '<button data-t="news">📰 新闻</button>' +
+            '<button data-t="conversation">💬 长对话</button>' +
+            '<button data-t="lecture">🎓 讲座</button>' +
+          '</div>' +
+          '<input type="text" id="libSearch" placeholder="🔍 搜标题 / 内容关键词（回车）" style="max-width:240px">' +
+          '<span class="grow"></span><span class="tag" id="libTotal"></span>' +
+        '</div>' +
+        '<div class="lib-list" id="libList"></div>' +
+        '<div class="pager" id="libPager"></div>' +
+      '</div>' +
+
+      '<div class="panel player-card" id="playerCard">' +
+        '<div class="toolbar"><span class="tag" id="psgType"></span><label class="tag">语速</label><select id="rateSel"><option value="0.7">🐢 0.7×</option><option value="0.85" selected>🌿 0.85× 推荐</option><option value="1">⚡ 1.0×</option></select><span class="grow"></span>' +
+        '<button class="btn btn-ghost btn-sm" id="prevPsg">← 上一篇</button>' +
+        '<button class="btn btn-ghost btn-sm" id="nextPsg">下一篇 →</button></div>' +
         '<h3 id="psgTitle" style="margin:14px 0 4px">—</h3><p class="muted" id="psgSub" style="margin:0 0 16px"></p>' +
         '<div class="btn-row" style="margin-bottom:14px">' +
           '<button class="btn btn-primary" id="playAll">▶ 整段播放</button>' +
@@ -24,8 +63,9 @@ BH.reg("listening", async function (view) {
           '<button class="btn btn-ghost" id="gotoQuiz">📝 开始答题</button>' +
         '</div>' +
         '<div id="nowPlaying" class="callout tip" style="display:none;margin:6px 0 0"><span class="co-t">🎙️ <span class="audio-eq"><i></i><i></i><i></i></span> <span class="sentence-now" id="nowTxt"></span></span></div>' +
-        '<div id="scriptBox" class="reader" style="display:none;margin-top:14px;max-height:330px;overflow:auto"></div>' +
+        '<div id="scriptBox" class="reader" style="display:none;margin-top:14px;max-height:360px;overflow:auto"></div>' +
       '</div>' +
+
       '<div class="panel" id="quizPanel" style="display:none;margin-top:16px"><h3><span class="n">?</span> 理解自测</h3><div id="quizZone"></div></div>' +
     '</div></section>' +
 
@@ -46,28 +86,94 @@ BH.reg("listening", async function (view) {
       '</div></div>' +
     '</div></section>';
 
-  var sel = document.getElementById("psgSel");
-  items.forEach(function (it, i) { var o = document.createElement("option"); o.value = i; o.textContent = it.title; sel.appendChild(o); });
-  if (!items.length) { document.getElementById("psgTitle").textContent = "暂无听力语料，请在后台添加"; }
-
+  /* ---------- 语料库列表 ---------- */
   function cur() { return items[idx] || { data: {} }; }
+  function renderLib() {
+    var arr = filtered();
+    var pages = Math.max(1, Math.ceil(arr.length / lib.per));
+    if (lib.page >= pages) lib.page = pages - 1;
+    var pageArr = arr.slice(lib.page * lib.per, lib.page * lib.per + lib.per);
+    document.getElementById("libTotal").textContent = "共 " + arr.length + " 篇";
+    var zone = document.getElementById("libList");
+    zone.innerHTML = pageArr.length ? pageArr.map(function (it) {
+      return "<button type='button' class='lib-row" + (items[idx] === it ? " on" : "") + "' data-i='" + items.indexOf(it) + "'>" +
+        "<span class='tag lib-tag'>" + typeIco(it) + " " + typeCN(it) + "</span>" +
+        "<span class='lib-title'>" + s(it.title) + "</span>" +
+        "<span class='muted lib-sub'>" + s(String(it.sub || "").slice(0, 60)) + "</span>" +
+        "</button>";
+    }).join("") : "<div class='empty-note'>没有匹配的听力语料，换个关键词试试</div>";
+    zone.querySelectorAll(".lib-row").forEach(function (b) {
+      b.onclick = function () {
+        idx = parseInt(b.getAttribute("data-i"), 10);
+        renderLib(); show();
+        document.getElementById("playerCard").scrollIntoView({ behavior: "smooth", block: "start" });
+      };
+    });
+    var pg = document.getElementById("libPager");
+    pg.innerHTML = "";
+    var mk = function (label, page, on) {
+      var x = document.createElement("button");
+      x.textContent = label; if (on) x.classList.add("on");
+      x.disabled = page === lib.page;
+      x.onclick = function () { lib.page = page; renderLib(); };
+      return x;
+    };
+    pg.appendChild(mk("‹", Math.max(0, lib.page - 1)));
+    for (var i = 0; i < pages; i++) {
+      if (pages > 12 && i > 2 && i < pages - 3 && Math.abs(i - lib.page) > 2) continue;
+      pg.appendChild(mk(String(i + 1), i, i === lib.page));
+    }
+    pg.appendChild(mk("›", Math.min(pages - 1, lib.page + 1)));
+  }
+  document.querySelectorAll("#typeFilter button").forEach(function (b) {
+    b.onclick = function () {
+      lib.type = b.getAttribute("data-t");
+      lib.page = 0;
+      document.querySelectorAll("#typeFilter button").forEach(function (x) { x.classList.remove("on"); });
+      b.classList.add("on");
+      renderLib();
+    };
+  });
+  document.getElementById("libSearch").onkeydown = function (e) {
+    if (e.key === "Enter") { lib.q = this.value.trim(); lib.page = 0; renderLib(); }
+  };
+
+  /* ---------- 播放 ---------- */
+  function cleanSpeech(txt) {
+    return String(txt || "").split("\n").map(function (l) { return l.replace(/^(M|W|Man|Woman|Male|Female)\s*[:：]\s*/i, ""); }).join("\n");
+  }
+  function speakerLine(line) {
+    var m = line.match(/^(M|W|Man|Woman|Male|Female)\s*[:：]\s*(.*)$/i);
+    if (m) {
+      var female = /^W|Woman|Female/i.test(m[1]);
+      return "<p class='dl-line dl-" + (female ? "w" : "m") + "'><b class='dl-who'>" + (female ? "女" : "男") + "</b>" + s(m[2]) + "</p>";
+    }
+    return "<p>" + s(line) + "</p>";
+  }
   function show() {
-    idx = parseInt(sel.value, 10);
     var it = cur(), d = it.data || {};
-    document.getElementById("psgTitle").textContent = it.title;
+    document.getElementById("psgTitle").textContent = it.title || "—";
     document.getElementById("psgSub").textContent = it.sub || "";
-    document.getElementById("psgType").textContent = d.type === "news" ? "📰 新闻" : "🎓 讲座/讲话";
-    document.getElementById("scriptBox").innerHTML = "<p>" + String(d.text || "").split("\n").filter(Boolean).map(function(x){return s(x);}).join("</p><p>") + "</p>";
+    var t = typeOf(it);
+    document.getElementById("psgType").textContent = typeIco(it) + " " + typeCN(it);
+    document.getElementById("scriptBox").innerHTML = String(d.text || "").split("\n").filter(Boolean).map(speakerLine).join("");
     stop();
     resetQuiz();
+    renderLib();
   }
-  sel.onchange = show;
+  function go(delta) {
+    idx = (idx + delta + items.length) % items.length;
+    show();
+  }
+  document.getElementById("prevPsg").onclick = function () { go(-1); };
+  document.getElementById("nextPsg").onclick = function () { go(1); };
   document.getElementById("rateSel").onchange = function () { rate = parseFloat(this.value); };
 
   function stop() {
     if ("speechSynthesis" in window) speechSynthesis.cancel();
     clearTimeout(window._sentTimer);
-    document.getElementById("nowPlaying").style.display = "none";
+    var np = document.getElementById("nowPlaying");
+    if (np) np.style.display = "none";
   }
   document.getElementById("stopPlay").onclick = stop;
   function pickVoice() {
@@ -86,12 +192,12 @@ BH.reg("listening", async function (view) {
     if (!("speechSynthesis" in window)) { BH.toast("当前浏览器不支持语音合成，建议使用 Chrome / Edge"); return; }
     stop();
     setNow("整段播放中…");
-    speechSynthesis.speak(utter((cur().data || {}).text || ""));
+    speechSynthesis.speak(utter(cleanSpeech((cur().data || {}).text)));
   };
   document.getElementById("playSent").onclick = function () {
     if (!("speechSynthesis" in window)) { BH.toast("当前浏览器不支持语音合成，建议使用 Chrome / Edge"); return; }
     stop();
-    var sents = String((cur().data || {}).text || "").split(/(?<=[.!?])\s+/);
+    var sents = cleanSpeech((cur().data || {}).text).split(/(?<=[.!?])\s+/);
     var i = 0;
     (function next() {
       if (i >= sents.length) { document.getElementById("nowPlaying").style.display = "none"; return; }
@@ -101,16 +207,16 @@ BH.reg("listening", async function (view) {
   };
   document.getElementById("toggleScript").onclick = function () {
     var b = document.getElementById("scriptBox");
-    var show = b.style.display === "none";
-    b.style.display = show ? "block" : "none";
-    BH.toast(show ? "已显示原文 📄" : "已隐藏原文（继续精听）👂");
+    var showB = b.style.display === "none";
+    b.style.display = showB ? "block" : "none";
+    BH.toast(showB ? "已显示原文 📄" : "已隐藏原文（继续精听）👂");
   };
 
   /* ---------- 自测 ---------- */
   function resetQuiz() {
     quiz = { qs: [], qi: 0, right: 0 };
     var qp = document.getElementById("quizPanel");
-    qp.style.display = "none";
+    if (qp) qp.style.display = "none";
   }
   function shuffleArr(a) { var b = a.slice(); for (var i = b.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
   document.getElementById("gotoQuiz").onclick = function () {
@@ -125,6 +231,7 @@ BH.reg("listening", async function (view) {
   function renderQ() {
     var zone = document.getElementById("quizZone");
     var q = quiz.qs[quiz.qi];
+    if (!q) return;
     var letters = ["A", "B", "C", "D"];
     var html = "<div class='q-item' style='margin-top:0'><div class='q-title'>第 " + (quiz.qi + 1) + " / " + quiz.qs.length + " 题：" + s(q.q) + "</div><div class='opts'>";
     q.opts.forEach(function (o, i) { html += "<button class='opt' data-i='" + i + "'><span class='ltr'>" + letters[i] + ".</span><span>" + s(o) + "</span></button>"; });

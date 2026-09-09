@@ -1,6 +1,6 @@
 /* 博浩英语 CET-6 · 词汇模块（海量词库 / 翻卡 / 自测 / 错题 / 词表 / 短语） */
 "use strict";
-BH.reg("vocab", async function (view) {
+BH.reg("vocab", async function (view, params) {
   var s = BH.esc;
   var state = {
     units: [], unit: "", mode: "card", // card | quiz | list | phrase
@@ -61,6 +61,7 @@ BH.reg("vocab", async function (view) {
           '<button data-mode="card" class="on">🎴 背词</button>' +
           '<button data-mode="quiz">📝 自测</button>' +
           '<button data-mode="list">📋 词表</button>' +
+          '<button data-mode="review">🧠 复习</button>' +
           '<button data-mode="phrase">🔗 短语库</button>' +
         '</div>' +
         '<span class="grow"></span>' +
@@ -106,6 +107,7 @@ BH.reg("vocab", async function (view) {
     if (state.mode === "card") await renderCard(inner);
     else if (state.mode === "quiz") await renderQuiz(inner);
     else if (state.mode === "list") await renderList(inner);
+    else if (state.mode === "review") await renderReview(inner);
     else await renderPhrase(inner);
   }
 
@@ -125,7 +127,11 @@ BH.reg("vocab", async function (view) {
       '<div class="flash-zone">' +
         '<div class="flash-card" id="flashCard"><div class="fc-inner">' +
           '<div class="fc-face fc-front"><span class="fc-tag tag" id="cState">未学</span><div class="fc-word" id="fcWord">…</div><div class="fc-ipa" id="fcIpa"></div><div class="freq-pill" id="cFreq">—</div><div class="fc-hint">👆 点击卡片查看释义</div></div>' +
-          '<div class="fc-face fc-back"><div class="fc-meaning" id="fcMeaning"></div><div class="fc-pos" id="fcPos2"></div><div class="fc-ex" id="fcEx"></div><div class="fc-cn" id="fcCn"></div></div>' +
+          '<div class="fc-face fc-back"><span class="fc-tag tag" id="cFreqBack">—</span><div class="fc-meaning" id="fcMeaning"></div><div class="fc-pos" id="fcPos2"></div><div class="fc-ex" id="fcEx"></div><div class="fc-cn" id="fcCn"></div>' +
+          '<div class="fc-note fc-example" id="fcExNote" style="display:none">💡 暂无例句，可在后台补充</div>' +
+          '<div class="fc-note" id="fcAf" style="display:none"></div>' +
+          '<div class="fc-note" id="fcSim" style="display:none"></div>' +
+          '<div class="fc-note" id="fcMem" style="display:none"></div></div>' +
         '</div></div>' +
         '<div class="btn-row" style="justify-content:center;margin-top:18px">' +
           '<button class="btn btn-ghost" id="prevBtn">← 上一个</button>' +
@@ -191,23 +197,51 @@ BH.reg("vocab", async function (view) {
       fr.textContent = f === "高" ? "🔥 高频" : f === "中" ? "⭐ 中频" : f === "低" ? "🌱 低频" : "—";
       fr.className = "freq-pill freq-" + (f ? f.toLowerCase() : "none");
     }
+    var fb = document.getElementById("cFreqBack");
+    if (fb) { fb.textContent = f === "高" ? "🔥 高频" : f === "中" ? "⭐ 中频" : f === "低" ? "🌱 低频" : ""; fb.className = "fc-tag tag freq-pill freq-" + (f ? f.toLowerCase() : "none"); }
+    var en = document.getElementById("fcExNote"); if (en) en.style.display = w.ex ? "none" : "block";
+    var af = document.getElementById("fcAf"); if (af) { if (w.af) { af.textContent = "🧩 " + w.af; af.style.display = "block"; } else af.style.display = "none"; }
+    var sm = document.getElementById("fcSim"); if (sm) { if (w.sim && w.sim.length) { sm.innerHTML = "👯 形近词：" + w.sim.map(function (x) { return "<span class='sim-w'>" + s(x) + "</span>"; }).join(""); sm.style.display = "block"; } else sm.style.display = "none"; }
+    var mm = document.getElementById("fcMem"); if (mm) { if (w.mem) { mm.textContent = "💭 " + w.mem; mm.style.display = "block"; } else mm.style.display = "none"; }
     document.getElementById("cOrder").textContent = state.shuffled ? "🔀 乱序中" : "↩️ 按单元顺序";
   }
   async function decide(known) {
     var w = cur().w;
-    if (known) await markKnown(w, true); else await markWrong(w, true);
+    if (known) {
+      await markKnown(w, true);
+      try { await BH.authed("/api/me/reviews/learn", { method: "POST", body: { word: w } }); } catch (e) {}
+    } else {
+      await markWrong(w, true);
+      try { await BH.authed("/api/me/reviews/answer", { method: "POST", body: { word: w, good: false } }); } catch (e) {}
+    }
     refreshProgress();
     showCard();
     nav(1);
   }
   function speak(text) {
-    if (!("speechSynthesis" in window)) { BH.toast("当前浏览器不支持语音朗读"); return; }
-    speechSynthesis.cancel();
-    var u = new SpeechSynthesisUtterance(text); u.lang = "en-US"; u.rate = .85;
+    if (!("speechSynthesis" in window)) { fallbackAudio(text); return; }
     var vs = speechSynthesis.getVoices();
-    var v = vs.filter(function (x) { return /en[-_]US/i.test(x.lang); })[0] || vs.filter(function (x) { return /^en/i.test(x.lang); })[0];
-    if (v) u.voice = v;
-    speechSynthesis.speak(u);
+    if (!vs.length) {
+      speechSynthesis.onvoiceschanged = function () { vs = speechSynthesis.getVoices(); };
+    }
+    try {
+      speechSynthesis.cancel();
+      window._speaking = false;
+      var u = new SpeechSynthesisUtterance(text);
+      u.lang = "en-US"; u.rate = .85;
+      var v = vs.filter(function (x) { return /en[-_]US/i.test(x.lang); })[0] || vs.filter(function (x) { return /^en/i.test(x.lang); })[0];
+      if (v) u.voice = v;
+      u.onstart = function () { window._speaking = true; };
+      u.onerror = function () { fallbackAudio(text); };
+      u.onend = function () { window._speaking = false; };
+      speechSynthesis.speak(u);
+      setTimeout(function () { if (!window._speaking) fallbackAudio(text); }, 1600);
+    } catch (e) { fallbackAudio(text); }
+  }
+  function fallbackAudio(text) {
+    var a = document.createElement("audio");
+    a.src = "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(text) + "&type=2";
+    a.play().catch(function () { BH.toast("朗读不可用：请检查网络或浏览器设置 🔊"); });
   }
 
   /* ============ 自测 ============ */
@@ -215,7 +249,10 @@ BH.reg("vocab", async function (view) {
     box.innerHTML =
       '<div class="toolbar">' + unitSelHtml +
       '<button class="btn btn-ghost btn-sm" id="qOnlyWrong">❌ 只测错题</button>' +
-      '<button class="btn btn-primary btn-sm" id="qStart">🚀 开始 10 题</button></div>' +
+      '<span class="tag">词号</span><input type="number" id="qFrom" min="1" value="1" style="width:82px">' +
+      '<span class="tag">至</span><input type="number" id="qTo" min="1" value="50" style="width:82px">' +
+      '<span class="tag muted" style="border:none;background:none" id="qRangeHint">本单元 1–50 词</span>' +
+      '<button class="btn btn-primary btn-sm" id="qStart">🚀 开始自测</button></div>' +
       '<div class="panel" style="max-width:760px;margin-top:6px">' +
         '<div id="quizReady" style="text-align:center;padding:18px 0"><p class="muted">从当前单元随机抽 10 词自测（含 4 个释义选项）。答错的词会自动收进错题本。</p></div>' +
         '<div id="quizBody" style="display:none">' +
@@ -229,6 +266,8 @@ BH.reg("vocab", async function (view) {
       '</div>';
     var sel = document.getElementById("vUnit"); sel.value = state.unit;
     sel.onchange = function () { state.unit = sel.value; };
+    document.getElementById("qFrom").oninput = function () { var t = document.getElementById("qTo"); if (parseInt(this.value, 10) > parseInt(t.value, 10)) t.value = this.value; };
+    document.getElementById("qTo").oninput = function () { var f = document.getElementById("qFrom"); if (parseInt(this.value, 10) < parseInt(f.value, 10)) f.value = this.value; };
     document.getElementById("qStart").onclick = function () { startQuiz(false); };
     document.getElementById("qAgain").onclick = function () { startQuiz(false); };
     document.getElementById("qWrongAgain").onclick = function () { startQuiz(true); };
@@ -240,13 +279,20 @@ BH.reg("vocab", async function (view) {
   }
   async function startQuiz(onlyWrong) {
     var unit = state.unit;
+    var meta = await BH.api("/api/words?unit=" + encodeURIComponent(unit) + "&limit=1");
+    var maxN = meta.total || 0;
+    var fEl = document.getElementById("qFrom"), tEl = document.getElementById("qTo");
+    var from = fEl ? Math.max(1, Math.min(parseInt(fEl.value || "1", 10) || 1, maxN || 1)) : 1;
+    var to = tEl ? Math.max(from, Math.min(parseInt(tEl.value || "50", 10) || maxN, maxN || from)) : maxN || from;
+    if (maxN) { document.getElementById("qRangeHint").textContent = "本单元 1–" + maxN + " 词 · 已选 " + from + "–" + to; }
+    var qSize = Math.max(1, Math.min(10, to - from + 1));
     var pool;
     if (onlyWrong) {
       var wrongList = Object.keys(state.wrong);
       if (!wrongList.length) { BH.toast("错题本是空的，先去自测吧 😉"); return; }
-      pool = (await BH.api("/api/words/random", { method: "POST", body: { size: 80, unit: unit, onlyWrong: true, wrong: wrongList } })).rows;
+      pool = (await BH.api("/api/words/random", { method: "POST", body: { size: qSize, unit: unit, onlyWrong: true, wrong: wrongList } })).rows;
     } else {
-      pool = (await BH.api("/api/words/random", { method: "POST", body: { size: 80, unit: unit, exclude: Object.keys(state.known) } })).rows;
+      pool = (await BH.api("/api/words/random", { method: "POST", body: { size: qSize, unit: unit, start: from, end: to, exclude: Object.keys(state.known) } })).rows;
     }
     if (pool.length < 4) { BH.toast("当前范围题目不足，请切换到其他单元"); return; }
     pool = pool.slice().sort(function(){ return Math.random() - .5; }).slice(0, 10);
@@ -286,11 +332,15 @@ BH.reg("vocab", async function (view) {
     var btns = box.querySelectorAll(".quiz-opt");
     btns.forEach(function (b) { b.disabled = true; });
     var ok = q.opts[i] === q.ans;
-    if (ok) { state.right++; btns[i].classList.add("correct"); }
+    if (ok) {
+      state.right++; btns[i].classList.add("correct");
+      try { await BH.authed("/api/me/reviews/learn", { method: "POST", body: { word: q.w.w } }); } catch (e) {}
+    }
     else {
       btns[i].classList.add("wrong");
       state.wrongThis.push(q.w);
       await markWrong(q.w.w, true);
+      try { await BH.authed("/api/me/reviews/answer", { method: "POST", body: { word: q.w.w, good: false } }); } catch (e) {}
       btns.forEach(function (b, bi) { if (q.opts[bi] === q.ans) b.classList.add("correct"); });
     }
     document.getElementById("qNext").style.display = "inline-flex";
@@ -388,7 +438,75 @@ BH.reg("vocab", async function (view) {
     }
   }
 
+  /* ============ 记忆曲线复习 ============ */
+  async function renderReview(box) {
+    var data;
+    try { data = await BH.authed("/api/me/reviews"); }
+    catch (e) { box.innerHTML = "<div class='empty-hint'>复习数据加载失败：" + s(e.message) + "</div>"; return; }
+    var due = (data && data.dueWords) || [];
+    var total = data ? data.total : 0;
+    box.innerHTML =
+      '<div class="panel" style="max-width:760px;margin:0 auto 16px">' +
+        '<div class="sec-head left" style="margin-bottom:8px"><span class="eyebrow">Ebbinghaus Review</span><h3 style="margin:0">🧠 记忆曲线 · 今日复习</h3>' +
+        '<p class="muted" style="font-size:13px;margin:8px 0 0">今日待复习 <b>' + due.length + '</b> 词，已纳入记忆曲线共 ' + total + ' 词。如实点“认识 / 忘了”，系统按 1·2·4·7·15·30 天自动排期。</p></div>' +
+        '<div id="rvZone">' + (due.length ? '<div class="empty-hint"><span class="spin"></span> 准备复习卡片…</div>' : '<div class="empty-note">🎉 今日复习已清空！去「背词」把新词标记为“已掌握”，它们会自动加入记忆曲线复习计划。</div><div class="btn-row" style="justify-content:center"><a class="btn btn-soft btn-sm" href="#/me">查看个人记忆曲线 📊</a></div>') + '</div>' +
+      '</div>';
+    if (!due.length) return;
+    var details = {};
+    try {
+      var ws = due.map(function (d) { return d.w; });
+      var dd = await BH.api("/api/words/lookup?w=" + encodeURIComponent(ws.join(",")));
+      (dd.rows || []).forEach(function (w) { details[w.w.toLowerCase()] = w; });
+    } catch (e) {}
+    var queue = due.map(function (d) { return { d: d, w: details[d.w.toLowerCase()] || { w: d.w, m: "（未找到词条，仍可复习）", f: "", p: "" } }; });
+    var qi = 0;
+    function draw() {
+      var zone = document.getElementById("rvZone");
+      if (!zone) return;
+      if (qi >= queue.length) {
+        zone.innerHTML = "<div style='text-align:center;padding:22px 0'><div style='font-size:46px'>🎉</div><h3>今日复习完成！</h3><p class='muted'>刚刚又巩固了 " + queue.length + " 个词，复习曲线已为你安排下一轮。</p><div class='btn-row' style='justify-content:center'><a class='btn btn-primary' href='#/vocab'>去背新词 →</a><a class='btn btn-soft' href='#/me'>个人中心 📊</a></div></div>";
+        refreshProgress();
+        return;
+      }
+      var it = queue[qi], w = it.w, d = it.d;
+      var iv = [1, 2, 4, 7, 15, 30][Math.min(5, d.stage || 0)] || 1;
+      var stageTxt = "下次复习：+" + iv + " 天";
+      zone.innerHTML =
+        '<div class="flash-zone" style="margin-top:8px">' +
+          '<div class="flash-card" id="rvCard"><div class="fc-inner">' +
+            '<div class="fc-face fc-front"><span class="fc-tag tag">' + stageTxt + '</span><div class="fc-word" id="rvWord"></div><div class="fc-ipa" id="rvIpa"></div><div class="fc-hint">👆 点击卡片查看释义</div></div>' +
+            '<div class="fc-face fc-back"><div class="fc-meaning" id="rvMeaning"></div><div class="fc-pos" id="rvPos"></div></div>' +
+          '</div></div>' +
+          '<div class="btn-row" style="justify-content:center;margin-top:18px">' +
+            '<button class="btn btn-danger" id="rvBad">✗ 忘了</button>' +
+            '<button class="btn btn-primary" id="rvGood">✓ 认识</button>' +
+          '</div>' +
+          '<div class="session-meta" style="justify-content:center"><span>复习进度 ' + (qi + 1) + ' / ' + queue.length + '</span></div>' +
+        '</div>';
+      document.getElementById("rvWord").textContent = w.w;
+      document.getElementById("rvIpa").textContent = w.f || "";
+      document.getElementById("rvMeaning").textContent = w.m;
+      document.getElementById("rvPos").textContent = (w.p || "") + " · " + w.w;
+      var card = document.getElementById("rvCard");
+      card.onclick = function () { card.classList.toggle("flipped"); };
+      document.getElementById("rvGood").onclick = function () { submit(true); };
+      document.getElementById("rvBad").onclick = function () { submit(false); };
+      async function submit(good) {
+        try {
+          await BH.authed("/api/me/reviews/answer", { method: "POST", body: { word: w.w, good: good } });
+          if (good) await markKnown(w.w, true); else await markWrong(w.w, true);
+        } catch (e) { BH.toast("同步失败：" + e.message); }
+        qi++; draw();
+      }
+    }
+    draw();
+  }
+
   /* ---------- 清理 & 首屏 ---------- */
   await renderBody();
   refreshProgress();
+  if (params && params.mode === "review") {
+    var segBtn = document.querySelector('#vSeg button[data-mode="review"]');
+    if (segBtn) { state.mode = "review"; segBtn.click(); }
+  }
 });
