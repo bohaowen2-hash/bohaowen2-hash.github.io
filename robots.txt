@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://bohaowen2-hash-github-io.onrender.com/sitemap.xml
