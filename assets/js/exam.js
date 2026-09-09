@@ -73,6 +73,19 @@ BH.reg("exam", async function (view) {
     '<section class="section tight"><div class="container">' +
       '<div class="sec-head left"><span class="eyebrow">Tips</span><h2>冲刺锦囊</h2></div>' +
       '<div id="tipList"></div>' +
+    '</div></section>' +
+    '<section class="section tight" style="background:var(--grad-soft)"><div class="container">' +
+      '<div class="sec-head left"><span class="eyebrow">Real Papers</span><h2>📑 历年真题库</h2><p>2012–2025 六级原卷（原卷 PDF 由站主提供，仅供个人学习）。可浏览、可打开或下载。</p></div>' +
+      '<div class="panel">' +
+        '<div class="toolbar" style="margin-bottom:10px">' +
+          '<label class="tag">年份</label><select id="exYear"><option value="all">全部年份</option></select>' +
+          '<label class="tag">套数</label><select id="exSet"><option value="all">全部套</option><option value="1">第1套</option><option value="2">第2套</option><option value="3">第3套</option></select>' +
+          '<span class="grow"></span><span class="tag" id="exTotal"></span>' +
+        '</div>' +
+        '<div id="examLib" class="empty-note">加载真题索引…</div>' +
+        '<div class="pager" id="exPager" style="margin-top:12px"></div>' +
+        '<p class="muted" style="font-size:12px;margin:12px 0 0">提示：真题版权归原出题方；此处仅在你本人授权/自行提供的前提下用于个人学习，请勿对外二次传播。</p>' +
+      '</div>' +
     '</div></section>';
 
   document.getElementById("tipList").innerHTML = tips.map(function (t) {
@@ -220,6 +233,35 @@ BH.reg("exam", async function (view) {
     if (db) db.onclick = async function () { run.done = run.done || {}; run.done[BH.today()] = 1; try { localStorage.setItem("bh-plan-run", JSON.stringify(run)); } catch (e) {} try { await BH.authed("/api/me/checkin", { method: "POST", body: {} }); } catch (e) {} renderPlanRun(); BH.toast("今日任务完成，继续加油！"); };
     var rb = document.getElementById("planResetRun");
     if (rb) rb.onclick = function () { run.done = {}; try { localStorage.setItem("bh-plan-run", JSON.stringify(run)); } catch (e) {} renderPlanRun(); BH.toast("计划进度已重置"); };
+  }
+
+  renderExams();
+  function renderExams() {
+    var zone = document.getElementById("examLib"); if (!zone) return;
+    fetch("data/exams.json").then(function (r) { return r.json(); }).then(function (list) {
+      var ys = document.getElementById("exYear");
+      var years = {};
+      list.forEach(function (e) { if (e.year) years[e.year] = 1; });
+      ys.innerHTML = "<option value='all'>全部年份</option>" + Object.keys(years).sort().map(function (y) { return "<option value='" + y + "'>" + y + "年</option>"; }).join("");
+      ys.onchange = drawExams; document.getElementById("exSet").onchange = drawExams;
+      drawExams(list);
+    }).catch(function () { zone.innerHTML = "<div class='empty-note'>真题索引仅在静态版提供（原卷 PDF 由站主提供）。</div>"; });
+  }
+  function drawExams(list) {
+    var zone = document.getElementById("examLib"); if (!zone) return;
+    var year = document.getElementById("exYear").value;
+    var set = document.getElementById("exSet").value;
+    var rows = list.filter(function (e) { return (year === "all" || String(e.year) === year) && (set === "all" || String(e.set) === set); });
+    var per = 15, page = 0;
+    var pg = document.getElementById("exPager"); pg.innerHTML = "";
+    var pages = Math.max(1, Math.ceil(rows.length / per));
+    var mk = function (label, p, on) { var b = document.createElement("button"); b.textContent = label; if (on) b.classList.add("on"); b.disabled = p === page; b.onclick = function () { page = p; drawExams(list); }; pg.appendChild(b); };
+    mk("‹", Math.max(0, page - 1)); for (var i = 0; i < pages; i++) { if (pages > 15 && i > 3 && i < pages - 4 && Math.abs(i - page) > 3) continue; mk(String(i + 1), i, i === page); } mk("›", Math.min(pages - 1, page + 1));
+    var slice = rows.slice(page * per, (page + 1) * per);
+    document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
+    zone.innerHTML = slice.length ? slice.map(function (e) {
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a></div>";
+    }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
   }
 
   refreshTom();
