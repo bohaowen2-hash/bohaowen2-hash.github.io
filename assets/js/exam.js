@@ -267,11 +267,29 @@ BH.reg("exam", async function (view) {
   }
 
 
+  function segPaper(txt) {
+    var parts = String(txt || "").split(/\n(?=Part\s*(?:[IVX]+|One|Two|Three|Four|Five|Six))|\n(?=Part\s+)/i);
+    var out = [];
+    parts.forEach(function (p, i) {
+      var m = p.match(/^Part\s*([IVX]+|One|Two|Three|Four|Five|Six)\s*([A-Za-z\u4e00-\u9fa5 ().]{0,40})/i);
+      if (m) { out.push({ i: i, title: "Part " + m[1] + (m[2] ? " " + m[2].trim() : ""), body: p.replace(/^Part\s*[IVX]+[^\n]*\n?/i, "") }); }
+    });
+    if (!out.length) return [];
+    // 修正首块（可能以页眉开头无 Part 标题）——把每块前面的无标题残段并入第一段
+    return out;
+  }
   function openPaperText(file) {
     var txtFile = "data/papers-text/" + encodeURIComponent(String(file).replace(/\.pdf$/i, "")) + ".txt";
     BH.toast("加载全文…");
     fetch(txtFile).then(function (r) { if (!r.ok) throw new Error("未找到文本"); return r.text(); }).then(function (txt) {
-      BH.modal("<h3>📄 " + (String(file).replace(/\.pdf$/i, "")) + " · 原文文本</h3><div style='text-align:right'><a class='btn btn-soft btn-sm' download='" + encodeURIComponent(String(file).replace(/\.pdf$/i, "")) + ".txt' href='" + txtFile + "'>⬇️ 下载文本</a><button class='btn btn-ghost btn-sm' data-close>关闭</button></div><pre style='max-height:60vh;overflow:auto;background:var(--bg-soft);border:1px solid var(--line);border-radius:12px;padding:14px;white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7'>" + esc(txt) + "</pre>");
+      var segs = segPaper(txt);
+      BH.modal("<h3>📄 " + (String(file).replace(/\.pdf$/i, "")) + " · 分章节原文</h3><div style='text-align:right'><a class='btn btn-soft btn-sm' download='" + encodeURIComponent(String(file).replace(/\.pdf$/i, "")) + ".txt' href='" + txtFile + "'>⬇️ 下载全文 txt</a><button class='btn btn-ghost btn-sm' data-close>关闭</button></div>" +
+        (segs.length ? "<div class='chip-group' id='ppHead' style='margin:8px 0'>" + segs.map(function (g, i) { return "<button class='btn btn-ghost btn-sm' data-g='" + i + "'>" + g.title + "</button>"; }).join("") + "</div>" : "") +
+        "<div id='ppBody' style='max-height:62vh;overflow:auto;border:1px solid var(--line);border-radius:12px;padding:14px;background:var(--bg-soft)'>" +
+          (segs.length ? segs.map(function (g) { return "<div id='seg" + g.i + "' style='margin-bottom:18px'><div class='tag' style='background:rgba(124,58,237,.12);color:var(--brand);border-color:rgba(124,58,237,.3)'>" + esc(g.title) + "</div><pre style='white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;line-height:1.7;margin:8px 0 0'>" + esc(g.body) + "</pre></div>"; }).join("") : "<pre style='white-space:pre-wrap;font-family:ui-monospace,Consolas,monospace;font-size:12.5px;margin:0'>" + esc(txt) + "</pre>") +
+        "</div>");
+      var hd = document.getElementById("ppHead");
+      if (hd) hd.querySelectorAll("button").forEach(function (b) { b.onclick = function () { var t = document.getElementById("seg" + b.getAttribute("data-g")); if (t) t.scrollIntoView({ behavior: "smooth", block: "start" }); }; });
     }).catch(function (e) { BH.toast("全文加载失败：" + e.message); });
   }
 
