@@ -221,6 +221,12 @@ var BH = window.BH = {
     var y = document.getElementById("yearNow"); if (y) y.textContent = new Date().getFullYear();
     document.getElementById("footContact").onclick = function () { modal("<h3>📮 建议与反馈</h3><p class='muted'>感谢你对博浩英语的支持！你的每一条建议都会帮助我们把平台做得更好。</p><p>联系创始人wbh：<br><b>" + esc((BH.site && BH.site.contact) || "wbh@bohaoenglish.cn") + "</b></p><p style='text-align:right'><button class='btn btn-primary' data-close>知道了</button></p>"); };
     document.addEventListener("click", function (e) { var b = e.target && e.target.closest ? e.target.closest("[data-copy]") : null; if (b) copyText(b.getAttribute("data-copy")); });
+    var mw = document.getElementById("mascotWrap");
+    if (mw) {
+      var msgs = ["Hi~ 一起背词鸭！", "看中文，拼出英文试试 ✍️", "累了就按番茄钟休息一下 ☕", "错题记得回来复习哦 ❌", "今天也要元气满满！🌟"];
+      var mi = 0;
+      mw.addEventListener("click", function () { mi = (mi + 1) % msgs.length; var t = document.getElementById("mascotTip"); if (t) t.textContent = msgs[mi]; });
+    }
     window.addEventListener("hashchange", route);
     loadSite().then(function () { route(); });
   }

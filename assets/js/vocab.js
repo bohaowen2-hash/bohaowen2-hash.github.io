@@ -64,6 +64,7 @@ BH.reg("vocab", async function (view, params) {
         '<div class="seg" id="vSeg">' +
           '<button data-mode="card" class="on">🎴 背词</button>' +
           '<button data-mode="quiz">📝 自测</button>' +
+          '<button data-mode="spell">✍️ 拼写</button>' +
           '<button data-mode="list">📋 词表</button>' +
           '<button data-mode="review">🧠 复习</button>' +
           '<button data-mode="phrase">🔗 短语库</button>' +
@@ -110,6 +111,7 @@ BH.reg("vocab", async function (view, params) {
     var inner = box.querySelector(".container") || box;
     if (state.mode === "card") await renderCard(inner);
     else if (state.mode === "quiz") await renderQuiz(inner);
+    else if (state.mode === "spell") await renderSpell(inner);
     else if (state.mode === "list") await renderList(inner);
     else if (state.mode === "review") await renderReview(inner);
     else await renderPhrase(inner);
@@ -370,7 +372,110 @@ BH.reg("vocab", async function (view, params) {
     if (pct >= 80) BH.celebrate();
   }
 
-  /* ============ 词表 ============ */
+  /* ============ 拼写检验 ============ */
+  var spell = { q: [], i: 0, right: 0, wrongs: [] };
+  async function renderSpell(box) {
+    box.innerHTML =
+      '<div class="toolbar">' + unitSelHtml +
+      '<button class="btn btn-ghost btn-sm" id="spOnlyWrong">❌ 只拼错题</button>' +
+      '<span class="tag">词号</span><input type="number" id="spFrom" min="1" value="1" style="width:82px"><span class="tag">至</span><input type="number" id="spTo" min="1" value="50" style="width:82px">' +
+      '<button class="btn btn-primary btn-sm" id="spStart">✍️ 开始拼写 10 词</button></div>' +
+      '<div class="panel" style="max-width:720px;margin-top:6px">' +
+        '<div id="spReady" style="text-align:center;padding:18px 0"><p class="muted">看中文释义 → 凭记忆拼出英文单词（区分大小写）。答错的自动进错题本。</p></div>' +
+        '<div id="spBody" style="display:none">' +
+          '<div class="progress-line"><span>进度</span><div class="fp-bar"><div class="fp-fill" id="spBar" style="width:0%"></div></div><b id="spProg">0/10</b></div>' +
+          '<div style="text-align:center;margin:14px 0 8px"><div class="muted" id="spMeta" style="font-size:14px"></div>' +
+          '<div style="font-size:22px;font-weight:800;margin:8px 0" id="spMeaning">—</div>' +
+          '<div id="spUnderscore" class="muted" style="font-size:26px;letter-spacing:6px;font-family:ui-monospace,monospace"></div>' +
+          '<button class="btn btn-ghost btn-sm" id="spHint" style="margin-top:10px">💡 给一个首字母提示</button></div>' +
+          '<input type="text" id="spInput" placeholder="输入英文单词后回车" autocomplete="off" autocapitalize="off" style="max-width:360px;margin:0 auto;display:block;text-align:center;font-size:18px">' +
+          '<div class="btn-row" style="justify-content:center;margin-top:14px"><button class="btn btn-primary" id="spCheck">✓ 检查</button></div>' +
+          '<div class="muted" id="spTip" style="text-align:center;margin-top:10px;font-size:13px"></div>' +
+        '</div>' +
+        '<div id="spDone" style="display:none;text-align:center;padding:16px 0"><div style="font-size:50px" id="spEmoji">🎉</div><h3 id="spTitle"></h3><p class="muted" id="spMsg"></p>' +
+        '<div class="btn-row" style="justify-content:center"><button class="btn btn-danger" id="spWrongAgain" style="display:none">🔁 重拼错词</button><button class="btn btn-primary" id="spAgain">再测一轮</button></div></div>' +
+      '</div>';
+    var sel = document.getElementById("vUnit"); sel.value = state.unit;
+    sel.onchange = function () { state.unit = sel.value; };
+    document.getElementById("spStart").onclick = function () { spStart(false); };
+    document.getElementById("spOnlyWrong").onclick = function () { spStart(true); };
+    document.getElementById("spAgain").onclick = function () { spStart(false); };
+    document.getElementById("spWrongAgain").onclick = function () { spStart(true); };
+    document.getElementById("spHint").onclick = function () {
+      var q = spell.q[spell.i]; if (!q) return;
+      document.getElementById("spTip").textContent = "提示：首字母是 “" + q.answer.charAt(0).toUpperCase() + "”，共 " + q.answer.length + " 个字母";
+    };
+    var inp = document.getElementById("spInput");
+    inp.addEventListener("keydown", function (e) { if (e.key === "Enter") spCheck(); });
+    document.getElementById("spCheck").onclick = spCheck;
+  }
+  async function spStart(onlyWrong) {
+    var unit = state.unit;
+    var meta = await BH.api("/api/words?unit=" + encodeURIComponent(unit) + "&limit=1");
+    var maxN = meta.total || 0;
+    var fEl = document.getElementById("spFrom"), tEl = document.getElementById("spTo");
+    var from = fEl ? Math.max(1, parseInt(fEl.value || "1", 10) || 1) : 1;
+    var to = tEl ? Math.max(from, Math.min(parseInt(tEl.value || String(maxN || from), 10) || maxN, maxN || from)) : maxN || from;
+    var wrongList = Object.keys(state.wrong);
+    var body = onlyWrong ? { size: 10, unit: unit, onlyWrong: true, wrong: wrongList } : { size: 10, unit: unit, start: from, end: to, exclude: Object.keys(state.known) };
+    var pool = (await BH.api("/api/words/random", { method: "POST", body: body })).rows;
+    if (pool.length < 1) { BH.toast("当前范围没有可拼写的词（错题本为空时请先自测）"); return; }
+    spell.q = pool.map(function (w) { return { m: w.m, pos: w.p || "", freq: w.freq || "", answer: w.w, ex: w.ex || "", mem: w.mem || "" }; });
+    spell.i = 0; spell.right = 0; spell.wrongs = [];
+    document.getElementById("spReady").style.display = "none";
+    document.getElementById("spDone").style.display = "none";
+    document.getElementById("spBody").style.display = "block";
+    spDraw();
+  }
+  function spDraw() {
+    var q = spell.q[spell.i]; if (!q) { spDone(); return; }
+    document.getElementById("spProg").textContent = (spell.i + 1) + "/" + spell.q.length;
+    document.getElementById("spBar").style.width = ((spell.i + 1) / spell.q.length * 100) + "%";
+    document.getElementById("spMeaning").textContent = q.m;
+    document.getElementById("spMeta").textContent = (q.pos ? q.pos + " · " : "") + (q.freq ? (q.freq === "高" ? "🔥高频" : q.freq === "中" ? "⭐中频" : "🌱低频") : "");
+    document.getElementById("spUnderscore").textContent = q.answer.replace(/[a-zA-Z]/g, "＿");
+    document.getElementById("spTip").textContent = "";
+    document.getElementById("spInput").value = "";
+    document.getElementById("spInput").focus();
+    var ip = document.getElementById("spInput");
+    if (ip.setSelectionRange) ip.setSelectionRange(0, 0);
+  }
+  function norm(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9]/g, ""); }
+  async function spCheck() {
+    var q = spell.q[spell.i];
+    var val = document.getElementById("spInput").value.trim();
+    if (!val) { BH.toast("请先输入单词"); return; }
+    var ok = norm(val) === norm(q.answer);
+    var tip = document.getElementById("spTip");
+    if (ok) {
+      spell.right++; tip.innerHTML = "✅ 拼写正确！<b>" + q.answer + "</b>";
+      tip.style.color = "var(--green)";
+      try { await BH.authed("/api/me/known", { method: "POST", body: { word: q.answer, value: true } }); } catch (e) {}
+    } else {
+      spell.wrongs.push(q);
+      tip.innerHTML = "❌ 正确拼写：<b>" + q.answer + "</b>" + (q.ex ? "　例句：" + q.ex : "") + (q.mem ? "　" + q.mem : "");
+      tip.style.color = "var(--red)";
+      try { await BH.authed("/api/me/wrong", { method: "POST", body: { word: q.answer } }); } catch (e) {}
+    }
+    document.getElementById("spInput").value = "";
+    document.getElementById("spCheck").disabled = true;
+    var that = this;
+    setTimeout(function () { document.getElementById("spCheck").disabled = false; spell.i++; spDraw(); }, 1300);
+  }
+  async function spDone() {
+    var total = spell.q.length, right = spell.right, pct = total ? Math.round(right / total * 100) : 0;
+    document.getElementById("spBody").style.display = "none";
+    document.getElementById("spEmoji").textContent = pct === 100 ? "🏆" : pct >= 60 ? "🎉" : "💪";
+    document.getElementById("spTitle").textContent = pct === 100 ? "拼写全对！" : pct >= 60 ? "不错，继续练！" : "多看几遍再拼";
+    document.getElementById("spMsg").textContent = "拼写正确 " + right + " / " + total + "（" + pct + "%）";
+    document.getElementById("spDone").style.display = "block";
+    document.getElementById("spWrongAgain").style.display = spell.wrongs.length ? "inline-flex" : "none";
+    try { await BH.authed("/api/me/activity", { method: "POST", body: { type: "拼写自测", correct: right, total: total, seconds: 120, meta: "看中文拼英文" } }); } catch (e) {}
+    refreshProgress();
+    if (pct >= 80) BH.celebrate();
+  }
+
+    /* ============ 词表 ============ */
   var listState = { q: "", page: 0, per: 80 };
   async function renderList(box) {
     box.innerHTML =
