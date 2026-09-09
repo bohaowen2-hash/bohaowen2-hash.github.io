@@ -4,7 +4,7 @@ BH.reg("home", async function (view) {
   var site = BH.site || await BH.api("/api/site");
   var s = BH.esc;
   var brand = (site.brand && site.brand.name) || "博浩英语";
-  var founder = (site.founder && site.founder.name) || "文博浩";
+  var founder = (site.founder && site.founder.name) || "wbh";
   var hero = site.hero || {};
   var days = BH.daysUntil(site.examDate || "2026-12-19");
   var counts = site.counts || {};

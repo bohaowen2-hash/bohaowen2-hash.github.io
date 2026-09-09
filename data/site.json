@@ -5,12 +5,12 @@
     "tagline": "CET-6 学习平台"
   },
   "founder": {
-    "name": "文博浩",
-    "en": "Wen Bohao",
+    "name": "wbh",
+    "en": "W.B.H.",
     "avatarText": "文",
     "title": "博浩英语（CET-6 学习平台）创始人 & 主编",
     "bio": "做六级备考内容的人很多，但博浩英语是一份真诚、免费、体系化的礼物——没有噱头，不讲玄学，只有经过验证的方法和陪你坚持的每一天。愿每一个努力的你，都能一次上岸。",
-    "sign": "文博浩"
+    "sign": "wbh"
   },
   "hero": {
     "title": "六级上岸，从博浩英语开始",
@@ -18,8 +18,8 @@
   },
   "announcement": "🎉 v2.3：7000 词汇 · 高/中/低频 · 词根词缀/形近词/记忆提示 · AI 写作批改 · 翻译 300 题库 · 卡通版",
   "examDate": "2026-12-19",
-  "contact": "wbhao@bohaoenglish.cn",
-  "footerNote": "真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。",
+  "contact": "wbh@bohaoenglish.cn",
+  "footerNote": "真诚、免费、体系化的 CET-6 学习平台，由wbh创立并持续维护。",
   "counts": {
     "units": 140,
     "words": 7000,

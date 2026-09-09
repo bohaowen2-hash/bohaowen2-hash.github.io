@@ -7,7 +7,7 @@ BH.reg("exam", async function (view) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">🗓️ 备考模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">🗓️ 备考模块 · wbh 创立</span>' +
       '<h2>科学备考中心</h2><p>先定目标、摸清题型分值，再生成专属计划，用番茄钟把每一天落到实处。锦囊 ' + tips.length + ' 则。</p></div>' +
       '<div class="two-col">' +
         '<div class="panel"><h3>⏳ 考试倒计时</h3>' +

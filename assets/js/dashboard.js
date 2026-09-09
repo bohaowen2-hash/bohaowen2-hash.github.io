@@ -195,7 +195,7 @@ BH.reg("me", async function (view) {
   function openAuth() {
     BH.modal(
       '<h3>🔐 注册 / 登录博浩账号</h3><p class="muted" style="font-size:13px">注册后学习记录可跨设备同步，绑定你的专属档案。</p>' +
-      '<div class="field"><label class="f-label">用户名（3-20 位字母/数字/下划线）</label><input type="text" id="auUser" placeholder="如 wenbohao"></div>' +
+      '<div class="field"><label class="f-label">用户名（3-20 位字母/数字/下划线）</label><input type="text" id="auUser" placeholder="如 wbh"></div>' +
       '<div class="field"><label class="f-label">昵称（可选）</label><input type="text" id="auName" placeholder="你的名字"></div>' +
       '<div class="field"><label class="f-label">密码（至少 6 位）</label><input type="password" id="auPass" placeholder="••••••"></div>' +
       '<div class="btn-row"><button class="btn btn-primary" id="auReg">注册新账号</button><button class="btn btn-ghost" id="auLogin">登录已有账号</button></div>' +

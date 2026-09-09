@@ -57,7 +57,7 @@ BH.reg("vocab", async function (view, params) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">📖 词汇模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">📖 词汇模块 · wbh 创立</span>' +
       '<h2>核心词汇 · 翻卡闯关</h2>' +
       '<p>词库已扩容至 <b>' + (BH.site ? BH.site.counts.words : "") + '+</b> 大纲核心词与 <b>' + (BH.site ? BH.site.counts.phrases : "") + '+</b> 搭配。翻卡记忆 → 自测巩固 → 错题重练，学习进度自动云端同步。</p></div>' +
       '<div class="toolbar">' +

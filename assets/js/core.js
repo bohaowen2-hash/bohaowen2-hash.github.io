@@ -1,6 +1,6 @@
 /* ============================================================
    博浩英语 CET-6 · 前端核心（路由 / API / UI / 会话）
-   创始人：文博浩
+   创始人：wbh
    ============================================================ */
 "use strict";
 var BH = window.BH = {
@@ -127,7 +127,7 @@ var BH = window.BH = {
         byId("brandName").innerHTML = esc(s.brand.name) + "<small>CET-6 · " + esc(s.brand.tagline || "学习平台") + "</small>";
         byId("footBrand").textContent = s.brand.name;
         byId("footBrand2").textContent = s.brand.name;
-        document.title = s.brand.name + " CET-6 · 六级学习平台 | " + (s.founder ? s.founder.name : "文博浩") + " 创立";
+        document.title = s.brand.name + " CET-6 · 六级学习平台 | " + (s.founder ? s.founder.name : "wbh") + " 创立";
       }
       if (s.founder) {
         byId("footFounder").textContent = s.founder.name;
@@ -139,7 +139,7 @@ var BH = window.BH = {
       byId("announceClose").onclick = function () { ab.style.display = "none"; };
       return s;
     } catch (e) {
-      var fN = document.getElementById("footNote"); if (fN) fN.textContent = "真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。";
+      var fN = document.getElementById("footNote"); if (fN) fN.textContent = "真诚、免费、体系化的 CET-6 学习平台，由wbh创立并持续维护。";
       return null;
     }
   }
@@ -219,7 +219,7 @@ var BH = window.BH = {
     window.addEventListener("scroll", function () { bt.classList.toggle("show", window.scrollY > 500); });
     bt.onclick = function () { window.scrollTo({ top: 0, behavior: "smooth" }); };
     var y = document.getElementById("yearNow"); if (y) y.textContent = new Date().getFullYear();
-    document.getElementById("footContact").onclick = function () { modal("<h3>📮 建议与反馈</h3><p class='muted'>感谢你对博浩英语的支持！你的每一条建议都会帮助我们把平台做得更好。</p><p>联系创始人文博浩：<br><b>" + esc((BH.site && BH.site.contact) || "wbhao@bohaoenglish.cn") + "</b></p><p style='text-align:right'><button class='btn btn-primary' data-close>知道了</button></p>"); };
+    document.getElementById("footContact").onclick = function () { modal("<h3>📮 建议与反馈</h3><p class='muted'>感谢你对博浩英语的支持！你的每一条建议都会帮助我们把平台做得更好。</p><p>联系创始人wbh：<br><b>" + esc((BH.site && BH.site.contact) || "wbh@bohaoenglish.cn") + "</b></p><p style='text-align:right'><button class='btn btn-primary' data-close>知道了</button></p>"); };
     document.addEventListener("click", function (e) { var b = e.target && e.target.closest ? e.target.closest("[data-copy]") : null; if (b) copyText(b.getAttribute("data-copy")); });
     window.addEventListener("hashchange", route);
     loadSite().then(function () { route(); });
