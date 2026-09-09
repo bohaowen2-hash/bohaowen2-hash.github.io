@@ -36,15 +36,18 @@ var REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30];
 function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
 function addDaysStr(s, n) { var d = new Date(s + "T00:00:00"); d.setDate(d.getDate() + n); return ymd(d); }
 
-  function readState() {
-    try { return JSON.parse(localStorage.getItem(LS)) || { known: [], wrong: [], checkins: [], acts: [], reviews: [] }; }
-    catch (e) { return { known: [], wrong: [], checkins: [], acts: [], reviews: [] }; }
-  }
-  function writeState(s) {
-    try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {}
-  }
+  var PROFILES_KEY = "bh-static-profiles", LS_PRE = "bh-static-state-";
+  var DEF = function () { return { known: [], wrong: [], checkins: [], acts: [], reviews: [] }; };
+  function curU() { try { var u = JSON.parse(localStorage.getItem("bh_user") || "null"); return (u && u.username) || "local"; } catch (e) { return "local"; } }
+  function profs() { try { return JSON.parse(localStorage.getItem(PROFILES_KEY)) || {}; } catch (e) { return {}; } }
+  function saveProfs(p) { try { localStorage.setItem(PROFILES_KEY, JSON.stringify(p)); } catch (e) {} }
+  function hashPw(pw) { var h = 5381; for (var i = 0; i < String(pw).length; i++) { h = ((h << 5) + h + String(pw).charCodeAt(i)) | 0; } return "h" + Math.abs(h).toString(36); }
+  function readState() { var key = LS_PRE + curU(); try { return JSON.parse(localStorage.getItem(key)) || DEF(); } catch (e) { return DEF(); } }
+  function writeState(s) { try { localStorage.setItem(LS_PRE + curU(), JSON.stringify(s)); } catch (e) {} }
   function localUser() {
-    return { id: "local", username: "local", name: "学习者（本机）", role: "user", guest: false, createdAt: "2026-01-01" };
+    var u = curU(), ps = profs(), p = ps[u];
+    if (p) return { id: u, username: u, name: p.name || u, role: "user", guest: !!p.guest, createdAt: "2026-01-01" };
+    return { id: u, username: u, name: u === "local" ? "游客（本机）" : u, role: "user", guest: true, createdAt: "2026-01-01" };
   }
   function shuffle(a) { var b = a.slice(); for (var i = b.length - 1; i > 0; i--) { var j = Math.floor(Math.random() * (i + 1)); var t = b[i]; b[i] = b[j]; b[j] = t; } return b; }
 
@@ -148,16 +151,37 @@ function addDaysStr(s, n) { var d = new Date(s + "T00:00:00"); d.setDate(d.getDa
       });
     }
 
-    /* 认证：静态版固定“本机学习者” */
-    if (p === "/api/auth/guest") return Promise.resolve({ token: "static-local", user: localUser() });
+    /* 认证：本机模拟账号（注册/登录仅保存到当前浏览器） */
+    if (p === "/api/auth/guest") return Promise.resolve({ token: curU(), user: localUser() });
     if (p === "/api/auth/me" || p === "/api/me") {
-      var st = readState();
-      return Promise.resolve({ user: localUser(), state: { known: st.known, wrong: st.wrong, checkins: st.checkins } });
+      var st0 = readState();
+      return Promise.resolve({ user: localUser(), state: { known: st0.known, wrong: st0.wrong, checkins: st0.checkins } });
     }
-    if (p === "/api/auth/register" || p === "/api/auth/login") {
-      return Promise.reject(new Error("静态公开版无需注册/登录，学习记录保存在本机浏览器"));
+    if (p === "/api/auth/register") {
+      var un = String(body.username || "").trim().toLowerCase();
+      if (!/^[a-z0-9_]{3,20}$/.test(un)) return Promise.reject(new Error("用户名需 3-20 位字母/数字/下划线"));
+      if (String(body.password || "").length < 6) return Promise.reject(new Error("密码至少 6 位"));
+      var ps1 = profs();
+      if (ps1[un]) return Promise.reject(new Error("该用户名已在本机注册"));
+      ps1[un] = { name: String(body.name || un).slice(0, 24), pass: hashPw(body.password), guest: false };
+      saveProfs(ps1);
+      return Promise.resolve({ token: un, user: { id: un, username: un, name: ps1[un].name, role: "user", guest: false, createdAt: "2026-01-01" } });
     }
-    if (p === "/api/me/password") return Promise.reject(new Error("静态公开版无需修改密码"));
+    if (p === "/api/auth/login") {
+      var ln = String(body.username || "").trim().toLowerCase();
+      var ps2 = profs();
+      if (!ps2[ln] || ps2[ln].pass !== hashPw(body.password || "")) return Promise.reject(new Error("用户名或密码错误"));
+      return Promise.resolve({ token: ln, user: { id: ln, username: ln, name: ps2[ln].name, role: "user", guest: false, createdAt: "2026-01-01" } });
+    }
+    if (p === "/api/me/password") {
+      var cu = curU(), ps3 = profs();
+      if (!ps3[cu] || ps3[cu].guest) return Promise.reject(new Error("游客账号无需修改密码，请先注册/登录"));
+      if (ps3[cu].pass !== hashPw(body.old || "")) return Promise.reject(new Error("原密码错误"));
+      if (String(body.new || "").length < 6) return Promise.reject(new Error("新密码至少 6 位"));
+      ps3[cu].pass = hashPw(body.new);
+      saveProfs(ps3);
+      return Promise.resolve({ ok: true });
+    }
 
     /* 学习记录（本地存储） */
     if (p === "/api/me/known") {

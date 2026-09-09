@@ -18,7 +18,7 @@ BH.reg("home", async function (view) {
   '<section class="hero">' +
     '<div class="container hero-grid">' +
       '<div>' +
-        '<span class="badge"><span class="dot"></span>' + s(founder) + ' 创立 · 动态学习平台 · 免费开放</span>' +
+        '<span class="badge"><span class="dot"></span>CET-6 · 免费公开学习平台</span>' +
         '<h1>' + (hero.title ? s(hero.title).replace(/，|,/g, "，<br>") : "") + '</h1>' +
         '<p class="lead">' + s(hero.sub || "") + '</p>' +
         '<div class="hero-cta">' +
@@ -77,22 +77,7 @@ BH.reg("home", async function (view) {
         '<div class="mini-card"><div style="font-size:28px">☁️</div><h4>云端同步</h4><p class="muted" style="font-size:13px">注册账号后，换设备也能接着学。</p></div>' +
       '</div>' +
     '</div>' +
-  '</section>' +
-
-  '<section class="section">' +
-    '<div class="container">' +
-      '<div class="founder-row">' +
-        '<div class="avatar-lg">' + s((site.founder && site.founder.avatarText) || "文") + '</div>' +
-        '<div>' +
-          '<span class="badge">👨\u200d💻 创始人 · Founder</span>' +
-          '<h2 style="margin:.35em 0 .05em">' + s(founder) + ' <span style="font-size:.5em;font-weight:600;color:var(--muted)">' + s((site.founder && site.founder.en) || "Wen Bohao") + '</span></h2>' +
-          '<p class="muted" style="margin:0 0 12px">' + s((site.founder && site.founder.title) || "") + '</p>' +
-          '<p style="max-width:720px">' + s((site.founder && site.founder.bio) || "") + '</p>' +
-          '<p class="sign grad-text" style="margin:4px 0 0">—— ' + s((site.founder && site.founder.sign) || founder) + '</p>' +
-        '</div>' +
-      '</div>' +
-    '</div>' +
-  '</section>';
+  '</section>' ;
 
   function mod(href, ico, title, desc, go) {
     return '<a class="card clickable" href="' + href + '"><div class="ico">' + ico + '</div><h3>' + title + '</h3><p>' + s(desc) + '</p><span class="go">' + go + ' →</span></a>';
