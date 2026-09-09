@@ -1,6 +1,6 @@
 /* =====================================================================
    博浩英语 CET-6 · 动态学习平台服务器（零第三方依赖）
-   创始人：文博浩  |  启动：node server.js   |  默认端口 3000（可用 PORT 覆盖）
+   创始人：wbh  |  启动：node server.js   |  默认端口 3000（可用 PORT 覆盖）
    ---------------------------------------------------------------------
    功能：静态托管 SPA + REST API（账号/词库/素材/学习记录/打卡/统计/后台管理）
    数据：data/db.json（JSON 数据库，原子写入，首次启动自动从 data/seed 播种）
@@ -25,16 +25,16 @@ function defaultSettings() {
   return {
     brand: { name: "博浩英语", en: "BohaoEnglish", tagline: "CET-6 六级学习平台" },
     founder: {
-      name: "文博浩", en: "Wen Bohao", avatarText: "文",
+      name: "wbh", en: "W.B.H.", avatarText: "文",
       title: "博浩英语（CET-6 学习平台）创始人 & 主编",
       bio: "做六级备考内容的人很多，但博浩英语是一份真诚、免费、体系化的礼物——没有噱头，不讲玄学，只有经过验证的方法和陪你坚持的每一天。愿每一个努力的你，都能一次上岸。",
-      sign: "文博浩"
+      sign: "wbh"
     },
     hero: { title: "六级上岸，从博浩英语开始", sub: "一套体系化的 CET-6 备考方案：4000+ 核心词汇闯关、听力精听训练、阅读长难句拆解、写作高分模板与科学冲刺计划。跟着博浩，每天进步一点点。" },
     announcement: "🎉 博浩英语 2.0 动态版上线：词库扩至 4000+、学习记录云端同步、后台随心管理。",
     examDate: "2026-12-19",
-    contact: "wbhao@bohaoenglish.cn",
-    footerNote: "真诚、免费、体系化的 CET-6 学习平台，由文博浩创立并持续维护。"
+    contact: "wbh@bohaoenglish.cn",
+    footerNote: "真诚、免费、体系化的 CET-6 学习平台，由wbh创立并持续维护。"
   };
 }
 function emptyDb() {
@@ -58,6 +58,13 @@ function loadDb() {
     if (!db.counters) db.counters = { id: 1, cid: 1 };
     (db.users || []).forEach(u => { if (!Array.isArray(u.reviews)) u.reviews = []; });
     if (db.meta && db.meta.version < 2) db.settings = Object.assign(defaultSettings(), db.settings || {});
+    try {
+      const stj = JSON.stringify(db.settings || {});
+      if (stj.indexOf("文博浩") > -1 || stj.indexOf("Wen Bohao") > -1) {
+        db.settings = JSON.parse(stj.replace(/文博浩/g, "wbh").replace(/Wen Bohao/g, "W.B.H.").replace(/wenbohao/g, "wbh"));
+        scheduleSave();
+      }
+    } catch (e) {}
     return false;
   }
   db = emptyDb();
@@ -519,7 +526,7 @@ const isNew = loadDb();
 seedIfNeeded(isNew);
 server.listen(PORT, () => {
   console.log("==============================================================");
-  console.log("  博浩英语 CET-6 动态学习平台 · 创始人 文博浩");
+  console.log("  博浩英语 CET-6 动态学习平台 · 创始人 wbh");
   console.log("  本地访问: http://localhost:" + PORT);
   console.log("  后台管理: http://localhost:" + PORT + "/#/admin");
   console.log("==============================================================");

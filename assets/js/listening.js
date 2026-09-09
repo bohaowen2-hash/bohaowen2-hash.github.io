@@ -24,7 +24,7 @@ BH.reg("listening", async function (view) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">🎧 听力模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">🎧 听力模块 · wbh 创立</span>' +
       '<h2>听力精听训练</h2><p>真题风格语料共 <b>' + items.length + '</b> 篇：新闻 ' + C.news + ' · 对话 ' + C.conversation + ' · 讲座 ' + C.lecture + '。变速、逐句精听、对照原文、理解自测。</p></div>' +
       '<div class="panel" style="margin-bottom:16px">' +
         '<div class="toolbar" style="margin-bottom:12px"><span class="tag">类型</span>' +

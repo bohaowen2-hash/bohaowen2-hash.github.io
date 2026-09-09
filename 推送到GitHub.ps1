@@ -1,4 +1,4 @@
-﻿# ============================================================
+# ============================================================
 #  博浩英语 CET-6 · 一键推送到 GitHub（公开仓库）
 #  用法：在 GitHub 网页新建空仓库(Public, 不要初始化 README)后，
 #        运行： .\推送到GitHub.ps1 -Url https://github.com/你的用户名/bohao-cet6.git
@@ -14,9 +14,9 @@ if ([string]::IsNullOrWhiteSpace($Url) -or $Url -notmatch '^https://github\.com/
   exit 1
 }
 
-# 设置提交者署名（文博浩）
-git config user.name "文博浩"
-git config user.email "wenbohao@users.noreply.github.com"
+# 设置提交者署名（wbh）
+git config user.name "wbh"
+git config user.email "wbh@users.noreply.github.com"
 
 $exists = git remote get-url origin 2>$null
 if ($LASTEXITCODE -ne 0) {

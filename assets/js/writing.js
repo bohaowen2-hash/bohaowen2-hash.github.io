@@ -9,7 +9,7 @@ BH.reg("writing", async function (view) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">✍️ 写作模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">✍️ 写作模块 · wbh 创立</span>' +
       '<h2>写作高分训练营</h2><p>模板 ' + templates.length + ' 套 · 万能句型 ' + bank.length + ' 句 · 范文 ' + essays.length + ' 篇 · 近年话题归类 ' + themeRows.length + ' 类 · <b>AI 智能批改</b>。</p></div>' +
       '<div class="callout warn"><span class="co-t">⚠️ 博浩提醒</span>模板要活学活用：背框架与句型，但必须结合题目替换内容、加入具体论据。AI 批改为本地智能引擎，供自查参考。</div>' +
     '</div></section>' +

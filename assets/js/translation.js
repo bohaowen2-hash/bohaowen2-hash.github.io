@@ -14,7 +14,7 @@ BH.reg("translation", async function (view) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">🔄 翻译模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">🔄 翻译模块 · wbh 创立</span>' +
       '<h2>翻译实战秘籍</h2><p>六大技巧 + 主题词块 + <b>300 道真题风格模拟句题库</b> + 段落实战 + 精选学习视频。先动笔，再对照，标记掌握，反复练习。</p></div>' +
       '<div class="grid g-feat">' +
         '<div class="mini-card"><div style="font-size:26px">🎬</div><h4>学习视频</h4><p class="muted" style="font-size:12.5px">精选 ' + videos.length + ' 组视频专题（哔哩哔哩检索直达）</p></div>' +

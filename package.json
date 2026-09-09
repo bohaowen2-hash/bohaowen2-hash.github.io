@@ -1,13 +1,13 @@
 {
   "name": "bohao-cet6",
   "version": "2.0.0",
-  "description": "博浩英语 CET-6 动态学习平台（六级词汇/听力/阅读/写作/翻译/备考 + 后台管理 + 云端学习记录），由文博浩创立",
+  "description": "博浩英语 CET-6 动态学习平台（六级词汇/听力/阅读/写作/翻译/备考 + 后台管理 + 云端学习记录），由wbh创立",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
   },
   "engines": { "node": ">=18" },
-  "keywords": ["cet6", "六级", "英语学习", "博浩英语", "文博浩"],
-  "author": "文博浩 (Wen Bohao)",
+  "keywords": ["cet6", "六级", "英语学习", "博浩英语", "wbh"],
+  "author": "wbh (W.B.H.)",
   "license": "SEE LICENSE IN README.md"
 }

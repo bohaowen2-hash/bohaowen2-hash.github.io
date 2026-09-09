@@ -7,3 +7,5 @@ node_modules/
 *.log
 tools/patches/
 tools/bin/
+archive/
+

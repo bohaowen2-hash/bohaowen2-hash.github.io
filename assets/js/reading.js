@@ -33,7 +33,7 @@ BH.reg("reading", async function (view) {
 
   view.innerHTML =
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
-      '<div class="sec-head left"><span class="badge">📚 阅读模块 · 文博浩 创立</span>' +
+      '<div class="sec-head left"><span class="badge">📚 阅读模块 · wbh 创立</span>' +
       '<h2>阅读实战与长难句</h2><p>真题风格长文共 <b>' + passages.length + '</b> 篇 · 长难句 ' + longs.length + ' 条。先限时精读（每篇约 5–8 分钟），再对答案看解析。</p></div>' +
       '<div class="panel" style="margin-bottom:16px">' +
         '<div class="toolbar" style="margin-bottom:12px"><span class="tag">主题</span>' +
