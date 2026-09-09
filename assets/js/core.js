@@ -223,9 +223,16 @@ var BH = window.BH = {
     document.addEventListener("click", function (e) { var b = e.target && e.target.closest ? e.target.closest("[data-copy]") : null; if (b) copyText(b.getAttribute("data-copy")); });
     var mw = document.getElementById("mascotWrap");
     if (mw) {
-      var msgs = ["Hi~ 一起背词鸭！", "看中文，拼出英文试试 ✍️", "累了就按番茄钟休息一下 ☕", "错题记得回来复习哦 ❌", "今天也要元气满满！🌟"];
-      var mi = 0;
-      mw.addEventListener("click", function () { mi = (mi + 1) % msgs.length; var t = document.getElementById("mascotTip"); if (t) t.textContent = msgs[mi]; });
+      var chars = [
+        { src: "assets/icons/icon-192.png", tip: "原创博博酱 · 今天也要加油鸭！" },
+        { src: "assets/img/mascots/mascot1.jpg", tip: "你的角色 1/5 ✨" },
+        { src: "assets/img/mascots/mascot2.jpg", tip: "你的角色 2/5 ✨" },
+        { src: "assets/img/mascots/mascot3.jpg", tip: "你的角色 3/5 ✨" },
+        { src: "assets/img/mascots/mascot4.jpg", tip: "你的角色 4/5 ✨" },
+        { src: "assets/img/mascots/mascot5.jpg", tip: "你的角色 5/5 ✨" }
+      ];
+      var ci = 0, img = document.getElementById("mascotAvatar"), tip = document.getElementById("mascotTip");
+      mw.addEventListener("click", function () { ci = (ci + 1) % chars.length; if (img) img.src = chars[ci].src; if (tip) tip.textContent = chars[ci].tip; });
     }
     window.addEventListener("hashchange", route);
     loadSite().then(function () { route(); });
