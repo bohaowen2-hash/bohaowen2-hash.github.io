@@ -27,7 +27,7 @@ BH.reg("vocab", async function (view, params) {
     if (val) state.known[w] = true; else delete state.known[w];
     delete state.wrong[w];
     try { await BH.authed("/api/me/known", { method: "POST", body: { word: w, value: !!val } }); }
-    catch (e) { BH.toast("云同步失败：" + e.message); }
+    catch (e) { BH.toast((BH.STATIC ? "保存失败" : "云同步失败") + "：" + e.message); }
   }
   async function markWrong(w, val) {
     w = String(w).toLowerCase();
@@ -35,7 +35,7 @@ BH.reg("vocab", async function (view, params) {
     try {
       if (val) await BH.authed("/api/me/wrong", { method: "POST", body: { word: w } });
       else await BH.authed("/api/me/wrong/" + encodeURIComponent(w), { method: "DELETE" });
-    } catch (e) { BH.toast("云同步失败：" + e.message); }
+    } catch (e) { BH.toast((BH.STATIC ? "保存失败" : "云同步失败") + "：" + e.message); }
   }
 
   /* ---------- 数据 ---------- */
@@ -59,7 +59,7 @@ BH.reg("vocab", async function (view, params) {
     '<section class="section tight" style="padding-top:46px"><div class="container">' +
       '<div class="sec-head left"><span class="badge">📖 词汇模块 · wbh 创立</span>' +
       '<h2>核心词汇 · 翻卡闯关</h2>' +
-      '<p>词库已扩容至 <b>' + (BH.site ? BH.site.counts.words : "") + '+</b> 大纲核心词与 <b>' + (BH.site ? BH.site.counts.phrases : "") + '+</b> 搭配。翻卡记忆 → 自测巩固 → 错题重练，学习进度自动云端同步。</p></div>' +
+      '<p>词库已扩容至 <b>' + (BH.site ? BH.site.counts.words : "") + '+</b> 大纲核心词与 <b>' + (BH.site ? BH.site.counts.phrases : "") + '+</b> 搭配。翻卡记忆 → 自测巩固 → 错题重练，进度清晰可见。</p></div>' +
       '<div class="toolbar">' +
         '<div class="seg" id="vSeg">' +
           '<button data-mode="card" class="on">🎴 背词</button>' +
@@ -98,7 +98,7 @@ BH.reg("vocab", async function (view, params) {
   });
   var unitSel = document.getElementById("vUnit");
   document.getElementById("vReset").onclick = function () {
-    if (!confirm("确定清空该浏览器账号的全部“已掌握”记录吗？（云端同步清除）")) return;
+    if (!confirm("确定清空该浏览器账号的全部“已掌握”记录吗？（本地记录将一并清除）")) return;
     var list = Object.keys(state.known);
     state.known = {};
     Promise.all(list.map(function (w) { return BH.authed("/api/me/known", { method: "POST", body: { word: w, value: false } }).catch(function () {}); }))
@@ -610,7 +610,7 @@ BH.reg("vocab", async function (view, params) {
         try {
           await BH.authed("/api/me/reviews/answer", { method: "POST", body: { word: w.w, good: good } });
           if (good) await markKnown(w.w, true); else await markWrong(w.w, true);
-        } catch (e) { BH.toast("同步失败：" + e.message); }
+        } catch (e) { BH.toast((BH.STATIC ? "保存失败" : "同步失败") + "：" + e.message); }
         qi++; draw();
       }
     }

@@ -165,6 +165,15 @@ function addDaysStr(s, n) { var d = new Date(s + "T00:00:00"); d.setDate(d.getDa
       if (ps1[un]) return Promise.reject(new Error("该用户名已在本机注册"));
       ps1[un] = { name: String(body.name || un).slice(0, 24), pass: hashPw(body.password), guest: false };
       saveProfs(ps1);
+      try {
+        var gkey = LS_PRE + curU(), nkey = LS_PRE + un;
+        var src = JSON.parse(localStorage.getItem(gkey)) || {}, dst = JSON.parse(localStorage.getItem(nkey)) || {};
+        var uArr = function (a, b) { var m = {}; (a || []).forEach(function (x) { m[x] = 1; }); (b || []).forEach(function (x) { m[x] = 1; }); return Object.keys(m); };
+        dst.known = uArr(dst.known, src.known); dst.wrong = uArr(dst.wrong, src.wrong); dst.checkins = uArr(dst.checkins, src.checkins);
+        dst.acts = ((src.acts || []).concat(dst.acts || [])).slice(-800);
+        dst.reviews = ((src.reviews || []).concat(dst.reviews || [])).slice(0, 20000);
+        localStorage.setItem(nkey, JSON.stringify(dst));
+      } catch (e) {}
       return Promise.resolve({ token: un, user: { id: un, username: un, name: ps1[un].name, role: "user", guest: false, createdAt: "2026-01-01" } });
     }
     if (p === "/api/auth/login") {
