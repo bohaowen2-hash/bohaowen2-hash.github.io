@@ -239,6 +239,7 @@ BH.reg("exam", async function (view, params) {
   function renderExams() {
     var zone = document.getElementById("examLib"); if (!zone) return;
     fetch("data/exams.json").then(function (r) { return r.json(); }).then(function (list) {
+      list.sort(function (a, b) { return (b.year - a.year) || (b.month - a.month) || (b.set - a.set); });
       var ys = document.getElementById("exYear");
       var years = {};
       list.forEach(function (e) { if (e.year) years[e.year] = 1; });
