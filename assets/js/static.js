@@ -31,9 +31,14 @@
     });
     return p;
   }
+
+var REVIEW_INTERVALS = [1, 2, 4, 7, 15, 30];
+function ymd(d) { return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0"); }
+function addDaysStr(s, n) { var d = new Date(s + "T00:00:00"); d.setDate(d.getDate() + n); return ymd(d); }
+
   function readState() {
-    try { return JSON.parse(localStorage.getItem(LS)) || { known: [], wrong: [], checkins: [], acts: [] }; }
-    catch (e) { return { known: [], wrong: [], checkins: [], acts: [] }; }
+    try { return JSON.parse(localStorage.getItem(LS)) || { known: [], wrong: [], checkins: [], acts: [], reviews: [] }; }
+    catch (e) { return { known: [], wrong: [], checkins: [], acts: [], reviews: [] }; }
   }
   function writeState(s) {
     try { localStorage.setItem(LS, JSON.stringify(s)); } catch (e) {}
@@ -87,7 +92,8 @@
       checkinCount: checkins.length, streak: streak, checkedToday: !!days[today],
       activityCount: (st.acts || []).length, totalSeconds: totalSec, totalQuiz: totalQ, totalRight: totalRight,
       accuracy: totalQ ? Math.round(totalRight / totalQ * 100) : 0,
-      byType: byType, last14: last14, heat: heat, recent: (st.acts || []).slice(-8).reverse()
+      byType: byType, last14: last14, heat: heat, recent: (st.acts || []).slice(-8).reverse(),
+      memory: { due: (st.checkins || []).length > -1 ? (st.reviews || []).filter(function (r) { return !r.due || r.due <= todayStr(); }).length : 0 }
     };
   }
 
@@ -196,7 +202,33 @@
       return Promise.resolve(calcStats(localUser(), st6));
     }
 
-    if (p.indexOf("/api/admin") === 0) return Promise.reject(new Error("静态公开版无后台管理，请在本机运行 node server.js 使用完整动态版"));
+    if (p === "/api/words/lookup") {
+      return loadJson("words").then(function (all) {
+        var list = (q.w || "").split(",").map(function (x) { return x.trim().toLowerCase(); }).filter(Boolean);
+        var map = {}; all.forEach(function (w) { var k = w.w.toLowerCase(); if (list.indexOf(k) > -1 && !map[k]) map[k] = w; });
+        return { rows: list.map(function (k) { return map[k]; }).filter(Boolean) };
+      });
+    }
+    if (p === "/api/me/reviews") {
+      var rs = readState();
+      var today = todayStr();
+      var due = (rs.reviews || []).filter(function (r) { return !r.due || r.due <= today; });
+      return Promise.resolve({ dueWords: due, total: (rs.reviews || []).length, schedule: { due: due.length } });
+    }
+    if (p === "/api/me/reviews/learn" || p === "/api/me/reviews/answer") {
+      var st = readState();
+      st.reviews = st.reviews || [];
+      var word = String(body.word || "").toLowerCase();
+      if (!word) return Promise.reject(new Error("缺少单词"));
+      var e = st.reviews.filter(function (r) { return r.w === word; })[0];
+      if (!e) { e = { w: word, stage: 0, due: addDaysStr(todayStr(), 1) }; st.reviews.push(e); }
+      var good = p.indexOf("answer") > -1 ? body.good !== false : true;
+      if (good === false) { e.stage = 0; e.due = addDaysStr(todayStr(), 1); }
+      else { e.stage = Math.min(e.stage + 1, REVIEW_INTERVALS.length - 1); e.due = addDaysStr(todayStr(), REVIEW_INTERVALS[e.stage]); }
+      writeState(st);
+      return Promise.resolve({ ok: true, entry: e });
+    }
+        if (p.indexOf("/api/admin") === 0) return Promise.reject(new Error("静态公开版无后台管理，请在本机运行 node server.js 使用完整动态版"));
     return Promise.reject(new Error("接口不存在：" + p));
   }
 
