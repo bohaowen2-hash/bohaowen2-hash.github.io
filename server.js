@@ -42,7 +42,7 @@ function emptyDb() {
     meta: { version: 2, created: new Date().toISOString() },
     settings: defaultSettings(),
     users: [],
-    units: [], words: [], phrases: [], content: [],
+    units: [], words: [], phrases: [], content: [], classes: [],
     counters: { id: 1, cid: 1 }
   };
 }
@@ -55,6 +55,7 @@ function loadDb() {
     if (!db.words) db.words = [];
     if (!db.phrases) db.phrases = [];
     if (!db.content) db.content = [];
+    if (!db.classes) db.classes = [];
     if (!db.counters) db.counters = { id: 1, cid: 1 };
     (db.users || []).forEach(u => { if (!Array.isArray(u.reviews)) u.reviews = []; });
     if (db.meta && db.meta.version < 2) db.settings = Object.assign(defaultSettings(), db.settings || {});
@@ -441,6 +442,34 @@ const server = http.createServer(async (req, res) => {
       else { e.stage = Math.min(e.stage + 1, REVIEW_INTERVALS.length - 1); e.due = addDaysDate(dateStr(new Date()), REVIEW_INTERVALS[e.stage]); }
       scheduleSave();
       return json(res, 200, { ok: true, entry: e });
+    }
+    /* ---------- 班级 / 组队（动态版真账号） ---------- */
+    if (p === "/api/me/class" && req.method === "GET") {
+      const cl = db.classes.find(x => (x.members || []).indexOf(me.id) > -1);
+      return json(res, 200, cl ? { joined: { code: cl.code, name: cl.name, isTeacher: cl.ownerId === me.id } } : { joined: null });
+    }
+    if (p === "/api/me/class/create" && req.method === "POST") {
+      const b = await readBody(req);
+      const name = String(b.name || "我的班级").trim().slice(0, 30);
+      const code = "BH" + Math.random().toString(36).slice(2, 6).toUpperCase() + Math.floor(10 + Math.random() * 89);
+      db.classes.push({ id: nextId(), code: code, name: name, ownerId: me.id, members: [me.id], createdAt: new Date().toISOString() });
+      scheduleSave();
+      return json(res, 200, { ok: true, code: code, name: name });
+    }
+    if (p === "/api/me/class/join" && req.method === "POST") {
+      const b = await readBody(req);
+      const code = String(b.code || "").trim().toUpperCase();
+      const cl = db.classes.find(x => x.code === code);
+      if (!cl) return apiError(res, 404, "班级码不存在，请检查后重试");
+      if ((cl.members || []).indexOf(me.id) < 0) cl.members.push(me.id);
+      scheduleSave();
+      return json(res, 200, { ok: true, name: cl.name, code: cl.code });
+    }
+    if (p === "/api/me/class/members" && req.method === "GET") {
+      const cl = db.classes.find(x => (x.members || []).indexOf(me.id) > -1 && x.ownerId === me.id);
+      if (!cl) return apiError(res, 403, "仅班级创建者可查看成员");
+      const rows = (cl.members || []).map(id => { const u = db.users.find(x => x.id === id); return u ? { name: u.name || u.username, checkins: (u.checkins || []).length, known: (u.known || []).length } : null; }).filter(Boolean);
+      return json(res, 200, { name: cl.name, code: cl.code, rows: rows });
     }
     if (p === "/api/me/stats" && req.method === "GET") return json(res, 200, calcStats(me));
 

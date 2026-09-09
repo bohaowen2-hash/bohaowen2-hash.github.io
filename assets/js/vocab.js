@@ -133,6 +133,7 @@ BH.reg("vocab", async function (view, params) {
       '<div class="toolbar">' + unitSelHtml +
       '<button class="btn btn-ghost btn-sm" id="cShuffle">🔀 乱序</button>' +
       '<button class="btn btn-ghost btn-sm" id="cSpeak">🔊 朗读</button>' +
+      '<button class="btn btn-ghost btn-sm" id="shareWord">🖼️ 分享卡</button>' +
       '<span class="grow"></span><span class="tag" id="cPos"></span></div>' +
       '<div class="flash-zone">' +
         '<div class="flash-card" id="flashCard"><div class="fc-inner">' +
@@ -172,6 +173,8 @@ BH.reg("vocab", async function (view, params) {
     state.shuffled = false;
     document.getElementById("cShuffle").onclick = function () { state.shuffled = !state.shuffled; if (state.shuffled) { state.deck = deckWords.slice().sort(function(){ return Math.random() - .5; }); } else { state.deck = deckWords.slice(); } state.idx = 0; showCard(); BH.toast(state.shuffled ? "已开启乱序 🔀" : "已恢复顺序 ↩️"); };
     document.getElementById("cSpeak").onclick = function () { speak(cur().w); };
+    document.getElementById("shareWord").onclick = async function () { var w = cur(); BH.toast("正在生成分享卡…"); var url = await BH.buildShare({ title: [{ text: w.w, color: "#1e1b4b" }], lines: [ { text: w.f || "", color: "#7c3aed", font: "600 26px sans-serif" }, { text: w.m, font: "700 34px sans-serif" }, { text: (w.freq ? (w.freq==="高"?"🔥高频":w.freq==="中"?"⭐中频":"🌱低频") + " · " : "") + (w.p || ""), color: "#6d28d9", font: "600 24px sans-serif" } ], footer: "wbh · 博浩英语 CET-6" }); BH.modal("<h3>🖼️ 每日一词分享卡</h3><div style='text-align:center'><img src='" + url + "' style='max-width:100%;max-height:70vh;border-radius:16px'></div><div class='btn-row' style='justify-content:center;margin-top:12px'><a class='btn btn-primary' download='bohao-word.png' href='" + url + "'>⬇️ 下载图片</a><button class='btn btn-ghost' data-close>关闭</button></div><p class='muted' style='text-align:center;font-size:12px'>手机长按图片即可保存分享</p>"); };
+
     document.getElementById("flashCard").onclick = function () { document.getElementById("flashCard").classList.toggle("flipped"); };
     document.getElementById("prevBtn").onclick = function () { nav(-1); };
     document.getElementById("nextBtn").onclick = function () { nav(1); };
