@@ -65,6 +65,18 @@ function loadDb() {
         scheduleSave();
       }
     } catch (e) {}
+    if (db.meta && db.meta.version < 4) {
+      try {
+        db.words.forEach(function (w) {
+          if (w && w.m) {
+            var parts = String(w.m).split(/[；;]/).map(function (x) { return x.trim(); }).filter(Boolean);
+            w.m = parts.slice(0, 2).join("；");
+          }
+        });
+        db.meta.version = 4;
+        scheduleSave();
+      } catch (e2) {}
+    }
     return false;
   }
   db = emptyDb();
