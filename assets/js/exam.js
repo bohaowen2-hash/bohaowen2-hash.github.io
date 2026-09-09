@@ -248,27 +248,27 @@ BH.reg("exam", async function (view, params) {
       drawExams(list);
     }).catch(function () { zone.innerHTML = "<div class='empty-note'>真题索引仅在静态版提供（原卷 PDF 由站主提供）。</div>"; });
   }
+  var exPg = 0;
   function drawExams(list) {
     var zone = document.getElementById("examLib"); if (!zone) return;
     var year = document.getElementById("exYear").value;
     var set = document.getElementById("exSet").value;
     var rows = list.filter(function (e) { return (year === "all" || String(e.year) === year) && (set === "all" || String(e.set) === set); });
-    var per = 15, page = 0;
+    var pages = Math.max(1, Math.ceil(rows.length / 15));
+    if (exPg >= pages) exPg = pages - 1;
     var pg = document.getElementById("exPager"); pg.innerHTML = "";
-    var pages = Math.max(1, Math.ceil(rows.length / per));
-    var mk = function (label, p, on) { var b = document.createElement("button"); b.textContent = label; if (on) b.classList.add("on"); b.disabled = p === page; b.onclick = function () { exPg = p; drawExams(list); }; pg.appendChild(b); };
-    mk("‹", Math.max(0, page - 1)); for (var i = 0; i < pages; i++) { if (pages > 15 && i > 3 && i < pages - 4 && Math.abs(i - page) > 3) continue; mk(String(i + 1), i, i === page); } mk("›", Math.min(pages - 1, page + 1));
-    var slice = rows.slice(page * per, (page + 1) * per);
+    var mk = function (label, p, on) { var b = document.createElement("button"); b.textContent = label; if (on) b.classList.add("on"); b.disabled = p === exPg; b.onclick = function () { exPg = p; drawExams(list); }; pg.appendChild(b); };
+    mk("‹", Math.max(0, exPg - 1)); for (var i = 0; i < pages; i++) { if (pages > 15 && i > 3 && i < pages - 4 && Math.abs(i - exPg) > 3) continue; mk(String(i + 1), i, i === exPg); } mk("›", Math.min(pages - 1, exPg + 1));
+    var slice = rows.slice(exPg * 15, (exPg + 1) * 15);
     document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
+    zone.innerHTML = slice.length ? slice.map(function (e) {
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button><button class='btn btn-ghost btn-sm' data-ans='" + encodeURIComponent(e.file) + "'>🔑 答案</button><button class='btn btn-ghost btn-sm' data-q='" + encodeURIComponent(e.file) + "'>🧩 分题</button></div>";
+    }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
     zone.querySelectorAll("[data-exc]").forEach(function (bx) { bx.onclick = function () { openExcerpt(decodeURIComponent(bx.getAttribute("data-exc"))); }; });
     zone.querySelectorAll("[data-ans]").forEach(function (ba) { ba.onclick = function () { openAnswers(decodeURIComponent(ba.getAttribute("data-ans"))); }; });
     zone.querySelectorAll("[data-q]").forEach(function (bq) { bq.onclick = function () { openQuestions(decodeURIComponent(bq.getAttribute("data-q"))); }; });
-    zone.innerHTML = slice.length ? slice.map(function (e) {
-      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button><button class='btn btn-ghost btn-sm' data-ans='" + encodeURIComponent(e.file) + "'>🔑 答案</button><button class='btn btn-ghost btn-sm' data-q='" + encodeURIComponent(e.file) + "'>🧩 分题</button></div>";
-    }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
   }
-
 
   function segPaper(txt) {
     var parts = String(txt || "").split(/\n(?=Part\s*(?:[IVX]+|One|Two|Three|Four|Five|Six))|\n(?=Part\s+)/i);
