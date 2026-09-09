@@ -5,6 +5,8 @@
 "use strict";
 var BH = window.BH = {
   routes: {}, site: null, user: null,
+  _mods: { home: "home.js", vocab: "vocab.js", listening: "listening.js", reading: "reading.js", writing: "writing.js", translation: "translation.js", exam: "exam.js", me: "dashboard.js", admin: "admin.js" },
+  _loading: {},
   token: null, _booted: false
 };
 (function () {
@@ -179,10 +181,22 @@ var BH = window.BH = {
     }
     return { name: name, params: params };
   }
+  function loadMod(file) {
+    return new Promise(function (resolve, reject) {
+      if (BH._loading[file]) { var i = setInterval(function () { if (BH.routes[file.replace(".js", "")] || !BH._loading[file]) { clearInterval(i); resolve(); } }, 50); return; }
+      BH._loading[file] = true;
+      var sc = document.createElement("script");
+      sc.src = "assets/js/" + file;
+      sc.onload = function () { delete BH._loading[file]; resolve(); };
+      sc.onerror = function () { delete BH._loading[file]; reject(new Error("模块加载失败：" + file)); };
+      document.head.appendChild(sc);
+    });
+  }
   async function route() {
     var view = document.getElementById("view");
     var r = currentRoute();
     var fn = BH.routes[r.name];
+    if (!fn && BH._mods && BH._mods[r.name]) { await loadMod(BH._mods[r.name]); fn = BH.routes[r.name]; }
     setNavActive(r.name === "" ? "home" : r.name);
     updateNavUser();
     if (!fn) { view.innerHTML = "<div class='container section' style='text-align:center'><h2>页面不存在</h2><a class='btn btn-primary' href='#/'>回首页</a></div>"; return; }

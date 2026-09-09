@@ -12,7 +12,7 @@ BH.reg("home", async function (view) {
   var syncNote = BH.STATIC ? "记录保存在本机浏览器，请勿清理浏览器数据" : "注册账号后，换设备也能接着学";
 
   var randomRows = [];
-  try { randomRows = (await BH.api("/api/words/random", { method: "POST", body: { size: 1 } })).rows || []; } catch (e) {}
+  if (!BH.STATIC) { try { randomRows = (await BH.api("/api/words/random", { method: "POST", body: { size: 1 } })).rows || []; } catch (e) {} }
   var wod = randomRows[0];
   var wodHtml = wod ? "<div class='fc-word'>" + s(wod.w) + "</div><div class='fc-ipa'>" + s(wod.f || "") + " &nbsp;·&nbsp; " + s(wod.p || "") + "</div><div style='font-size:17px;font-weight:800;margin-top:10px'>" + s(wod.m) + "</div>" : "";
 
