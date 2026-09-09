@@ -42,6 +42,10 @@ BH.reg("vocab", async function (view, params) {
   var unitsData = await BH.api("/api/units");
   state.units = unitsData;
   state.unit = unitsData.length ? unitsData[0].id : "";
+  function savedPos() { try { var p = JSON.parse(localStorage.getItem("bh-vocab-pos") || "null"); return p; } catch (e) { return null; } }
+  function rememberPos() { try { localStorage.setItem("bh-vocab-pos", JSON.stringify({ unit: state.unit, idx: state.idx })); } catch (e) {} }
+  var spInit = savedPos();
+  if (spInit && unitsData.some(function (u) { return u.id === spInit.unit; })) state.unit = spInit.unit;
   await loadMyState();
 
   var unitSelHtml = "<select id='vUnit'>" + unitsData.map(function (u) { return "<option value='" + u.id + "'>" + s(u.name) + "</option>"; }).join("") + "</select>";
@@ -148,13 +152,18 @@ BH.reg("vocab", async function (view, params) {
       document.getElementById("cPos").textContent = "加载中…";
       deckWords = await loadDeck();
       state.deck = deckWords.slice();
-      state.idx = 0; state.shuffled = false;
+      var sp2 = savedPos();
+      state.idx = (sp2 && sp2.unit === state.unit && sp2.idx < state.deck.length) ? sp2.idx : 0;
+      state.shuffled = false;
       showCard();
       var un = unitsData.find(function (u) { return u.id === state.unit; });
       BH.toast("已切换到 " + (un ? un.name : state.unit) + " 🎈");
     };
     deckWords = await loadDeck();
-    state.deck = deckWords; state.idx = 0; state.shuffled = false;
+    state.deck = deckWords;
+    var sp0 = savedPos();
+    state.idx = (sp0 && sp0.unit === state.unit && sp0.idx < state.deck.length) ? sp0.idx : 0;
+    state.shuffled = false;
     document.getElementById("cShuffle").onclick = function () { state.shuffled = !state.shuffled; if (state.shuffled) { state.deck = deckWords.slice().sort(function(){ return Math.random() - .5; }); } else { state.deck = deckWords.slice(); } state.idx = 0; showCard(); BH.toast(state.shuffled ? "已开启乱序 🔀" : "已恢复顺序 ↩️"); };
     document.getElementById("cSpeak").onclick = function () { speak(cur().w); };
     document.getElementById("flashCard").onclick = function () { document.getElementById("flashCard").classList.toggle("flipped"); };
@@ -204,6 +213,7 @@ BH.reg("vocab", async function (view, params) {
     var sm = document.getElementById("fcSim"); if (sm) { if (w.sim && w.sim.length) { sm.innerHTML = "👯 形近词：" + w.sim.map(function (x) { return "<span class='sim-w'>" + s(x) + "</span>"; }).join(""); sm.style.display = "block"; } else sm.style.display = "none"; }
     var mm = document.getElementById("fcMem"); if (mm) { if (w.mem) { mm.textContent = "💭 " + w.mem; mm.style.display = "block"; } else mm.style.display = "none"; }
     document.getElementById("cOrder").textContent = state.shuffled ? "🔀 乱序中" : "↩️ 按单元顺序";
+    rememberPos();
   }
   async function decide(known) {
     var w = cur().w;

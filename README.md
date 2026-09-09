@@ -111,3 +111,8 @@ archive/static-v1/     v1 纯静态版归档（GitHub Pages 可用，含原「�
 ### 第 4 步：让网站真正在线（二选一，把选择告诉博浩）
 - **A（推荐）在线动态版**：用 GitHub 账号登录 https://render.com → New → Web Service → 连接 `bohao-cet6` 仓库 → Start Command 填 `node server.js` → 部署后得到固定网址 `https://xxx.onrender.com`（此链接可长期转发，不依赖你的电脑）。
 - **B 免费静态版**：让博浩把 v2 词库/素材打包成纯静态数据包，发布到 GitHub Pages（固定网址、完全免费；代价：个人学习记录只在各自浏览器本地保存、无后台管理）。
+
+## 📱 App 版说明（Windows / 手机）
+- **Windows App 版**：双击根目录 `打开App版Windows.bat`，会用浏览器“应用窗口模式”打开网站（无地址栏，像原生 App）。
+- **Android / iPhone**：用浏览器打开网址 → 菜单 → “添加到主屏幕 / 安装应用”，即得到带卡通图标的 App 图标（PWA）。
+- 正式安装包（APK/IPA）与商店上架需要你本人的开发者账号，可在动态版/后续打包流程中完成。

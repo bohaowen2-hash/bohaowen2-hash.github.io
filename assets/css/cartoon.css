@@ -71,3 +71,6 @@ select,input[type=text],input[type=password],textarea{border-radius:14px}
 ::-webkit-scrollbar{width:10px;height:10px}
 ::-webkit-scrollbar-thumb{background:linear-gradient(#f9a8d4,#c4b5fd);border-radius:99px}
 ::selection{background:rgba(236,72,153,.3)}
+/* 二次元轻背景 */
+body::before{content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;background-image:radial-gradient(circle at 14% 20%,rgba(244,114,182,.16) 0 7px,transparent 8px),radial-gradient(circle at 86% 12%,rgba(129,140,248,.15) 0 9px,transparent 10px),radial-gradient(circle at 8% 78%,rgba(103,232,249,.13) 0 8px,transparent 9px),radial-gradient(circle at 92% 70%,rgba(244,114,182,.12) 0 6px,transparent 7px),radial-gradient(circle at 30% 45%,rgba(251,191,36,.10) 0 5px,transparent 6px),radial-gradient(circle at 68% 88%,rgba(34,211,238,.10) 0 5px,transparent 6px),radial-gradient(circle at 50% 8%,rgba(236,72,153,.08) 0 12px,transparent 13px);}
+[data-theme="dark"] body::before{opacity:.5}
