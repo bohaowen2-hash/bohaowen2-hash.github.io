@@ -1,0 +1,233 @@
+### 2017年12月六级真题(第3套).pdf
+
+2017 年 12 月大学英语六级考试真题（第 3 套）
+Part I Writing (30minutes)
+（请于正式开考后半小时内完成该部分，之后将进行听力考试）
+Directions: For this part, you are allowed 30 minutes to write an essay commenting on the saying "Help others, and you
+willbehelpedwhenyouareinneed"Youcanciteexamplestoillustrateyourviews. Youshouldwriteatleast150words
+butnomorethan200words.
+Part II ListeningComprehension (30minutes)
+说明：由于2017年12月六级考试全国共考了2套听力，本套真题听力与前2套内容完全一样，只是顺序不一
+样，因此在本套真题中不再重复出现。
+Part III Reading Comprehension (40minutes)
+SectionA
+Directions: Inthissection, thereisapassagewithtenblanks. Youarerequiredtoselectonewordforeachblankfromalist
+of choices given in a word bank following the passage. Read the passage through carefully before making your choices.
+Each choice in the bank is identified by a letter. Please mark the corresponding letter for each item on Answer Sheet 2
+withasinglelinethroughthecentre. Youmaynotuseanyofthewordsinthebankmorethanonce.
+Question26to35arebasedonthefollowingpassage.
+ManyEuropeancountrieshavebeenmakingtheshifttoelectricvehiclesandGermanyhasjuststatedthatthey planto
+banthesaleofvehiclesusinggasolineanddieselasfuelby2030. Thecountryisalsoplanningtoreduceitscarbonfootprint
+by 80-95% by 2050, ___26___ a shift to green energy in the country. Effectively, the ban will include the registration of
+newcarsinthecountryastheywillnotallowanygasoline___27___vehicletoberegisteredafter2030.
+Partofthereasonthisbanisbeingdiscussedand___28___isbecauseenergyofficialsseethattheywillnotreachtheir
+emissionsgoals by 2050 if they do not ___29___ a large portion of vehicle emissions. The country is still ___30___ that it
+willmeetitsemissionsgoals, like reducingemissionsby40% by2020, butthe___31___ofelectriccarsinthecountryhas
+notoccurredasfastasexpected.
+Othereffortstoincreasetheuseofelectricvehiclesincludeplanstobuildover1millionhybridandelectriccarbattery
+charging stations across the country. By 2030, Germany plans on having over 6 million charging stations ___32___.
+According to the International BusinessTimes, electric car sales are expected to increase as Volkswagen is still recovering
+fromitsemissionsscandal.
+There are ___33___ around 155, 000 registered hybrid and electric vehicles on German roads, dwarfed by the 45
+million gasoline and diesel cars driving there now. As countries continue setting goals of reducing emissions, greater steps
+need to be taken to have a ___34___ effect on the surrounding environment. While the efforts are certainly not ___35___,
+theresultsofsuchbanswilllikelyonlystarttobeseenbygenerationsdowntheline, betteringtheworldforthefuture.
+A)acceptance I)incidentally
+B)currently J)installed
+C)disrupting K)noticeable
+D)eliminate L)powered
+E)exhaust M)restoration
+F)futile N)skeptical
+G)hopeful O)sparking
+H)implemented
+SectionB
+Directions: In this section, you are going to read a passage with ten statements attached to it. Each statement contains
+informationgiveninoneoftheparagraphs. Identifytheparagraphfromwhichtheinformationisderived. Youmaychoosea
+paragraph more than once. Each paragraph is marked with a letter. Answer the questions by marking the corresponding
+letteronAnswerSheet 2.
+Apple’sStanceHighlightsaMoreConfrontationalTeachIndustry
+A) The battlebetweenApple andlawenforcement officialsover unlocking a terrorist’s smartphone is the culmination
+ofaslowturningofthetablesbetweenthetechnologyindustryandtheUnitedStatesgovernment.
+B) After revelations by the former National Security Agency contractor Edward J. Snowden in 2013 that the
+government both cozied up to (讨好) certain tech companies and hacked into others to gain access to private data on an
+enormousscale, techgiantsbeganto recognizetheUnited Statesgovernmentasahostileactor. Butiftheconfrontationhas
+crystallized in this latest battle, it may already be heading toward a predictable conclusion: In the long run, the tech
+companiesaredestinedtoemergevictorious.
+C) It may not seem that way at the moment. On the one side, you have the United States government’s mighty legal
+and security apparatus fighting for data of the most sympathetic sort: the secrets buried in a dead mass murderer’s
+phone. The action stems from a federal court order issued on Tuesday requiring Apple to help the Federal Bureau of
+Investigation (F. B. I) to unlock an iPhone used by one of the two attackers who killed 14 people in San Bernardino,
+California, inDecember.
+D)Intheothercorneristheworld’smostvaluablecompany, whosechiefexecutive, TimothyD. Cook, hassaidhewill
+appeal the court’s order. Apple argues that it is fighting to preserve a principle that most of us who are addicted to our
+smartphones can defend: Weaken a single iPhone so that its contents can be viewed by the American government and you
+riskweakeningalliPhonesforanygovernmentintruder, anywhere.
+E) There will probably be monthsof legal tussling, and it is not at all clear whichside will prevail in court, nor in the
+battleforpublicopinionandlegislativefavor. Yetunderlying allofthisisa simpledynamic: Apple, Google, Facebookand
+othercompaniesholdmostofthecardsinthisconfrontation. Theyhaveourdata, andtheirbusinessesdependontheglobal
+public’scollectivebeliefthattheywilldoeverythingtheycantoprotectthatdata.
+F)Anycrackinthatfrontcouldbefatalfortechcompaniesthatmustoperateworldwide. IfAppleisforcedtoopenup
+aniPhoneforanAmericanlawenforcementinvestigation, whatistopreventitfromdoingsoforarequestfromtheChinese
+or the Iranians? If Apple is forced to write code that lets the F. B. I. get into the Phone 5c used by Syed Rizwan Farook, the
+male attacker in the San Bernardino attack, who would be responsible if some hacker got hold of that code and broke into
+itsotherdevices?
+G) Apple’s stance on these issues emerged post-Snowden, when the company started putting in place a series of
+technologies that, by default, make use of encryption to limit access to people’s data. More than that, Apple - and, in
+different ways, other tech companies, including Google, Facebook, Twitter and Microsoft - have made their opposition to
+thegovernment’sclaimsapointofcorporatepride.
+H) Appl’s emerging global brand is privacy; it has staked its corporate reputation, not to mention the investment of
+considerable technical and financial resources, on limiting the sort of mass surveillance that was uncovered by Mr.
+Snowden. So now, for many cases involving governmental intrusions into data, once-lonely privacy advocates find
+themselvesfightingalongsidethemostpowerfulcompanyintheworld.
+I) “A comparison point is in the 1990s battles over encryption,” said Kurt Opsahl, general counsel of the Electronic
+Frontier Foundation, a privacy watchdog group. “Then you had a few companies involved, but not one of the largest
+companiesin theworldcomingout with a lengthyandimpassionedpost, like we sawyesterdayfromTim Cook. Itsprofile
+hasreallybeenraised.”
+J) Appleand othertechcompaniesholdanotherace: the technical meansto keepmakingtheir devicesmore andmore
+inaccessible. Note that Apple’s public opposition to the government’s request is itself a hindrance to mass government
+intrusion. AndtogetatthecontentsofasingleiPhone, thegovernmentsaysitneedsacourtorderandApple’shelptowrite
+new code; in earlier versions of the iPhone, ones that were created before Apple found religion on (热衷于) privacy, the
+F. B. I. mayhavebeenabletobreakintothedevicebyitself.
+K) You can expect that noose (束缚) to continue to tighten. Experts said that whether or not Apple loses this specific
+case, measuresthatitcouldputintoplaceinthefuturewillalmostcertainlybeabletofurtherlimitthegovernment’sreach.
+L)That’snottosaythattheoutcomeoftheSanBernardinocaseisinsignificant. AsAppleandseveralsecurityexperts
+have argued, an order compelling Apple to write software that gives the F. B. I. access to the iPhone in question would
+establish an unsettling precedent. The order essentially asks Apple to hack its own devices, and once it is in place, the
+precedent could be used to justify law enforcement efforts to get around encryption technologies in other investigations far
+removedfromnationalsecuritythreats.
+M)OncearmedwithamethodforgainingaccesstoiPhones, thegovernmentcouldasktouseitproactively(先发制人
+地), before a suspected terrorist attack - leaving Apple in a bind as to whether to comply or risk an attack and suffer a
+public-relationsnightmare. “This is a brand-new salvo in the war against encryption,” Mr. Opsahl said. “We’ve had plenty
+of debates in Congress and the media over whether the government should have a backdoor, and this is an end run around
+that-heretheycomewithanordertocreatethatbackdoor.”
+N) Yet it’s worth noting that even if Apple ultimately loses this case, it has plenty of technical means to close a
+backdoorovertime.“Ifthey’reanywherenearworththeirsaltasengineers, Ibetthey’rerethinkingtheirthreatmodelaswe
+speak,”saidJonathanZdziarski, adigitalforensicexpertwhostudiestheiPhoneanditsvulnerabilities.
+O)Onerelativelysimplefix, Mr. Zdziarskisaid, wouldbeforAppletomodifyfutureversionsoftheiPhonetorequire
+a user to entera passcodebefore the phone will accept the sort ofmodified operatingsystem that theF. B. I. wantsApple to
+create. Thatway, Applecouldnotunilaterallyintroduceacodethatweakensthe iPhone—auserwouldhavetoconsentto
+it.
+P) “Nothing is 100 percent hacker-proof,” Mr. Zdziarski said, but he pointed out that the judge’s order in this case
+requiredAppletoprovide“reasonablesecurityassistance”tounlockMr. Farook’sphone. IfApplealtersthesecuritymodel
+of future iPhones so that even its own engineers’ “reasonable assistance” will not be able to crack a given device when
+compelledbythegovernment, aprecedentsetinthiscasemightloseitslastingforce. Inotherwords, eveniftheF. B. I. wins
+thiscase, inthelongrun, itloses.
+36. Itisapopularbeliefthattechcompaniesarecommittedtoprotectingtheircustomers’privatedata.
+37. TheUSgovernmentbelievesthatitsaccesstopeople’siPhonescouldbeusedtopreventterroristattacks.
+38. AfederalcourtaskedAppletohelptheFBIaccessdatainaterrorist’siPhone.
+39. PrivacyadvocatesnowhaveApplefightingalongsidethemagainstgovernmentaccesstopersonaldata.
+40. SnowdenrevealedthattheAmericangovernmenthadtriedhardtoaccessprivatedatainmassivescale.
+41. TheFBImighthavebeenabletoaccessprivatedatainearlieriPhoneswithoutApple’shelp.
+42. After theSnowden incident, Apple made clearitsposition to countergovernment intrusion into personaldata by means
+ofencryption.
+43. Accordingtoonedigitalexpert, noiPhonecanbeentirelyfreefromhacking.
+44. TimothyCook’slongwebposthashelpedenhanceApple’simage.
+45. Apple’sCEOhasdecidedtoappealthefederalcourt’sordertounlockauser’siPhone.
+SectionC
+Directions: There are 2 passages in this section. Each passage is followed by some questions or unfinishedstatements. For
+each of them there are four choices marked A), B), C) and D). You should decide on the best choice and mark the
+correspondingletteronAnswerSheet 2withasinglelinethroughthecentre.
+PassageOne
+Question46to50arebasedonthefollowingpassage.
+At the base of a mountain in Tanzania’s Gregory Rift, Lake Natron burns bright red, surrounded by the remains of
+animals that were unfortunate enough to fall into the salty water. Bats, swallows and more are chemically preserved in the
+pose in which they perished, sealed in the deposits of sodium carbonate in the water. The lake’s landscape is bizarre and
+deadly-andmade evenmore so bythe factthatit’stheplacewherenearly75percentoftheworld’sflamingos(火烈鸟)are
+born.
+The water is so corrosive that it can burn the skin and eyes of unadapted animals. Flamingos, however, are the only
+speciesthat actuallymakes life in the midst of all that death. Once every three or fouryears, when conditionsare right, the
+lakeiscoveredwiththepinkbirdsastheystopflighttobreed. Three–quartersoftheworld’sflamingosflyoverfromother
+saltlakesintheRift Valley andnestonsalt-crystalislandsthatappearwhenthewateris atspecificlevel-toohighandthe
+birdscan’t buildtheirnests, toolowandpredatorscanmore brisklyacrossthe lakebedandattack. Whenthewaterhitsthe
+rightlevel. Thebabybirdsarekeptsafeformpredatorsbyacorrosiveditch.
+“Flamingos have evolved very leathery skin on their legs so they can tolerate the salt water,” says David Harper, a
+professorattheUniversityofLeicester.“Humanscannot, andwoulddieiftheirlegswereexposedforanylengthoftime.”
+Sofarthisyear, waterlevelshavebeentoohighfortheflamingostonest.
+Some fish, too, have had limited success vacationing at the lake as less salty lagoons (泻湖) form on the outer edges
+from hot springs flowing into Lake Natron. Three species of tilapia (罗非鱼) thrive there part-time. “Fish have a refuge in
+the streams and can expand into the lagoons when the lake is low and the lagoons are separate,” Harper said. “All the
+lagoonsjoinwhenthelakeishighandfishmustretreattotheirstreamrefugesordie.”Otherwise, nofishareabletosurvive
+inthenaturallytoxiclake.
+Thisuniqueecosystemmaysoonbeunderpressure. TheTanzaniangovernmenthasonceagainstartedminingthelake
+forsodaash, usedformakingchemicals, glassanddetergents. Althoughtheplannedoperationwillbelocatedmore than40
+milesaway, drawingthesodaashinthroughpipelines, conservationistsworryitcouldstillupsetthenaturalwatercycleand
+breedinggrounds. Fornow, though, lifeprevails–eveninalakethatkillsalmosteverythingittouches.
+46. WhatcanwelearnaboutLakeNatron?
+A)Itissimplyuninhabitableformostanimals.
+B)Itremainslittleknowntotheoutsideworld.
+C)Itisabreedinggroundforavarietyofbirds.
+D)Itmakesanidealhabitatforlotsofpredators.
+47. Flamingosnestonlywhenthelakewaterisataspecificlevelsothattheirbabiescan______.
+A)findsafesheltermoreeasily C)stayawayfrompredators
+B)growthickfeathersontheirfeet D)getaccustomedtothesaltywater
+48. FlamingosintheRiftValleyareuniqueinthat_______.
+A)theycanmoveswiftlyacrosslagoons C)theybreednaturallyincorrosiveditches
+B)theycansurvivewellinsaltywater D)theyknowwhereandwhentonest
+49. WhycancertainspeciesoftilapiasometimessurvivearoundLakeNatron?
+A)Theycantakerefugeinthelesssaltywaters.
+B)Theycanfleequickenoughfrompredators.
+C)Theycanmovefreelyfromlagoontolagoon.
+D)Theycanstandtheheatofthespringwater.
+50. WhatmaybetheconsequenceofTanzaniangovernment’splannedoperation?
+A)Theacceleratedextinctionofflamingos.
+B)Thechangeofflamingos’migrationroute.
+C)TheoverminingofLakeNatron’ssodaash.
+D)ThedisruptionofLakeNatron’secosystem.
+PassageTwo
+Questions51to55arebasedonthefollowingpassage.
+It is the seasonfor some franticlast-minutemath acrossthe country, employeesof all stripe are counting backward in
+an attempt to figure out just how much paid time-off they have left it their reserves. More of them, though, will skip those
+calculationsaltogetherandjustpower throughtheholidaysinto2017: MorethanhalfofAmericanworkersdon’tuseupall
+oftheirallottedvacationdayseachyear.
+Notsolongago, peoplewouldhaveturneduptheirnosesatthatkindofdedicationtothejob. Asmarketingprofessors
+Silvia Bellezza, Neeru Paharia, and Anat Keinan recently explained in Harvard Business Review (HBR), leisure time was
+once seen as an indicator of high social status, something attainable only for those at the top. Since the middle of the 20th
+century, though, things have turned the opposite way – these days, punishing hours at your desk, rather than days off, are
+seenasthemarkofsomeoneimportant.
+Inaseriesofseveralexperiments, theresearchersillustratedjusthowmuchwe’vecometoadmirebusyness, oratleast
+the appearance of it. Volunteers read two passages, on about a man who led a life of leisure and another about a man who
+wasover-workedandover–scheduled; whenaskedtodeterminewhichofthetwohadahighersocialstatus, themajorityof
+theparticipantssaidthelatter. Thesameheldtrueforpeoplewhousedproductsthatimpliedtheywereshortontime: Inone
+experiment, for example, customers of the grocery-delivery service Peapod were seen as of higher status than people who
+shopped at grocery stores that were equally expensive; in another, people wearing wireless headphones were considered
+furtheruponthesocialladderthanthosewearingregularheadphones, evenwhenbothwerejustusedtolistentomusic.
+In part, the authors wrote in HBR, this pattern may have to do with the way work itself has changed over the past
+severaldecades.
+We think that the shift from leisure-as-status to busyness-as-status may be linked to the development of
+knowledge-intensive economics. In such economies, individuals who possess the human capital characteristics that
+employers or clients value(e. g., competence and ambition) are expected to be in high demand and short supply on the job
+market. Thus, by telling others that we are busy and working all the time, we are implicitly suggesting that we are sought
+after, whichenhancesourperceivedstatus.
+Even if you feel tempted to sacrifice your own vacation days for fake busyness, though, at least consider leaving your
+weekendsunscheduled. It’sforyourowngood.
+51. Whatdomostemployeesplantodotowardstheendoftheyear?
+A)Goforavacation. C)Setanobjectivefornextyear.
+B)Keeponworking. D)Reviewtheyear’sachievements.
+52. Howwouldpeopleviewdedicationtoworkinthepast?
+A)Theywouldregarditasamatterofcourse.
+B)Theywouldconsideritamustforsuccess.
+C)Theywouldlookuponitwithcontempt.
+D)Theywoulddeemitatrickofbusinessmen.
+53. Whatdidtheresearchersfindthroughaseriesofexperiments?
+A)Thebusieroneappears, themorerespectoneearns.
+B)Themoreoneworks, themoreonefeelsexploited.
+C)Themoreknowledgeonehas, themorecompetentonewillbe.
+D)Thehigherone’sstatus, themorevacationtimeonewillenjoy.
+54. Whatmayaccountforthechangeofpeople’sattitudetowardsbeingbusy?
+A)Thefastpaceoflifeinmodernsociety.
+B)Thefiercecompetitioninthejobmarket.
+C)Thewidespreaduseofcomputertechnology.
+D)Theroleofknowledgeinmoderneconomy.
+55. Whatdoestheauthoradviseustodoattheendofthepassage?
+A)Scheduleourtimeproperlyforefficiency.
+B)Planourweekendsinameaningfulway.
+C)Plantimetorelaxhoweverbusyweare.
+D)Avoidappearingbusywhenwearenot.
+PartIV Translation (30minutes)
+Directions: For this part, you are allowed 30 minutes to translate a passage from Chinese into English. You should write
+youransweronAnswerSheet 2.
+洞庭湖位于湖南省东北部，面积很大，但湖水很浅。洞庭湖是长江的蓄洪池，湖的大校很大程度
+上取决于季节变化。湖北和湖南两省因其与湖的相对位置而得名，湖北意为“湖的北边”，而湖南则为
+“湖的南边”。洞庭湖作为龙舟赛的发源地，在中国文化中享有盛名。据说龙舟赛始于洞庭湖东岸。为
+的是搜寻楚国爱国诗人屈原的遗体。龙舟赛与洞庭湖及周边的美景，每年都吸引着成千上万来自全国
+和世界各地的游客。
