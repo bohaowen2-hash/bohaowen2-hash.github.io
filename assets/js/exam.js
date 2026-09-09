@@ -1,6 +1,6 @@
 /* 博浩英语 CET-6 · 备考模块 */
 "use strict";
-BH.reg("exam", async function (view) {
+BH.reg("exam", async function (view, params) {
   var s = BH.esc;
   var tips = await BH.api("/api/content?cat=examTips");
   var DEFAULT_DATE = (BH.site && BH.site.examDate) || "2026-12-19";
@@ -342,4 +342,7 @@ BH.reg("exam", async function (view) {
 
   refreshTom();
   renderPlanRun();
+  if (params && params.go === "exams") {
+    setTimeout(function () { var el = document.getElementById("examLib"); if (el) el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 500);
+  }
 });
