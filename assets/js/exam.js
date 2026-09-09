@@ -255,7 +255,7 @@ BH.reg("exam", async function (view, params) {
     var per = 15, page = 0;
     var pg = document.getElementById("exPager"); pg.innerHTML = "";
     var pages = Math.max(1, Math.ceil(rows.length / per));
-    var mk = function (label, p, on) { var b = document.createElement("button"); b.textContent = label; if (on) b.classList.add("on"); b.disabled = p === page; b.onclick = function () { page = p; drawExams(list); }; pg.appendChild(b); };
+    var mk = function (label, p, on) { var b = document.createElement("button"); b.textContent = label; if (on) b.classList.add("on"); b.disabled = p === page; b.onclick = function () { exPg = p; drawExams(list); }; pg.appendChild(b); };
     mk("‹", Math.max(0, page - 1)); for (var i = 0; i < pages; i++) { if (pages > 15 && i > 3 && i < pages - 4 && Math.abs(i - page) > 3) continue; mk(String(i + 1), i, i === page); } mk("›", Math.min(pages - 1, page + 1));
     var slice = rows.slice(page * per, (page + 1) * per);
     document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
