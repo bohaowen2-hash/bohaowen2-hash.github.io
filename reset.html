@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>正在更新博浩英语…</title>
+<style>body{font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;display:grid;place-items:center;min-height:100vh;margin:0;background:linear-gradient(120deg,#ede9fe,#fce7f3);color:#3b1d5e}div{text-align:center;padding:28px}h1{font-size:20px}small{color:#7c6f95}</style>
+</head>
+<body>
+<div>
+  <div style="font-size:46px">🔄</div>
+  <h1>正在清理旧缓存并更新…</h1>
+  <p id="msg"><small>请稍候，完成后会自动跳回首页</small></p>
+</div>
+<script>
+(async function () {
+  var msg = document.getElementById('msg');
+  try {
+    if ('serviceWorker' in navigator) {
+      var regs = await navigator.serviceWorker.getRegistrations();
+      await Promise.all(regs.map(function (r) { return r.unregister(); }));
+    }
+    if (window.caches && caches.keys) {
+      var keys = await caches.keys();
+      await Promise.all(keys.map(function (k) { return caches.delete(k); }));
+    }
+    try { localStorage.removeItem('bh-theme'); } catch (e) {}
+    msg.innerHTML = '<small>✅ 清理完成，正在进入最新版…</small>';
+  } catch (e) {
+    msg.innerHTML = '<small>已尽力清理，正在进入最新版…</small>';
+  }
+  setTimeout(function () { location.replace('/?v=' + Date.now() + '#/'); }, 900);
+})();
+</script>
+</body>
+</html>
