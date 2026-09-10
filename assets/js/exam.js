@@ -262,7 +262,10 @@ BH.reg("exam", async function (view, params) {
     var slice = rows.slice(exPg * 15, (exPg + 1) * 15);
     document.getElementById("exTotal").textContent = "共 " + rows.length + " 套";
     zone.innerHTML = slice.length ? slice.map(function (e) {
-      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div><a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>打开 / 下载 ↗</a><button class='btn btn-ghost btn-sm' data-txt='" + encodeURIComponent(e.file) + "'>📄 全文</button><button class='btn btn-ghost btn-sm' data-exc='" + encodeURIComponent(e.file) + "'>✍️ 题干</button><button class='btn btn-ghost btn-sm' data-ans='" + encodeURIComponent(e.file) + "'>🔑 答案</button><button class='btn btn-ghost btn-sm' data-q='" + encodeURIComponent(e.file) + "'>🧩 分题</button></div>";
+      return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div>" +
+        "<a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>📄 真题 PDF</a>" +
+        (e.answer ? "<a class='btn btn-primary btn-sm' target='_blank' rel='noopener' href='assets/answers/" + encodeURIComponent(e.answer) + "'>✅ 答案解析</a>" : "<span class='tag' style='opacity:.6'>答案解析暂缺</span>") +
+        "</div>";
     }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
     zone.querySelectorAll("[data-exc]").forEach(function (bx) { bx.onclick = function () { openExcerpt(decodeURIComponent(bx.getAttribute("data-exc"))); }; });
