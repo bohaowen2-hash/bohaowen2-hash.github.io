@@ -83,6 +83,7 @@
       '</div>' +
       '<div class="ai-chat" id="aiChat"></div>' +
       '<div class="ai-foot"><div class="ai-chips" id="aiChips"></div>' +
+        '<div class="ai-quick" id="aiQuick"></div>' +
         '<div class="ai-tools">' +
           '<label><input type="checkbox" id="aiDeep"> 🧠 深度思考</label>' +
           '<label><input type="checkbox" id="aiWeb"> 🌐 联网搜索</label>' +
@@ -139,8 +140,29 @@
     box.innerHTML = Object.keys(MODES).map(function (k) { return "<button data-m='" + k + "' class='" + (st.mode === k ? "on" : "") + "'>" + MODES[k] + "</button>"; }).join("");
     box.querySelectorAll("button").forEach(function (b) { b.onclick = function () { st.mode = b.getAttribute("data-m"); setHist(hist()); render(); modeButtons(); }; });
   }
+  var QUICK={
+    general:[
+      ["解释长难句","请挑出这句话的主干与从句结构，并给出中文翻译：\n"],
+      ["词汇辨析","请辨析下面这组词的区别并各造一个例句：\n"]
+    ],
+    writing:[
+      ["作文打分表","请按六级标准给下面作文打分：\n1) 内容/结构/语言三栏评分(各10分)与总分\n2) 扣分点清单\n3) 逐句修改建议\n4) 升格后的高分范文\n作文题目与内容：\n"],
+      ["逐句修改","请逐句修改下面的作文，保留原意，给出修改理由与例句：\n"],
+      ["升格范文","请基于我的观点，重写一篇六级高分范文（200词左右）并标注可复用句型：\n"]
+    ],
+    translation:[
+      ["逐句对照","请把我的译文与参考译文做逐句对照，用表格输出：\n原句 | 我的译文 | 问题/扣分点 | 建议译文。最后给整体得分与错误总结。我的译文如下：\n"],
+      ["地道改写","请保留原意，把我的译文改成更地道的六级表达，并逐条说明修改点：\n"],
+      ["错误清单","请指出下面译文中的语法、搭配、时态、漏译问题，并给出正确版本：\n"]
+    ]
+  };
+  function renderQuick() {
+    var q=el.drawer.querySelector("#aiQuick"); if(!q) return;
+    q.innerHTML=(QUICK[st.mode]||[]).map(function(x,i){return "<button data-q='"+i+"'>"+x[0]+"</button>";}).join("");
+    q.querySelectorAll("button").forEach(function(b){ b.onclick=function(){ var t=(QUICK[st.mode]||[])[parseInt(b.getAttribute("data-q"),10)]; if(!t) return; el.text.value=t[1]+el.text.value; el.text.focus(); }; });
+  }
   function render() {
-    modeButtons();
+    modeButtons(); renderQuick();
     var h = hist(); var box = el.chat;
     box.innerHTML = h.length ? "" : "<div class='ai-msg sys'>我是你的 AI 英语老师：可批改作文/翻译、讲解词汇长难句、搜索站内资料与联网（按你的设置）。Key 是你自己的，能力取决于所选模型。</div>";
     h.forEach(function (m) { box.appendChild(msgEl(m)); });
@@ -229,6 +251,8 @@
   /* 自动挂载 & 页面按钮注入 */
   function boot() {
     if (!document.getElementById("aiDrawer")) mountUI();
+    var nav = document.getElementById("navLinks");
+    if (nav && !document.getElementById("navAiLink")) { var na = document.createElement("a"); na.id = "navAiLink"; na.href = "javascript:void(0)"; na.textContent = "🤖 AI老师"; na.onclick = function () { open(guessMode()); }; nav.appendChild(na); }
     var h = location.hash || "#/";
     if (/writing/.test(h)) {
       var box = document.querySelector("#view .sec-head.left");

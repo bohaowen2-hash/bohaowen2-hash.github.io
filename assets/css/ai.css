@@ -1,5 +1,5 @@
 /* AI 助手（全站浮窗） */
-.ai-fab{position:fixed;left:16px;bottom:16px;z-index:130;border:none;border-radius:999px;padding:12px 18px;font:inherit;font-weight:800;color:#fff;background:linear-gradient(120deg,#7c3aed,#ec4899);box-shadow:0 14px 30px -12px rgba(124,58,237,.8);cursor:pointer}
+.ai-fab{position:fixed;left:16px;bottom:calc(16px + env(safe-area-inset-bottom));z-index:500;border:none;border-radius:999px;padding:12px 18px;font:inherit;font-weight:800;color:#fff;background:linear-gradient(120deg,#7c3aed,#ec4899);box-shadow:0 14px 30px -12px rgba(124,58,237,.8);cursor:pointer}
 .ai-fab:hover{transform:translateY(-3px)}
 .ai-drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,96vw);background:var(--surface);border-left:1px solid var(--line);box-shadow:-20px 0 60px -30px rgba(0,0,0,.5);z-index:200;display:flex;flex-direction:column;transform:translateX(102%);transition:transform .3s}
 .ai-drawer.open{transform:none}
@@ -34,3 +34,7 @@
 .ai-typing{display:inline-block;width:6px;height:14px;background:var(--brand);animation:aiBlink 1s steps(1) infinite;vertical-align:-2px}
 @keyframes aiBlink{50%{opacity:0}}
 @media(max-width:520px){.ai-fab{left:12px;bottom:12px;padding:10px 14px}.ai-drawer{width:100vw}}
+.ai-quick{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.ai-quick button{border:1px dashed var(--line-strong);background:var(--surface);color:var(--brand);border-radius:999px;padding:4px 10px;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.ai-quick button:hover{background:var(--grad-soft)}
+@media(max-width:520px){.ai-fab{left:12px;bottom:calc(12px + env(safe-area-inset-bottom))}}
