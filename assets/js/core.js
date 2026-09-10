@@ -5,7 +5,7 @@
 "use strict";
 var BH = window.BH = {
   routes: {}, site: null, user: null,
-  _mods: { home: "home.js", vocab: "vocab.js", listening: "listening.js", reading: "reading.js", writing: "writing.js", translation: "translation.js", exam: "exam.js", me: "dashboard.js", admin: "admin.js" },
+  _mods: { home: "home.js", vocab: "vocab.js", listening: "listening.js", reading: "reading.js", writing: "writing.js", translation: "translation.js", exam: "exam.js", papers: "papers.js", me: "dashboard.js", admin: "admin.js" },
   _loading: {},
   token: null, _booted: false
 };

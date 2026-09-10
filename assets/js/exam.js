@@ -237,6 +237,7 @@ BH.reg("exam", async function (view, params) {
 
   renderExams();
   function renderExams() {
+    var z0 = document.getElementById("examLib"); if (z0) { var sec0 = z0.closest("section"); if (sec0) sec0.style.display = "none"; } // hideLegacyExamLib
     var zone = document.getElementById("examLib"); if (!zone) return;
     fetch("data/exams.json?v=20260911").then(function (r) { return r.json(); }).then(function (list) {
       list.sort(function (a, b) { return (b.year - a.year) || (b.month - a.month) || (b.set - a.set); });
