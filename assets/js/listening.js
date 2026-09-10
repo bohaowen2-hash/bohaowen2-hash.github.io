@@ -5,6 +5,8 @@ BH.reg("listening", async function (view) {
   var items = (await BH.api("/api/content?cat=listening")) || [];
   var state = { idx: 0, type: "all", q: "", page: 0, per: 12, rate: 0.85, quiz: { qs: [], qi: 0, right: 0 } };
   var TYPE = { news: { ico: "📰", cn: "新闻" }, conversation: { ico: "💬", cn: "对话" }, lecture: { ico: "🎓", cn: "讲座" } };
+  var audioMap = {};
+  try { var amp = await (await fetch("data/listening-audio.json")).json(); amp.forEach(function (x) { audioMap[x.i] = x; }); } catch (e) {}
   function typeOf(it) { var t = (it.data || {}).type || "lecture"; return TYPE[t] ? t : "lecture"; }
   function typeCN(it) { return (TYPE[typeOf(it)] || TYPE.lecture).cn; }
   function typeIco(it) { return (TYPE[typeOf(it)] || TYPE.lecture).ico; }
@@ -112,7 +114,8 @@ BH.reg("listening", async function (view) {
   }
   function show() {
     var it = cur(), d = it.data || {};
-    document.getElementById("psgType").textContent = typeIco(it) + " " + typeCN(it);
+    state.audio = audioMap[state.idx] || null;
+    document.getElementById("psgType").textContent = typeIco(it) + " " + typeCN(it) + (state.audio ? " · 🗽 美音 Neural" : "");
     document.getElementById("psgTitle").textContent = it.title || "—";
     document.getElementById("psgSub").textContent = it.sub || "";
     document.getElementById("scriptBox").innerHTML = String(d.text || "").split("\n").filter(Boolean).map(function (x) { return "<p>" + s(x) + "</p>"; }).join("");
@@ -121,13 +124,25 @@ BH.reg("listening", async function (view) {
   function move(delta) { state.idx = (state.idx + delta + items.length) % items.length; renderList(); show(); window.scrollTo({ top: 0 }); }
   function stop() {
     if ("speechSynthesis" in window) speechSynthesis.cancel();
+    if (BH._lAudio) { try { BH._lAudio.pause(); } catch (e) {} }
     clearTimeout(window._sentTimer);
     var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none";
   }
   function voice() {
     if (!("speechSynthesis" in window)) return null;
     var vs = speechSynthesis.getVoices();
-    return vs.filter(function (v) { return /en[-_]US/i.test(v.lang); })[0] || vs.filter(function (v) { return /^en/i.test(v.lang); })[0] || null;
+    var en = vs.filter(function (v) { return /^en/i.test(v.lang || ""); });
+    if (!en.length) return null;
+    var score = function (v) {
+      var n = (v.name || "") + " " + (v.voiceURI || ""); var sc = 0;
+      if (/en[-_]US/i.test(v.lang)) sc += 3;
+      if (/Natural|Online|Neural/i.test(n)) sc += 6;
+      if (/Aria|Jenny|Guy|Andrew|Brian|Emma|Ava|Christopher|Eric|Michelle|Roger|Steffan/i.test(n)) sc += 5;
+      if (/Google US English/i.test(n)) sc += 4;
+      if (/Zira|David|Mark|Hazel/i.test(n)) sc += 1;
+      return sc;
+    };
+    return en.sort(function (a, b) { return score(b) - score(a); })[0];
   }
   function ut(txt, onEnd) {
     var u = new SpeechSynthesisUtterance(txt);
@@ -137,10 +152,20 @@ BH.reg("listening", async function (view) {
   }
   function setNow(t) { var b = document.getElementById("nowPlaying"); if (b) { document.getElementById("nowTxt").textContent = t; b.style.display = "block"; } }
   function playAll() {
-    if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
     stop();
-    setNow("整段播放中…");
-    speechSynthesis.speak(ut(String((cur().data || {}).text || "")));
+    if (state.audio) {
+      setNow("整段播放中（🗽 美音 Neural）…");
+      var au = BH._lAudio || (BH._lAudio = new Audio());
+      au.src = state.audio.file; au.playbackRate = Math.max(0.5, Math.min(1.5, state.rate));
+      au.onended = function () { var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none"; };
+      au.play().catch(function () { localPlayAll(); });
+      return;
+    }
+    localPlayAll();
+  }
+  function localPlayAll() {
+    if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
+    setNow("整段播放中…"); speechSynthesis.speak(ut(String((cur().data || {}).text || "")));
   }
   function playSent() {
     if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
@@ -206,6 +231,7 @@ BH.reg("listening", async function (view) {
   function normL(s) { return String(s || "").toLowerCase().replace(/[^a-z0-9\s]/g, "").replace(/\s+/g, " ").trim(); }
   function stop() {
     if ("speechSynthesis" in window) speechSynthesis.cancel();
+    if (BH._lAudio) { try { BH._lAudio.pause(); } catch (e) {} }
     clearTimeout(window._sentTimer);
     var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none";
   }
@@ -218,12 +244,18 @@ BH.reg("listening", async function (view) {
     dictSpeak();
   };
   document.getElementById("repeatBtn").onclick = function () {
-    if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
     stop();
+    if (state.audio) {
+      var au = BH._lAudio || (BH._lAudio = new Audio()); au.src = state.audio.file; au.playbackRate = 0.6;
+      var times = 0; setNow("慢速跟读 1/2（请轻声跟读）…");
+      au.onended = function () { times++; if (times < 2) { setNow("慢速跟读 2/2…"); au.currentTime = 0; au.play(); } else { var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none"; } };
+      au.play().catch(function () { BH.toast("音频播放失败，请检查网络 🔊"); });
+      return;
+    }
+    if (!("speechSynthesis" in window)) { BH.toast("浏览器不支持语音，建议 Chrome/Edge"); return; }
     var txt = String((cur().data || {}).text || "");
-    var old = state.rate; state.rate = 0.55;
     setNow("慢速跟读 1/2（请轻声跟读）…");
-    speechSynthesis.speak(ut(txt, function () { setNow("慢速跟读 2/2…"); speechSynthesis.speak(ut(txt, function () { state.rate = old; document.getElementById("nowPlaying").style.display = "none"; })); }));
+    speechSynthesis.speak(ut(txt, function () { setNow("慢速跟读 2/2…"); speechSynthesis.speak(ut(txt, function () { var np = document.getElementById("nowPlaying"); if (np) np.style.display = "none"; })); }));
   };
   function dictSpeak() { if (!("speechSynthesis" in window)) return; var q = dict.sents[dict.i]; if (!q) return; setNow("请听写第 " + (dict.i + 1) + " 句（最多再听 2 遍）…"); speechSynthesis.speak(ut(q, function () { speechSynthesis.speak(ut(q)); })); }
   function dictDraw() {

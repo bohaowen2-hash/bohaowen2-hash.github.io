@@ -237,30 +237,34 @@ BH.reg("vocab", async function (view, params) {
     showCard();
     nav(1);
   }
-  function speak(text) {
-    if (!("speechSynthesis" in window)) { fallbackAudio(text); return; }
-    var vs = speechSynthesis.getVoices();
-    if (!vs.length) {
-      speechSynthesis.onvoiceschanged = function () { vs = speechSynthesis.getVoices(); };
-    }
-    try {
-      speechSynthesis.cancel();
-      window._speaking = false;
-      var u = new SpeechSynthesisUtterance(text);
-      u.lang = "en-US"; u.rate = .85;
-      var v = vs.filter(function (x) { return /en[-_]US/i.test(x.lang); })[0] || vs.filter(function (x) { return /^en/i.test(x.lang); })[0];
-      if (v) u.voice = v;
-      u.onstart = function () { window._speaking = true; };
-      u.onerror = function () { fallbackAudio(text); };
-      u.onend = function () { window._speaking = false; };
-      speechSynthesis.speak(u);
-      setTimeout(function () { if (!window._speaking) fallbackAudio(text); }, 1600);
-    } catch (e) { fallbackAudio(text); }
+  function bestUSVoice() {
+    if (!("speechSynthesis" in window)) return null;
+    var vs = speechSynthesis.getVoices().filter(function (v) { return /^en/i.test(v.lang || ""); });
+    if (!vs.length) return null;
+    var score = function (v) {
+      var n = (v.name || "") + " " + (v.voiceURI || ""); var sc = 0;
+      if (/en[-_]US/i.test(v.lang)) sc += 3;
+      if (/Natural|Online|Neural/i.test(n)) sc += 6;
+      if (/Aria|Jenny|Guy|Andrew|Brian|Emma|Ava|Christopher|Eric|Michelle|Roger|Steffan/i.test(n)) sc += 5;
+      if (/Google US English/i.test(n)) sc += 4;
+      if (/Zira|David|Mark|Hazel/i.test(n)) sc += 1;
+      return sc;
+    };
+    return vs.sort(function (a, b) { return score(b) - score(a); })[0];
   }
-  function fallbackAudio(text) {
-    var a = document.createElement("audio");
-    a.src = "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(text) + "&type=2";
-    a.play().catch(function () { BH.toast("朗读不可用：请检查网络或浏览器设置 🔊"); });
+  function speak(text) {
+    var url = "https://dict.youdao.com/dictvoice?audio=" + encodeURIComponent(text) + "&type=2";
+    var a = BH._wordAudio || (BH._wordAudio = new Audio());
+    a.src = url; a.playbackRate = 1;
+    a.play().catch(function () { localSay(text); });
+  }
+  function localSay(text) {
+    if (!("speechSynthesis" in window)) { BH.toast("朗读不可用：请检查网络或浏览器设置 🔊"); return; }
+    speechSynthesis.cancel();
+    var u = new SpeechSynthesisUtterance(text);
+    u.lang = "en-US"; u.rate = .9;
+    var v = bestUSVoice(); if (v) u.voice = v;
+    speechSynthesis.speak(u);
   }
 
   /* ============ 自测 ============ */
