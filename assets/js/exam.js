@@ -238,7 +238,7 @@ BH.reg("exam", async function (view, params) {
   renderExams();
   function renderExams() {
     var zone = document.getElementById("examLib"); if (!zone) return;
-    fetch("data/exams.json").then(function (r) { return r.json(); }).then(function (list) {
+    fetch("data/exams.json?v=20260911").then(function (r) { return r.json(); }).then(function (list) {
       list.sort(function (a, b) { return (b.year - a.year) || (b.month - a.month) || (b.set - a.set); });
       var ys = document.getElementById("exYear");
       var years = {};
@@ -264,7 +264,7 @@ BH.reg("exam", async function (view, params) {
     zone.innerHTML = slice.length ? slice.map(function (e) {
       return "<div class='act-item'><span class='act-ico'>📄</span><div style='flex:1'><div style='font-weight:700'>" + e.year + "年" + e.month + "月 · 第" + e.set + "套</div><div class='muted' style='font-size:12px'>" + e.file + "</div></div>" +
         "<a class='btn btn-soft btn-sm' target='_blank' rel='noopener' href='assets/exams/" + encodeURIComponent(e.file) + "'>📄 真题 PDF</a>" +
-        (e.answer ? "<a class='btn btn-primary btn-sm' target='_blank' rel='noopener' href='assets/answers/" + encodeURIComponent(e.answer) + "'>✅ 答案解析</a>" : "<span class='tag' style='opacity:.6'>答案解析暂缺</span>") +
+        e.answer ? "<a class='btn btn-primary btn-sm' target='_blank' rel='noopener' href='assets/answers/" + encodeURIComponent(e.answer) + "'>✅ 答案解析</a>" : "" +
         "</div>";
     }).join("") : "<div class='empty-note'>没有匹配的真题，调整筛选条件试试</div>";
     zone.querySelectorAll("[data-txt]").forEach(function (bt) { bt.onclick = function () { openPaperText(decodeURIComponent(bt.getAttribute("data-txt"))); }; });
